@@ -1,0 +1,14 @@
+.categories {
+  padding-left: 4%;
+  padding-right: 4%;
+}
+.categories a {
+  color: var(--gray-color);
+  transition: 0.2s;
+}
+.categories a:hover {
+  color: var(--secondary-color);
+}
+.categories::-webkit-scrollbar {
+  display: none;
+}
