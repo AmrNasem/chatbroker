@@ -1,0 +1,8 @@
+.image {
+  width: 90px;
+  height: 90px;
+  background-color: var(--category-background);
+}
+.title {
+  color: var(--gray-color);
+}

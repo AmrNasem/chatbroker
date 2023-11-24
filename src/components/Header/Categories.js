@@ -6,14 +6,17 @@ import { fetchCategories } from "../../store/categories-slice";
 import Spinner from "../../UI/Spinner";
 
 const Categories = (props) => {
-  const { categories, error } = useSelector((state) => state.categories);
+  const { categories, error, loading } = useSelector(
+    (state) => state.categories
+  );
   const dispatch = useDispatch();
-  console.log(categories);
+
   useEffect(() => {
-    if (!categories) {
-      dispatch(fetchCategories("https://api.lepgo.online/api/v1/categories"));
+    if (!categories && !loading && !error) {
+      dispatch(fetchCategories());
     }
-  }, [dispatch, categories]);
+  }, [dispatch, categories, loading, error]);
+
   return (
     <div className={`${classes.categories} ${props.className} py-1`}>
       {error ? (

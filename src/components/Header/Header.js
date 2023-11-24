@@ -14,8 +14,10 @@ import Categories from "./Categories";
 
 const Header = () => {
   return (
-    <header className="bg-white">
-      <div className="d-flex align-items-center gap-3 py-3 border-bottom">
+    <header className="bg-white z-1 position-relative">
+      <div
+        className={`d-flex align-items-center gap-3 py-3 border-bottom ${classes["main-header"]}`}
+      >
         <Link to="/" className="ms-3">
           <img src={require("../../assets/logo.png")} alt="Lepgo" />
         </Link>

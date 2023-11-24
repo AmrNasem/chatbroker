@@ -4,9 +4,9 @@ const initialState = { loading: false, categories: null, error: null };
 
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
-  async (endpoint) => {
+  async () => {
     try {
-      const res = await fetch(endpoint);
+      const res = await fetch("https://api.lepgo.online/api/v1/categories");
       if (!res.ok) throw new Error("Network error");
       const data = await res.json();
       return data;

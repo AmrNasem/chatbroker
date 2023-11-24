@@ -11,7 +11,9 @@ const MobileHeader = () => {
   const [dispalyAside, setDisplayAside] = useState(false);
 
   return (
-    <header className="d-flex align-items-center gap-3 py-3 border-bottom bg-white">
+    <header
+      className={`${classes["main-header"]} d-flex align-items-center gap-3 py-3 border-bottom bg-white`}
+    >
       <Link to="/" className="ms-3">
         <img src={require("../../assets/logo.png")} alt="Lepgo" />
       </Link>
