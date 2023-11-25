@@ -27,6 +27,8 @@ function App() {
         <Route path="/favorites" element={<h2>Favorites</h2>} />
         <Route path="/cart" element={<h2>Cart</h2>} />
         <Route path="/new-product" element={<h2>New product</h2>} />
+        <Route path="/product/:productId" element={<h2>Product 1</h2>} />
+        <Route path="/category/:categoryId" element={<h2>Category 1</h2>} />
         <Route
           path="/*"
           element={<h2 className="text-center my-3">Page not found</h2>}

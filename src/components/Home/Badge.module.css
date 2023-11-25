@@ -1,0 +1,10 @@
+.badge {
+  font-size: 0.8rem;
+  flex-basis: calc(100% / 3);
+}
+.arrow {
+  right: 100%;
+  top: 0.5px;
+  border: 11.7px solid transparent;
+  border-right-width: 13px !important;
+}

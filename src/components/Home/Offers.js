@@ -30,10 +30,11 @@ const Offers = () => {
       {error ? (
         <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
       ) : offers ? (
-        <div className="d-flex gap-3 overflow-auto remove-scrollbar">
+        <div className="d-flex gap-3 overflow-x-auto p-2 remove-scrollbar">
           {offers.most_offers.map((offer) => (
             <OfferItem
               key={offer.id}
+              id={offer.id}
               discount={offer.discount}
               img={offer.image}
               title={offer.title}
@@ -41,7 +42,7 @@ const Offers = () => {
           ))}
         </div>
       ) : (
-        <Spinner className="mx-auto" />
+        <Spinner />
       )}
     </Container>
   );

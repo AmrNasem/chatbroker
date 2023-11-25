@@ -1,5 +1,4 @@
 .product {
-  max-width: 230px;
   min-width: 230px;
   background-color: var(--card-color);
   box-shadow: -1px 2px 10px rgba(0, 0, 0, 0.171);
@@ -9,6 +8,8 @@
   border-radius: inherit;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
+  height: 150px;
+  background-color: #efdfce;
 }
 .image {
   transition: 0.2s;

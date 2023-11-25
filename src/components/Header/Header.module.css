@@ -39,9 +39,6 @@ button.button {
   box-shadow: -1px 0 10px rgba(0, 0, 0, 0.351);
   animation: fade-in 0.3s;
 }
-.fade-out {
-  animation: fade-in 0.3s both !important;
-}
 @keyframes fade-in {
   0% {
     transform: translateX(100%);

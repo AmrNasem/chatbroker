@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { backend } from "../App";
 
 const useRequest = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchData = useCallback(
@@ -13,17 +13,18 @@ const useRequest = () => {
         headers,
         stringify = true,
         method = "GET",
-        credentials = "include",
+        // credentials = "include",
       },
       applyData
     ) => {
-      setIsLoading(true);
+      setLoading(true);
       setError(null);
+      console.log(endpoint);
       try {
         const res = await fetch(`${backend}/${endpoint}`, {
           method,
           headers: headers ? headers : {},
-          credentials,
+          // credentials,
           body: body ? (stringify ? JSON.stringify(body) : body) : null,
         });
         const data = await res.json();
@@ -32,14 +33,14 @@ const useRequest = () => {
       } catch (err) {
         setError(err.message || "Something went wrong!");
       }
-      setIsLoading(false);
+      setLoading(false);
     },
     []
   );
 
   return {
     fetchData,
-    isLoading,
+    loading,
     error,
   };
 };
