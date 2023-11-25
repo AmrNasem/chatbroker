@@ -14,7 +14,7 @@ const Offers = () => {
   }, [dispatch, offers]);
 
   return (
-    <Container className="my-4">
+    <Container className="my-5">
       <div className="my-4 gap-3 d-flex justify-content-between align-items-center">
         <h4>العروض المتاحة</h4>
         <button
