@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { backend } from "../App";
 
 const initialState = { loading: false, categories: null, error: null };
 
@@ -6,7 +7,7 @@ export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
   async () => {
     try {
-      const res = await fetch("https://api.lepgo.online/api/v1/categories");
+      const res = await fetch(`${backend}/categories`);
       if (!res.ok) throw new Error("Network error");
       const data = await res.json();
       return data;

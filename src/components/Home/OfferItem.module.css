@@ -1,0 +1,11 @@
+.offer {
+  min-width: 200px;
+  background-color: var(--card-color);
+}
+.offer img {
+  height: 120px;
+}
+.class {
+  font-size: 0.9rem;
+  color: var(--address-color);
+}

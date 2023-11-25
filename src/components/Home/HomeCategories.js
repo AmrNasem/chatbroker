@@ -55,23 +55,23 @@ const settings = {
 };
 
 const HomeCategory = () => {
-  const { categories, error, loading } = useSelector(
-    (state) => state.categories
-  );
+  const { categories, error } = useSelector((state) => state.categories);
   const dispatch = useDispatch();
 
   if (categories && categories.length < 10)
     settings.slidesToShow = categories.length;
 
   useEffect(() => {
-    if (!categories && !loading && !error) {
+    if (!categories) {
       dispatch(fetchCategories());
     }
-  }, [dispatch, categories, loading, error]);
+  }, [dispatch, categories]);
 
   return (
     <Container className="my-5">
-      {categories ? (
+      {error ? (
+        <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
+      ) : categories ? (
         <Slider {...settings} className="overflow-hidden">
           {categories.map((item) => {
             return (

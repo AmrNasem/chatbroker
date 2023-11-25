@@ -9,6 +9,3 @@
 .categories a:hover {
   color: var(--secondary-color);
 }
-.categories::-webkit-scrollbar {
-  display: none;
-}

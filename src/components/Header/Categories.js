@@ -6,21 +6,21 @@ import { fetchCategories } from "../../store/categories-slice";
 import Spinner from "../../UI/Spinner";
 
 const Categories = (props) => {
-  const { categories, error, loading } = useSelector(
-    (state) => state.categories
-  );
+  const { categories, error } = useSelector((state) => state.categories);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!categories && !loading && !error) {
+    if (!categories) {
       dispatch(fetchCategories());
     }
-  }, [dispatch, categories, loading, error]);
+  }, [dispatch, categories]);
 
   return (
-    <div className={`${classes.categories} ${props.className} py-1`}>
+    <div
+      className={`${classes.categories} ${props.className} remove-scrollbar py-1`}
+    >
       {error ? (
-        <p>{error}</p>
+        <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
       ) : categories ? (
         categories.map((cat) => (
           <Link

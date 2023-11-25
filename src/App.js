@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header/Header";
 import MobileHeader from "./components/Header/MobileHeader";
 
+export const backend = "https://api.lepgo.online/api/v1";
+
 function App() {
   const [screenSize, setScreenSize] = useState(window.innerWidth);
 
@@ -25,6 +27,10 @@ function App() {
         <Route path="/favorites" element={<h2>Favorites</h2>} />
         <Route path="/cart" element={<h2>Cart</h2>} />
         <Route path="/new-product" element={<h2>New product</h2>} />
+        <Route
+          path="/*"
+          element={<h2 className="text-center my-3">Page not found</h2>}
+        />
       </Routes>
     </div>
   );
