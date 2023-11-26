@@ -1,0 +1,51 @@
+.footer {
+  background-color: var(--main-color);
+  padding: 60px 0;
+}
+.right a {
+  transition: 0.2s;
+}
+.right a:hover {
+  color: var(--secondary-color) !important;
+}
+.right > div > h5 {
+  position: relative;
+}
+.right > div > h5::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  height: 2px;
+  background-color: var(--secondary-color);
+}
+.right > div > div a {
+  font-size: 0.9rem;
+}
+.social svg {
+  width: 20px;
+  height: 20px;
+}
+.contact > span {
+  font-size: 0.9rem;
+}
+@media (min-width: 992px) {
+  .fill {
+    flex: 3;
+  }
+}
+@media (max-width: 470px) {
+  .right,
+  .left {
+    flex-direction: column;
+    text-align: center;
+  }
+  .right > div h5::before {
+    right: 50% !important;
+    transform: translateX(50%);
+  }
+  .container {
+    flex-direction: column;
+  }
+}

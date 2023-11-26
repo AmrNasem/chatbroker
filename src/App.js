@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import { useEffect, useState } from "react";
 import Header from "./components/Header/Header";
 import MobileHeader from "./components/Header/MobileHeader";
+import Footer from "./components/Footer";
 
 export const backend = "https://api.lepgo.online/api/v1";
 
@@ -34,6 +35,7 @@ function App() {
           element={<h2 className="text-center my-3">Page not found</h2>}
         />
       </Routes>
+      <Footer />
     </div>
   );
 }

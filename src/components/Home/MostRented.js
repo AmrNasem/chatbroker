@@ -1,5 +1,6 @@
 import { Container } from "react-bootstrap";
 import ProductItem from "./ProductItem";
+import { memo } from "react";
 
 const MostRented = () => {
   return (
@@ -17,4 +18,4 @@ const MostRented = () => {
   );
 };
 
-export default MostRented;
+export default memo(MostRented);
