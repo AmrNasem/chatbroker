@@ -4,6 +4,7 @@ import { fetchOffers } from "../../store/offers-slice";
 import { Container } from "react-bootstrap";
 import OfferItem from "./OfferItem";
 import Spinner from "../../UI/Spinner";
+import { Link } from "react-router-dom";
 
 const Offers = () => {
   const { offers, error } = useSelector((state) => state.offers);
@@ -17,15 +18,16 @@ const Offers = () => {
     <Container className="my-5">
       <div className="my-4 gap-3 d-flex justify-content-between align-items-center">
         <h4>العروض المتاحة</h4>
-        <button
+        <Link
+          to="/offers"
           style={{
             color: "var(--main-color)",
             border: "2px solid var(--main-color)",
           }}
-          className="btn fw-semibold"
+          className="btn text-decoration-none fw-semibold"
         >
           جميع العروض
-        </button>
+        </Link>
       </div>
       {error ? (
         <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>

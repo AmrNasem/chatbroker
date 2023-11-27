@@ -76,11 +76,11 @@ const Footer = () => {
             <div className="mb-3">
               <div className="p-2 my-2 d-flex justify-content-between border rounded-2 border-white d-flex align-items-center gap-2">
                 <p className="mb-0">من خلال متجر أبل</p>
-                <FontAwesomeIcon icon={faAppStoreIos} />
+                <FontAwesomeIcon className="fs-5" icon={faAppStoreIos} />
               </div>
               <div className="p-2 my-2 d-flex justify-content-between border rounded-2 border-white d-flex align-items-center gap-2">
                 <p className="mb-0">من خلال متجر جوجل</p>
-                <FontAwesomeIcon icon={faGooglePlay} />
+                <FontAwesomeIcon className="fs-5" icon={faGooglePlay} />
               </div>
             </div>
           </div>
@@ -91,22 +91,22 @@ const Footer = () => {
             >
               <FontAwesomeIcon
                 style={{ color: "var(--main-color)" }}
-                className="bg-white rounded-circle text-dark p-2"
+                className="bg-white rounded-circle p-2"
                 icon={faInstagram}
               />
               <FontAwesomeIcon
                 style={{ color: "var(--main-color)" }}
-                className="bg-white rounded-circle text-dark p-2"
+                className="bg-white rounded-circle p-2"
                 icon={faWhatsapp}
               />
               <FontAwesomeIcon
                 style={{ color: "var(--main-color)" }}
-                className="bg-white rounded-circle text-dark p-2"
+                className="bg-white rounded-circle p-2"
                 icon={faTwitter}
               />
               <FontAwesomeIcon
                 style={{ color: "var(--main-color)" }}
-                className="bg-white rounded-circle text-dark p-2"
+                className="bg-white rounded-circle p-2"
                 icon={faFacebookF}
               />
             </div>

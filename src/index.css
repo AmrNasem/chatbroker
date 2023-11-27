@@ -5,6 +5,7 @@
   --category-background: #f2f2f2;
   --card-color: #f9f9fa;
   --address-color: #666666;
+  --pink-color: #efdfce;
 }
 * {
   padding: 0;
@@ -23,4 +24,16 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+.remove-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+main {
+  flex: 1;
+}
+.outline-none {
+  outline: none;
+}
+.z--1 {
+  z-index: -1;
 }

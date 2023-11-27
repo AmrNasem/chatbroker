@@ -20,19 +20,73 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="App d-flex flex-column">
       {screenSize < 768 ? <MobileHeader /> : <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/chat" element={<h2>Chat</h2>} />
-        <Route path="/favorites" element={<h2>Favorites</h2>} />
-        <Route path="/cart" element={<h2>Cart</h2>} />
-        <Route path="/new-product" element={<h2>New product</h2>} />
-        <Route path="/product/:productId" element={<h2>Product 1</h2>} />
-        <Route path="/category/:categoryId" element={<h2>Category 1</h2>} />
+        <Route
+          path="/chat"
+          element={
+            <main>
+              <h2>Chat</h2>
+            </main>
+          }
+        />
+        <Route
+          path="/favorites"
+          element={
+            <main>
+              <h2>Favorites</h2>
+            </main>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <main>
+              <h2>Cart</h2>
+            </main>
+          }
+        />
+        <Route
+          path="/new-product"
+          element={
+            <main>
+              <h2>New product</h2>
+            </main>
+          }
+        />
+        <Route
+          path="/offers"
+          element={
+            <main>
+              <h2>All offers</h2>
+            </main>
+          }
+        />
+        <Route
+          path="/product/:productId"
+          element={
+            <main>
+              <h2>Product 1</h2>
+            </main>
+          }
+        />
+        <Route
+          path="/category/:categoryId"
+          element={
+            <main>
+              <h2>Category 1</h2>
+            </main>
+          }
+        />
         <Route
           path="/*"
-          element={<h2 className="text-center my-3">Page not found</h2>}
+          element={
+            <main>
+              <h2 className="text-center my-3">Page not found</h2>
+            </main>
+          }
         />
       </Routes>
       <Footer />

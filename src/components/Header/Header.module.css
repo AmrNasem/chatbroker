@@ -44,3 +44,6 @@ button.button {
     transform: translateX(100%);
   }
 }
+.overlay {
+  z-index: 1000;
+}

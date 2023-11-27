@@ -15,7 +15,7 @@ import Categories from "./Categories";
 const Aside = () => {
   return (
     <aside
-      className={`py-3 z-5 bg-white ${classes.aside} h-100`}
+      className={`py-3 bg-white ${classes.aside} h-100`}
       onClick={(e) => e.stopPropagation()}
     >
       <div className={`h-100 overflow-auto ${classes.main}`}>

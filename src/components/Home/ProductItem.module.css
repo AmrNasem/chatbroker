@@ -9,7 +9,7 @@
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   height: 150px;
-  background-color: #efdfce;
+  background-color: var(--pink-color);
 }
 .image {
   transition: 0.2s;

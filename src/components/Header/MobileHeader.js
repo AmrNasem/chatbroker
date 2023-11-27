@@ -36,7 +36,10 @@ const MobileHeader = () => {
         <FontAwesomeIcon icon={faBars} className="fs-5" />
       </button>
       {dispalyAside && (
-        <Overlay onClick={() => setDisplayAside(false)}>
+        <Overlay
+          className={classes.overlay}
+          onClick={() => setDisplayAside(false)}
+        >
           <Aside />
         </Overlay>
       )}
