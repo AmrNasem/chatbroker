@@ -9,13 +9,20 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Container } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Spinner from "../UI/Spinner";
-import { memo } from "react";
+import { memo, useEffect } from "react";
+import { fetchCategories } from "../store/categories-slice";
 
 const Footer = () => {
   const { categories, error } = useSelector((state) => state.categories);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!categories) dispatch(fetchCategories());
+  }, [categories, dispatch]);
+
   return (
     <footer className={`text-white ${classes.footer}`}>
       <Container
@@ -42,7 +49,12 @@ const Footer = () => {
                   </Link>
                 ))
               ) : (
-                <Spinner stroke={3} side={30} color="var(--secondary-color)" />
+                <Spinner
+                  stroke={3}
+                  side={30}
+                  className="mx-auto mx-sm-0"
+                  color="var(--secondary-color)"
+                />
               )}
             </div>
           </div>
