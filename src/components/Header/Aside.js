@@ -19,12 +19,13 @@ const Aside = () => {
       onClick={(e) => e.stopPropagation()}
     >
       <div className={`h-100 overflow-auto ${classes.main}`}>
-        <button
-          className={`px-3 my-2 py-1 bg-transparent fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
+        <Link
+          to="?auth=login"
+          className={`px-3 my-2 py-1 text-decoration-none bg-transparent fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
         >
           <FontAwesomeIcon icon={faUser} className="fs-5" />
           <span>حسابي</span>
-        </button>
+        </Link>
         <Link
           to="new-product"
           className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}

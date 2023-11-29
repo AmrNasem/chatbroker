@@ -2,13 +2,24 @@ import classes from "./Header.module.css";
 import {} from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { memo, useState } from "react";
-import { Link } from "react-router-dom";
+import { memo, useCallback, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Aside from "./Aside";
 import Overlay from "../../UI/Overlay";
+import Auth from "../Auth/Auth";
 
 const MobileHeader = () => {
   const [dispalyAside, setDisplayAside] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+
+  const closeAuthHandler = useCallback(
+    () => navigate(location.pathname),
+    [navigate, location]
+  );
+
+  const closeAsideHandler = useCallback(() => setDisplayAside(false), []);
 
   return (
     <header
@@ -36,11 +47,13 @@ const MobileHeader = () => {
         <FontAwesomeIcon icon={faBars} className="fs-5" />
       </button>
       {dispalyAside && (
-        <Overlay
-          className={classes.overlay}
-          onClick={() => setDisplayAside(false)}
-        >
+        <Overlay onClick={closeAsideHandler}>
           <Aside />
+        </Overlay>
+      )}
+      {params.get("auth") && (
+        <Overlay className="px-2" onClick={closeAuthHandler}>
+          <Auth onClick={closeAuthHandler} />
         </Overlay>
       )}
     </header>

@@ -49,10 +49,15 @@
   color: var(--main-color);
 }
 .box > div {
-  min-width: 400px;
+  min-width: 450px;
   min-height: 400px;
 }
-@media (max-width: 576px) {
+@media (max-width: 767.9px) {
+  .box > div {
+    min-height: 350px;
+  }
+}
+@media (max-width: 575.9px) {
   .box img {
     width: 150px;
   }

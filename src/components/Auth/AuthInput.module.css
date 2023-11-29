@@ -1,0 +1,20 @@
+.info svg {
+  transition: 0.2s;
+}
+.invalid {
+  border-color: red !important;
+  background-color: rgb(255, 230, 230);
+}
+.invalid svg {
+  color: red !important;
+}
+.active {
+  border-color: var(--secondary-color) !important;
+}
+.active svg {
+  color: var(--secondary-color) !important;
+}
+.hint {
+  font-size: 0.8rem;
+  color: red;
+}

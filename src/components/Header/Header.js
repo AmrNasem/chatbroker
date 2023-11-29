@@ -8,11 +8,22 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { faSearch, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { memo } from "react";
-import { Link } from "react-router-dom";
+import { memo, useCallback } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Categories from "./Categories";
+import Auth from "../Auth/Auth";
+import Overlay from "../../UI/Overlay";
 
 const Header = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+
+  const closeAuthHandler = useCallback(
+    () => navigate(location.pathname),
+    [navigate, location]
+  );
+
   return (
     <header className="bg-white z-1 position-relative">
       <div
@@ -52,12 +63,18 @@ const Header = () => {
           <span>إضافة منتج للحجز</span>
           <FontAwesomeIcon icon={faSquarePlus} className="fs-5" />
         </Link>
-        <button
-          className={`px-2 py-1 bg-transparent d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
+        <Link
+          to="?auth=login"
+          className={`px-2 py-1 text-decoration-none bg-transparent d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
         >
           <span>حسابي</span>
           <FontAwesomeIcon icon={faUser} className="fs-5" />
-        </button>
+        </Link>
+        {params.get("auth") && (
+          <Overlay onClick={closeAuthHandler}>
+            <Auth onClick={closeAuthHandler} />
+          </Overlay>
+        )}
         <Link
           className={`px-xl-2 py-1 text-decoration-none d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
           to="/chat"

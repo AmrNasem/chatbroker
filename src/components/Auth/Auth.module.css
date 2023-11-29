@@ -1,0 +1,56 @@
+.auth {
+  max-width: 400px;
+  transform: translate(50%, -50%);
+}
+.close {
+  right: 15px;
+  top: 15px;
+  width: 30px;
+  height: 30px;
+  color: var(--address-color);
+}
+.img {
+  width: 100px;
+}
+.hello {
+  font-size: 0.9rem;
+}
+.assumption {
+  font-size: 0.8rem;
+  color: var(--main-color);
+}
+.assumption button {
+  color: var(--secondary-color);
+}
+.auth > form {
+  width: 90%;
+}
+.info,
+.info svg {
+  transition: 0.2s;
+}
+.invalid {
+  border-color: red !important;
+  background-color: rgb(255, 230, 230);
+}
+.invalid svg {
+  color: red !important;
+}
+.active {
+  border-color: var(--secondary-color) !important;
+}
+.active svg {
+  color: var(--secondary-color) !important;
+}
+.hint {
+  font-size: 0.8rem;
+  color: red;
+}
+.forgot-password {
+  font-size: 0.8rem;
+  color: var(--address-color);
+  transition: 0.2s;
+}
+.forgot-password:hover {
+  color: var(--main-color);
+}
