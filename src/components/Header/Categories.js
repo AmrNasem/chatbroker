@@ -3,7 +3,7 @@ import classes from "./Categories.module.css";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../../store/categories-slice";
-import Spinner from "../../UI/Spinner";
+import Skeleton from "../Skeleton/Skeleton";
 
 const Categories = (props) => {
   const { categories, error } = useSelector((state) => state.categories);
@@ -32,7 +32,10 @@ const Categories = (props) => {
           </Link>
         ))
       ) : (
-        <Spinner className="mx-auto my-1" stroke={4} side={40} />
+        // <Spinner className="mx-auto my-1" stroke={4} side={40} />
+        [...Array(10).keys()].map((item) => (
+          <Skeleton className={`w-title my-3 my-md-2`} key={item} />
+        ))
       )}
     </div>
   );

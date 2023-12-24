@@ -17,7 +17,7 @@ const Register = () => {
   const inputs = [
     {
       key: "name",
-      constraint: useCallback((value) => /\w{3}/i.test(value), []),
+      constraint: useCallback((value) => /(^[a-zA-Z]|_).{2}/i.test(value), []),
       icon: useMemo(() => faUser, []),
       message: "الاسم غير صحيح",
       placeholder: "الاسم",
@@ -36,7 +36,7 @@ const Register = () => {
     {
       key: "email",
       constraint: useCallback(
-        (value) => /^[a-zA-Z]\w*@[a-zA-Z]\w*\.\w+/i.test(value),
+        (value) => /^[a-zA-Z].*@[a-zA-Z]\w*\.\w+/gi.test(value),
         []
       ),
       icon: useMemo(() => faEnvelope, []),

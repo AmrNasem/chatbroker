@@ -14,7 +14,7 @@ const Login = () => {
     {
       key: "email",
       constraint: useCallback(
-        (value) => /^[a-zA-Z]\w*@[a-zA-Z]\w*\.\w+/i.test(value),
+        (value) => /^[a-zA-Z].*@[a-zA-Z]\w*\.\w+/gi.test(value),
         []
       ),
       icon: useMemo(() => faEnvelope, []),

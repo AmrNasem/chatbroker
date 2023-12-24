@@ -1,18 +1,37 @@
 import { Container } from "react-bootstrap";
 import ProductItem from "./ProductItem";
-import { memo } from "react";
+import { memo, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import CardSkeleton from "../Skeleton/CardSkeleton";
+import { fetchProducts } from "../../store/products-slice";
 
 const MostRented = () => {
+  const { products, error } = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!products) dispatch(fetchProducts());
+  }, [dispatch, products]);
+
   return (
     <Container className="my-5">
       <h4 className="mb-4">الأكثر إيجارًا</h4>
       <div className="d-flex gap-4 py-3 px-2 overflow-auto remove-scrollbar">
-        <ProductItem />
-        <ProductItem />
-        <ProductItem />
-        <ProductItem />
-        <ProductItem />
-        <ProductItem />
+        {error ? (
+          <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
+        ) : products ? (
+          products
+            .slice(3, 9)
+            .map((product, index) => (
+              <ProductItem key={index} product={product} />
+            ))
+        ) : (
+          <div className="d-flex gap-4 my-4 flex-wrap">
+            {[...Array(3).keys()].map((key) => (
+              <CardSkeleton key={key} style={{ minWidth: "240px" }} />
+            ))}
+          </div>
+        )}
       </div>
     </Container>
   );

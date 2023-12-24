@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchOffers } from "../../store/offers-slice";
 import { Container } from "react-bootstrap";
 import OfferItem from "./OfferItem";
-import Spinner from "../../UI/Spinner";
 import { Link } from "react-router-dom";
+import OfferSkeleton from "../Skeleton/OfferSkeleton";
 
 const Offers = () => {
   const { offers, error } = useSelector((state) => state.offers);
@@ -44,7 +44,12 @@ const Offers = () => {
           ))}
         </div>
       ) : (
-        <Spinner />
+        // <Spinner />
+        <div className="d-flex gap-3 overflow-hidden">
+          {[...Array(3).keys()].map((key) => (
+            <OfferSkeleton style={{ minWidth: "200px" }} key={key} />
+          ))}
+        </div>
       )}
     </Container>
   );

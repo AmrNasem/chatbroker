@@ -11,9 +11,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Spinner from "../UI/Spinner";
 import { memo, useEffect } from "react";
 import { fetchCategories } from "../store/categories-slice";
+import Skeleton from "./Skeleton/Skeleton";
 
 const Footer = () => {
   const { categories, error } = useSelector((state) => state.categories);
@@ -49,12 +49,13 @@ const Footer = () => {
                   </Link>
                 ))
               ) : (
-                <Spinner
-                  stroke={3}
-                  side={30}
-                  className="mx-auto mx-sm-0"
-                  color="var(--secondary-color)"
-                />
+                [...Array(5).keys()].map((item) => (
+                  <Skeleton
+                    style={{ height: "0.6em" }}
+                    className={`my-1`}
+                    key={item}
+                  />
+                ))
               )}
             </div>
           </div>

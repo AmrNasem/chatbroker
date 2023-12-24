@@ -1,19 +1,23 @@
 import { Container } from "react-bootstrap";
 import ProductItem from "./ProductItem";
-import { memo, useEffect } from "react";
+import { memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../store/products-slice";
-import Spinner from "../../UI/Spinner";
+import CardSkeleton from "../Skeleton/CardSkeleton";
+
+const mySkeleton = (
+  <div className="d-flex gap-4 my-4 flex-wrap">
+    {[...Array(3).keys()].map((key) => (
+      <CardSkeleton key={key} style={{ minWidth: "240px" }} />
+    ))}
+  </div>
+);
 
 const Recommends = () => {
   const { products, error, lastPage, page, loading } = useSelector(
     (state) => state.products
   );
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!products) dispatch(fetchProducts());
-  }, [dispatch, products]);
 
   return (
     <Container className="my-5">
@@ -28,13 +32,14 @@ const Recommends = () => {
               gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
             }}
           >
-            {products.map((product) => (
-              <ProductItem key={product.id} product={product} />
+            {products.map((product, index) => (
+              <ProductItem key={index} product={product} />
             ))}
           </div>
           {page <= lastPage &&
             (loading ? (
-              <Spinner className="mx-auto my-5" />
+              // <Spinner className="mx-auto my-5" />
+              mySkeleton
             ) : (
               <button
                 onClick={() => dispatch(fetchProducts(page))}
@@ -49,7 +54,7 @@ const Recommends = () => {
             ))}
         </>
       ) : (
-        <Spinner />
+        mySkeleton
       )}
     </Container>
   );

@@ -5,9 +5,9 @@ import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import Spinner from "../../UI/Spinner";
 import { useEffect } from "react";
 import { fetchCategories } from "../../store/categories-slice";
+import Skeleton from "../Skeleton/Skeleton";
 
 const settings = {
   dots: false,
@@ -97,7 +97,18 @@ const HomeCategory = () => {
           })}
         </Slider>
       ) : (
-        <Spinner className="mx-auto" />
+        // <Spinner className="mx-auto" />
+        <div className="d-flex gap-4 overflow-hidden">
+          {[...Array(10).keys()].map((key) => (
+            <div key={key}>
+              <Skeleton
+                className="rounded-circle"
+                style={{ width: "90px", height: "90px" }}
+              />
+              <Skeleton style={{ height: "0.6em", marginTop: "10px" }} />
+            </div>
+          ))}
+        </div>
       )}
     </Container>
   );
