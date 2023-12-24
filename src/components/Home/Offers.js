@@ -32,7 +32,7 @@ const Offers = () => {
       {error ? (
         <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
       ) : offers ? (
-        <div className="d-flex gap-3 overflow-x-auto p-2 remove-scrollbar">
+        <div className="d-flex gap-3 overflow-x-auto py-3 px-2 remove-scrollbar">
           {offers.most_offers.map((offer) => (
             <OfferItem
               key={offer.id}

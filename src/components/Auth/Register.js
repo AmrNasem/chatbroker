@@ -10,90 +10,155 @@ import { useDispatch, useSelector } from "react-redux";
 import { authenticateUser } from "../../store/auth-slice";
 import Spinner from "../../UI/Spinner";
 
+const nameConstraint = (value) => /(^[a-zA-Z]|_).{2}/i.test(value);
+const telConstraint = (value) => /\d{3}/i.test(value);
+const emailConstraint = (value) => /^[a-zA-Z].*@[a-zA-Z]\w*\.\w+/gi.test(value);
+const passowrdConstraint = (value) => value.length >= 6;
+
 const Register = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
-
-  const inputs = [
-    {
-      key: "name",
-      constraint: useCallback((value) => /(^[a-zA-Z]|_).{2}/i.test(value), []),
-      icon: useMemo(() => faUser, []),
-      message: "الاسم غير صحيح",
-      placeholder: "الاسم",
-      type: "text",
-      state: useState({ value: "", isTouched: false }),
-    },
-    {
-      key: "phone",
-      constraint: useCallback((value) => /\d{3}/i.test(value), []),
-      icon: useMemo(() => faPhone, []),
-      message: "رقم الهاتف غير صحيح",
-      placeholder: "رقم الهاتف",
-      type: "tel",
-      state: useState({ value: "", isTouched: false }),
-    },
-    {
-      key: "email",
-      constraint: useCallback(
-        (value) => /^[a-zA-Z].*@[a-zA-Z]\w*\.\w+/gi.test(value),
-        []
-      ),
-      icon: useMemo(() => faEnvelope, []),
-      message: "البريد الإلكتروني غير صحيح",
-      placeholder: "البريد الإلكتروني",
-      type: "email",
-      state: useState({ value: "", isTouched: false }),
-    },
-    {
-      key: "password",
-      constraint: useCallback((value) => value.length >= 6, []),
-      icon: useMemo(() => faLock, []),
-      message: "لابد أن تكون كلمة السر مكونة من 6 رموز أو أكثر",
-      placeholder: "كلمة السر",
-      type: "password",
-      state: useState({ value: "", isTouched: false }),
-    },
-  ];
+  const [name, setName] = useState({ value: "", isTouched: false });
+  const [phone, setPhone] = useState({ value: "", isTouched: false });
+  const [email, setEmail] = useState({ value: "", isTouched: false });
+  const [password, setPassword] = useState({ value: "", isTouched: false });
 
   const registerHandler = (e) => {
     e.preventDefault();
-    const formdata = new FormData();
-    let isFormValid = true;
-    inputs.forEach((input) => {
-      formdata.append(input.key, input.state[0].value);
-      isFormValid = isFormValid && input.constraint(input.state[0].value);
-    });
+    const isFormValid =
+      nameConstraint(name.value) &&
+      telConstraint(phone.value) &&
+      emailConstraint(email.value) &&
+      passowrdConstraint(password.value);
+
     if (isFormValid) {
+      const formdata = new FormData();
+      formdata.append("name", name.value);
+      formdata.append("phone", phone.value);
+      formdata.append("email", email.value);
+      formdata.append("password", password.value);
+
+      console.log(name.value);
+      console.log(phone.value);
+      console.log(email.value);
+      console.log(password.value);
+
       dispatch(authenticateUser("users/register", formdata));
-    } else
-      inputs.forEach((input) =>
-        input.state[1]((prevState) => {
-          return { ...prevState, isTouched: true };
-        })
-      );
+    } else {
+      setName((prev) => {
+        return { ...prev, isTouched: true };
+      });
+      setPhone((prev) => {
+        return { ...prev, isTouched: true };
+      });
+      setEmail((prev) => {
+        return { ...prev, isTouched: true };
+      });
+      setPassword((prev) => {
+        return { ...prev, isTouched: true };
+      });
+    }
   };
 
   return (
     <form>
-      {inputs.map((input, index) => (
-        <AuthInput
-          key={index}
-          constraint={input.constraint}
-          icon={input.icon}
-          message={input.message}
-          placeholder={input.placeholder}
-          type={input.type}
-          setValue={input.state[1]}
-          value={input.state[0]}
-        />
-      ))}
+      <AuthInput
+        constraint={nameConstraint}
+        icon={useMemo(() => faUser, [])}
+        message="الاسم غير صحيح"
+        placeholder="الاسم"
+        onChange={useCallback(
+          (e) =>
+            setName((prev) => {
+              return { ...prev, value: e.target.value };
+            }),
+          []
+        )}
+        onBlur={useCallback(
+          () =>
+            setName((prev) => {
+              return { ...prev, isTouched: true };
+            }),
+          []
+        )}
+        value={name.value}
+        isTouched={name.isTouched}
+      />
+      <AuthInput
+        constraint={telConstraint}
+        icon={useMemo(() => faPhone, [])}
+        message="رقم الهاتف غير صحيح"
+        placeholder="رقم الهاتف"
+        type="tel"
+        onChange={useCallback(
+          (e) =>
+            setPhone((prev) => {
+              return { ...prev, value: e.target.value };
+            }),
+          []
+        )}
+        onBlur={useCallback(
+          () =>
+            setPhone((prev) => {
+              return { ...prev, isTouched: true };
+            }),
+          []
+        )}
+        value={phone.value}
+        isTouched={phone.isTouched}
+      />
+      <AuthInput
+        constraint={emailConstraint}
+        icon={useMemo(() => faEnvelope, [])}
+        message="البريد الإلكتروني غير صحيح"
+        placeholder="البريد الإلكتروني"
+        type="email"
+        onChange={useCallback(
+          (e) =>
+            setEmail((prev) => {
+              return { ...prev, value: e.target.value };
+            }),
+          []
+        )}
+        onBlur={useCallback(
+          () =>
+            setEmail((prev) => {
+              return { ...prev, isTouched: true };
+            }),
+          []
+        )}
+        value={email.value}
+        isTouched={email.isTouched}
+      />
+      <AuthInput
+        constraint={passowrdConstraint}
+        icon={useMemo(() => faLock, [])}
+        message="لابد أن تكون كلمة السر مكونة من 6 رموز أو أكثر"
+        placeholder="كلمة السر"
+        type="password"
+        onChange={useCallback(
+          (e) =>
+            setPassword((prev) => {
+              return { ...prev, value: e.target.value };
+            }),
+          []
+        )}
+        onBlur={useCallback(
+          () =>
+            setPassword((prev) => {
+              return { ...prev, isTouched: true };
+            }),
+          []
+        )}
+        value={password.value}
+        isTouched={password.isTouched}
+      />
       {loading ? (
         <Spinner
           side={30}
-          stroke={3}
+          stroke={3.5}
           color="var(--secondary-color)"
-          className="mx-auto my-2"
+          className="mx-auto mt-3"
         />
       ) : (
         <button

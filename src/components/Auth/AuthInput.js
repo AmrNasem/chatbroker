@@ -9,23 +9,18 @@ const AuthInput = ({
   icon,
   message,
   autoFocus,
-  setValue,
+  onChange,
+  onBlur,
   value,
+  isTouched,
 }) => {
   const [focused, setFocused] = useState(false);
 
-  const invalid = value.isTouched && !constraint(value.value);
-
-  const inputChangeHandler = (e) =>
-    setValue((prevState) => {
-      return { ...prevState, value: e.target.value };
-    });
+  const invalid = isTouched && !constraint(value);
 
   const inputBlurHandler = () => {
     inputFocusHandler();
-    setValue((prevState) => {
-      return { ...prevState, isTouched: true };
-    });
+    onBlur();
   };
 
   const inputFocusHandler = () => setFocused((prevState) => !prevState);
@@ -41,8 +36,8 @@ const AuthInput = ({
           onFocus={inputFocusHandler}
           autoFocus={autoFocus}
           onBlur={inputBlurHandler}
-          onChange={inputChangeHandler}
-          value={value.value}
+          onChange={onChange}
+          value={value}
           type={type || "text"}
           placeholder={placeholder}
           className="p-2 bg-transparent flex-grow-1 border-0 outline-none"
