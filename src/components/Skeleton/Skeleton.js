@@ -1,8 +1,11 @@
 import { memo } from "react";
 import "./Skeleton.css";
-const Skeleton = ({ className, style }) => {
+const Skeleton = ({ className, style, delay }) => {
   return (
-    <span style={style} className={`skeleton d-block ${className}`}></span>
+    <span
+      style={{ animationDelay: `${delay * 150}ms`, ...style }}
+      className={`skeleton d-block ${className}`}
+    ></span>
   );
 };
 

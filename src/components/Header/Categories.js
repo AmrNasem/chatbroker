@@ -34,7 +34,11 @@ const Categories = (props) => {
       ) : (
         // <Spinner className="mx-auto my-1" stroke={4} side={40} />
         [...Array(10).keys()].map((item) => (
-          <Skeleton className={`w-title my-3 my-md-2`} key={item} />
+          <Skeleton
+            delay={item}
+            className={`w-title my-3 my-md-2`}
+            key={item}
+          />
         ))
       )}
     </div>

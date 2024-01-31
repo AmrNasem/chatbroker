@@ -8,7 +8,7 @@ import Header from "./components/Header/Header";
 import MobileHeader from "./components/Header/MobileHeader";
 import Footer from "./components/Footer";
 
-export const backend = "https://api.lepgo.online/api/v1";
+export const backend = "https://chat-broker.scm.azurewebsites.net";
 
 function App() {
   const [screenSize, setScreenSize] = useState(window.innerWidth);

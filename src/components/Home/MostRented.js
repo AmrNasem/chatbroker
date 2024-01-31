@@ -26,9 +26,13 @@ const MostRented = () => {
               <ProductItem key={index} product={product} />
             ))
         ) : (
-          <div className="d-flex gap-4 my-4 flex-wrap">
+          <div className="d-flex gap-4 my-4 overflow-auto remove-scrollbar">
             {[...Array(3).keys()].map((key) => (
-              <CardSkeleton key={key} style={{ minWidth: "240px" }} />
+              <CardSkeleton
+                delay={key}
+                key={key}
+                style={{ minWidth: "240px" }}
+              />
             ))}
           </div>
         )}

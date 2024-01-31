@@ -5,6 +5,12 @@ header {
   padding-left: 4%;
   padding-right: 4%;
 }
+.search {
+  transition: 0.2s;
+}
+.search:has(input:focus) {
+  border-color: var(--secondary-color) !important;
+}
 .search input {
   outline: none;
 }

@@ -58,6 +58,8 @@ const HomeCategory = () => {
   const { categories, error } = useSelector((state) => state.categories);
   const dispatch = useDispatch();
 
+  console.log(error);
+
   if (categories && categories.length < 10)
     settings.slidesToShow = categories.length;
 
@@ -97,15 +99,18 @@ const HomeCategory = () => {
           })}
         </Slider>
       ) : (
-        // <Spinner className="mx-auto" />
-        <div className="d-flex gap-4 overflow-hidden">
+        <div className="d-flex gap-4 overflow-auto remove-scrollbar">
           {[...Array(10).keys()].map((key) => (
             <div key={key}>
               <Skeleton
+                delay={key}
                 className="rounded-circle"
                 style={{ width: "90px", height: "90px" }}
               />
-              <Skeleton style={{ height: "0.6em", marginTop: "10px" }} />
+              <Skeleton
+                delay={key}
+                style={{ height: "0.6em", marginTop: "10px" }}
+              />
             </div>
           ))}
         </div>

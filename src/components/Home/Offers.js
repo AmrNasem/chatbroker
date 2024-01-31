@@ -44,10 +44,13 @@ const Offers = () => {
           ))}
         </div>
       ) : (
-        // <Spinner />
-        <div className="d-flex gap-3 overflow-hidden">
+        <div className="d-flex gap-3 overflow-auto remove-scrollbar">
           {[...Array(3).keys()].map((key) => (
-            <OfferSkeleton style={{ minWidth: "200px" }} key={key} />
+            <OfferSkeleton
+              delay={key}
+              style={{ minWidth: "200px" }}
+              key={key}
+            />
           ))}
         </div>
       )}

@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import classes from "./Auth.module.css";
 import AuthInput from "./AuthInput";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
@@ -7,8 +7,10 @@ import { authenticateUser } from "../../store/auth-slice";
 import { useDispatch, useSelector } from "react-redux";
 import Spinner from "../../UI/Spinner";
 
-const emailConstraint = (value) => /^[a-zA-Z].*@[a-zA-Z]\w*\.\w+/gi.test(value);
-const passowrdConstraint = (value) => value.length >= 6;
+const emailConstraint = (value) =>
+  /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+const passowrdConstraint = (value) =>
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value);
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -45,43 +47,19 @@ const Login = () => {
         message="البريد الإلكتروني غير صحيح"
         placeholder="البريد الإلكتروني"
         type="email"
-        onChange={useCallback(
-          (e) =>
-            setEmail((prev) => {
-              return { ...prev, value: e.target.value };
-            }),
-          []
-        )}
-        onBlur={useCallback(
-          () =>
-            setEmail((prev) => {
-              return { ...prev, isTouched: true };
-            }),
-          []
-        )}
+        onChange={setEmail}
+        onBlur={setEmail}
         value={email.value}
         isTouched={email.isTouched}
       />
       <AuthInput
         constraint={passowrdConstraint}
         icon={useMemo(() => faLock, [])}
-        message="لابد أن تكون كلمة السر مكونة من 6 رموز أو أكثر"
+        message="لابد أن لا تكون كلمة السر أقل من 8 رموز وتتضمن حروف كبيرة وصغير وأرقام"
         placeholder="كلمة السر"
         type="password"
-        onChange={useCallback(
-          (e) =>
-            setPassword((prev) => {
-              return { ...prev, value: e.target.value };
-            }),
-          []
-        )}
-        onBlur={useCallback(
-          () =>
-            setPassword((prev) => {
-              return { ...prev, isTouched: true };
-            }),
-          []
-        )}
+        onChange={setPassword}
+        onBlur={setPassword}
         value={password.value}
         isTouched={password.isTouched}
       />

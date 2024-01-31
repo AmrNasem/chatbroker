@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import AuthInput from "./AuthInput";
 import {
   faEnvelope,
@@ -10,10 +10,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { authenticateUser } from "../../store/auth-slice";
 import Spinner from "../../UI/Spinner";
 
-const nameConstraint = (value) => /(^[a-zA-Z]|_).{2}/i.test(value);
-const telConstraint = (value) => /\d{3}/i.test(value);
-const emailConstraint = (value) => /^[a-zA-Z].*@[a-zA-Z]\w*\.\w+/gi.test(value);
-const passowrdConstraint = (value) => value.length >= 6;
+const nameConstraint = (value) => /^[a-zA-Z0-9_]{3,20}$/.test(value);
+const telConstraint = (value) => /^\d{6,}$/.test(value);
+const emailConstraint = (value) =>
+  /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+const passowrdConstraint = (value) =>
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value);
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -67,20 +69,8 @@ const Register = () => {
         icon={useMemo(() => faUser, [])}
         message="الاسم غير صحيح"
         placeholder="الاسم"
-        onChange={useCallback(
-          (e) =>
-            setName((prev) => {
-              return { ...prev, value: e.target.value };
-            }),
-          []
-        )}
-        onBlur={useCallback(
-          () =>
-            setName((prev) => {
-              return { ...prev, isTouched: true };
-            }),
-          []
-        )}
+        onChange={setName}
+        onBlur={setName}
         value={name.value}
         isTouched={name.isTouched}
       />
@@ -90,20 +80,8 @@ const Register = () => {
         message="رقم الهاتف غير صحيح"
         placeholder="رقم الهاتف"
         type="tel"
-        onChange={useCallback(
-          (e) =>
-            setPhone((prev) => {
-              return { ...prev, value: e.target.value };
-            }),
-          []
-        )}
-        onBlur={useCallback(
-          () =>
-            setPhone((prev) => {
-              return { ...prev, isTouched: true };
-            }),
-          []
-        )}
+        onChange={setPhone}
+        onBlur={setPhone}
         value={phone.value}
         isTouched={phone.isTouched}
       />
@@ -113,20 +91,8 @@ const Register = () => {
         message="البريد الإلكتروني غير صحيح"
         placeholder="البريد الإلكتروني"
         type="email"
-        onChange={useCallback(
-          (e) =>
-            setEmail((prev) => {
-              return { ...prev, value: e.target.value };
-            }),
-          []
-        )}
-        onBlur={useCallback(
-          () =>
-            setEmail((prev) => {
-              return { ...prev, isTouched: true };
-            }),
-          []
-        )}
+        onChange={setEmail}
+        onBlur={setEmail}
         value={email.value}
         isTouched={email.isTouched}
       />
@@ -136,20 +102,8 @@ const Register = () => {
         message="لابد أن تكون كلمة السر مكونة من 6 رموز أو أكثر"
         placeholder="كلمة السر"
         type="password"
-        onChange={useCallback(
-          (e) =>
-            setPassword((prev) => {
-              return { ...prev, value: e.target.value };
-            }),
-          []
-        )}
-        onBlur={useCallback(
-          () =>
-            setPassword((prev) => {
-              return { ...prev, isTouched: true };
-            }),
-          []
-        )}
+        onChange={setPassword}
+        onBlur={setPassword}
         value={password.value}
         isTouched={password.isTouched}
       />

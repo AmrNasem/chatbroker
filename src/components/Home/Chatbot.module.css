@@ -74,3 +74,9 @@
   transform: rotateY(180deg);
   color: var(--main-color);
 }
+.form {
+  transition: 0.2s;
+}
+.form:has(input:focus) {
+  border-color: var(--secondary-color) !important;
+}

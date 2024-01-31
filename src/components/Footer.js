@@ -51,6 +51,7 @@ const Footer = () => {
               ) : (
                 [...Array(5).keys()].map((item) => (
                   <Skeleton
+                    delay={item}
                     style={{ height: "0.6em" }}
                     className={`my-1`}
                     key={item}

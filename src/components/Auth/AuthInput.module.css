@@ -1,5 +1,19 @@
+.info {
+  transition: 0.2s;
+  border: 1px solid #eee;
+}
+.info input {
+  background-color: transparent;
+}
 .info svg {
   transition: 0.2s;
+  color: var(--address-color);
+}
+.info:has(input:focus) {
+  border-color: var(--secondary-color);
+}
+.info:has(input:focus) svg {
+  color: var(--secondary-color);
 }
 .invalid {
   border-color: red !important;
@@ -7,12 +21,6 @@
 }
 .invalid svg {
   color: red !important;
-}
-.active {
-  border-color: var(--secondary-color) !important;
-}
-.active svg {
-  color: var(--secondary-color) !important;
 }
 .hint {
   font-size: 0.8rem;
