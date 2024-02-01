@@ -99,7 +99,7 @@ const HomeCategory = () => {
           })}
         </Slider>
       ) : (
-        <div className="d-flex gap-4 overflow-auto remove-scrollbar">
+        <div className="d-flex gap-4 overflow-auto scrollbar-none">
           {[...Array(10).keys()].map((key) => (
             <div key={key}>
               <Skeleton

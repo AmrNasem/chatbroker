@@ -33,12 +33,11 @@ const Recommends = () => {
             }}
           >
             {products.map((product, index) => (
-              <ProductItem key={index} product={product} />
+              <ProductItem minWidth="230px" key={index} product={product} />
             ))}
           </div>
           {page <= lastPage &&
             (loading ? (
-              // <Spinner className="mx-auto my-5" />
               mySkeleton
             ) : (
               <button

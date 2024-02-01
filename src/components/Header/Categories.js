@@ -17,7 +17,7 @@ const Categories = (props) => {
 
   return (
     <div
-      className={`${classes.categories} ${props.className} remove-scrollbar py-1`}
+      className={`${classes.categories} ${props.className} scrollbar-none py-1`}
     >
       {error ? (
         <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
@@ -32,7 +32,6 @@ const Categories = (props) => {
           </Link>
         ))
       ) : (
-        // <Spinner className="mx-auto my-1" stroke={4} side={40} />
         [...Array(10).keys()].map((item) => (
           <Skeleton
             delay={item}

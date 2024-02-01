@@ -1,3 +1,15 @@
 .App {
   min-height: 100vh;
 }
+.text-sec {
+  color: var(--secondary-color);
+}
+.text-main {
+  color: var(--main-color);
+}
+.bg-sec {
+  background-color: var(--secondary-color);
+}
+.bg-main {
+  background-color: var(--main-color);
+}

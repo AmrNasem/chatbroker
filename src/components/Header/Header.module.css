@@ -34,10 +34,10 @@ button.button {
   transform: translate(10%, 25%);
 }
 .amount {
-  min-width: 18px;
-  min-height: 18px;
+  min-width: 15px;
+  min-height: 15px;
   background-color: var(--secondary-color);
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   transform: translate(50%, -50%);
 }
 .aside {

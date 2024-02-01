@@ -6,6 +6,7 @@
   --card-color: #f9f9fa;
   --address-color: #666666;
   --pink-color: #efdfce;
+  --product-text-color: #9399a3;
 }
 * {
   padding: 0;
@@ -25,7 +26,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
-.remove-scrollbar::-webkit-scrollbar {
+.scrollbar-none::-webkit-scrollbar {
   display: none;
 }
 main {

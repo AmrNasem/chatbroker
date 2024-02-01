@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header/Header";
 import MobileHeader from "./components/Header/MobileHeader";
 import Footer from "./components/Footer";
+import SingleProduct from "./pages/SingleProduct";
 
 export const backend = "https://chat-broker.scm.azurewebsites.net";
 
@@ -64,14 +65,7 @@ function App() {
             </main>
           }
         />
-        <Route
-          path="/product/:productId"
-          element={
-            <main>
-              <h2>Product 1</h2>
-            </main>
-          }
-        />
+        <Route path="/product/:productId" element={<SingleProduct />} />
         <Route
           path="/category/:categoryId"
           element={

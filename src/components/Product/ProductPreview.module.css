@@ -1,0 +1,14 @@
+@media (min-width: 992px) {
+  .navigator {
+    max-width: 45%;
+  }
+}
+.image {
+  width: 100px;
+  height: 100px;
+  min-width: 100px;
+  min-height: 100px;
+}
+.active {
+  border: 3px solid var(--secondary-color);
+}

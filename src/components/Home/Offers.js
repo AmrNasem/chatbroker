@@ -32,7 +32,7 @@ const Offers = () => {
       {error ? (
         <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
       ) : offers ? (
-        <div className="d-flex gap-3 overflow-x-auto py-3 px-2 remove-scrollbar">
+        <div className="d-flex gap-3 overflow-x-auto py-3 px-2 scrollbar-none">
           {offers.most_offers.map((offer) => (
             <OfferItem
               key={offer.id}
@@ -44,7 +44,7 @@ const Offers = () => {
           ))}
         </div>
       ) : (
-        <div className="d-flex gap-3 overflow-auto remove-scrollbar">
+        <div className="d-flex gap-3 overflow-auto scrollbar-none">
           {[...Array(3).keys()].map((key) => (
             <OfferSkeleton
               delay={key}
