@@ -8,6 +8,7 @@ import Header from "./components/Header/Header";
 import MobileHeader from "./components/Header/MobileHeader";
 import Footer from "./components/Footer";
 import { Offers } from "./pages/Offers";
+import { SingleCategory } from "./pages/singleCategory";
 import SingleProduct from "./pages/SingleProduct";
 import Auth from "./components/Auth/Auth";
 import NewProduct from "./pages/NewProduct";
@@ -85,14 +86,7 @@ function App() {
         )}
         <Route path="/offers" element={<Offers />} />
         <Route path="/product/:productId" element={<SingleProduct />} />
-        <Route
-          path="/category/:categoryId"
-          element={
-            <main>
-              <h2>Category</h2>
-            </main>
-          }
-        />
+        <Route path="/category" element={<SingleCategory />} />
         <Route
           path="/*"
           element={
