@@ -30,7 +30,11 @@ const Header = () => {
         className={`d-flex align-items-center gap-3 py-3 border-bottom ${classes["main-header"]}`}
       >
         <Link to="/" className="ms-3">
-          <img src={require("../../assets/logo.png")} alt="Lepgo" />
+          <img
+            src={require("../../assets/LEPGO.png")}
+            style={{ width: "90px" }}
+            alt="Lepgo"
+          />
         </Link>
         <button
           className={`px-2 py-1 bg-transparent d-flex align-items-center gap-2 text-nowrap ${classes.button}`}

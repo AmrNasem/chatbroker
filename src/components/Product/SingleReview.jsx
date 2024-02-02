@@ -5,7 +5,7 @@ import React from "react";
 const SingleReview = ({ review }) => {
   return (
     <div
-      className="rounded-3 my-3 px-3 py-2"
+      className="rounded-3 mt-3 px-3 py-2"
       style={{ backgroundColor: "#F8F8F8" }}
     >
       <div className="d-flex gap-2 align-items-center">

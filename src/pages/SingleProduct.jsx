@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import ProductDetails from "../components/Product/ProductDetails";
 import ProductPreview from "../components/Product/ProductPreview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -65,4 +65,4 @@ const SingleProduct = () => {
   );
 };
 
-export default SingleProduct;
+export default memo(SingleProduct);

@@ -27,7 +27,7 @@ const ProductItem = ({ minWidth, product }) => {
   return (
     <div
       style={{ minWidth }}
-      onClick={() => navigate(`product/1`)}
+      onClick={() => navigate(`/product/1`)}
       className={`${classes.product} d-flex flex-column rounded-3`}
     >
       <div className={`position-relative overflow-hidden ${classes.head}`}>

@@ -8,6 +8,7 @@ import Header from "./components/Header/Header";
 import MobileHeader from "./components/Header/MobileHeader";
 import Footer from "./components/Footer";
 import SingleProduct from "./pages/SingleProduct";
+import NewProduct from "./pages/NewProduct";
 
 export const backend = "https://chat-broker.scm.azurewebsites.net";
 
@@ -49,14 +50,7 @@ function App() {
             </main>
           }
         />
-        <Route
-          path="/new-product"
-          element={
-            <main>
-              <h2>New product</h2>
-            </main>
-          }
-        />
+        <Route path="/new-product" element={<NewProduct />} />
         <Route
           path="/offers"
           element={

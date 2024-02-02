@@ -13,3 +13,6 @@
 .bg-main {
   background-color: var(--main-color);
 }
+.transition-main {
+  transition: 0.15s;
+}
