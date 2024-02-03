@@ -9,6 +9,7 @@ import MobileHeader from "./components/Header/MobileHeader";
 import Footer from "./components/Footer";
 import { Offers } from "./pages/Offers";
 import { SingleCategory } from "./pages/singleCategory";
+import Favorites from "./pages/Favorites";
 import SingleProduct from "./pages/SingleProduct";
 import Auth from "./components/Auth/Auth";
 import NewProduct from "./pages/NewProduct";
@@ -65,14 +66,7 @@ function App() {
                 </main>
               }
             />
-            <Route
-              path="/favorites"
-              element={
-                <main>
-                  <h2>Favorites</h2>
-                </main>
-              }
-            />
+            <Route path="/favorites" element={<Favorites />} />
             <Route
               path="/cart"
               element={
