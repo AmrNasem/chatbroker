@@ -5,24 +5,35 @@ import {
   faStar,
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import { faHeart as heart } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Badge";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToFavorites,
+  removeFromFavorites,
+} from "../../store/favoritesSlice";
+import { setPropToCopy } from "../../store/shredSlice";
 
 const ProductItem = ({ minWidth, product }) => {
   const navigate = useNavigate();
-  if (!product)
-    product = {
-      total_rate: 4.5,
-      image: require("../../assets/prod3.png"),
-      title: "إم دبليو",
-      desc: "أكثر السيارات رفاهية وفخامةوجودة حيث أنها تمتلك وجه أمامية",
-      city: "الدقهلية/المنصورة/أجا",
-      amount: 500,
-      duration: 1,
-      enum_durations: "يوم",
-    };
+  const [liked, setLiked] = useState(false);
+  const dispatch = useDispatch();
+  const favoritesList = useSelector((state) => state.favorites.list);
+  const isFavorite = favoritesList.includes(product);
+
+  const handleToggleFavorites = () => {
+    if (isFavorite) {
+      dispatch(removeFromFavorites(product));
+    } else {
+      dispatch(addToFavorites(product));
+    }
+    dispatch(setPropToCopy(product));
+    setLiked(!liked);
+  };
+  // if (!product)
 
   return (
     <div
@@ -39,12 +50,19 @@ const ProductItem = ({ minWidth, product }) => {
             <span className=" align-text-bottom">(495)</span>
           </div>
           <button
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleToggleFavorites();
+            }}
             className={`border-0 rounded-circle ${classes["add-to-fav"]}`}
             title="أضف إلى المفضلة"
             style={{ color: "#707070", backgroundColor: "var(--card-color)" }}
           >
-            <FontAwesomeIcon icon={faHeart} />
+            {liked ? (
+              <FontAwesomeIcon icon={heart} style={{ color: "#f00" }} />
+            ) : (
+              <FontAwesomeIcon icon={faHeart} />
+            )}
           </button>
         </div>
         <img

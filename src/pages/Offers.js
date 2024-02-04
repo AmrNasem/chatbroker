@@ -7,8 +7,8 @@ export const Offers = () => {
       <p className={offers.title}>العروض</p>
       <div className={offers.offersContainer} >
         {[...Array(15)].map((product, index) => (
-          <div className={offers.card}>
-            <ProductItem key={index} />
+          <div className={offers.card} key={index}>
+            <ProductItem />
           </div>
         )
         )}
