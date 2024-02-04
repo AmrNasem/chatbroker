@@ -9,22 +9,21 @@ import { memo, useState } from "react";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Home/Badge";
+import { useDispatch, useSelector } from 'react-redux';
+import { removeFromFavorites } from '../store/favoritesSlice';
+
 
 const FavoriteCard = (props) => {
   const navigate = useNavigate();
   let { product } = props;
-  if (!product)
-    product = {
-      total_rate: 4.5,
-      image: require("../assets/prod3.png"),
-      title: "إم دبليو",
-      desc: "أكثر السيارات رفاهية وفخامةوجودة حيث أنها تمتلك وجه أمامية",
-      city: "الدقهلية/المنصورة/أجا",
-      amount: 500,
-      duration: 1,
-      enum_durations: "يوم",
-    };
   const [animate, setAnimate] = useState(false)
+  product = useSelector((state) => state.shared.propToCopy);
+
+  const dispatch = useDispatch();
+
+  const handleRemoveFavorites = () => {
+    dispatch(removeFromFavorites(product));
+  }
 
   return (
     <div
@@ -73,7 +72,10 @@ const FavoriteCard = (props) => {
             <Badge className={favoriteCard.badge} swap />
             <Badge className={favoriteCard.badge} />
           </div>
-          <div onMouseOver={() => setAnimate(true)} onMouseLeave={() => setAnimate(false)} className="d-flex  align-items-center cursor-pointer gap-1" onClick={(e) => e.stopPropagation()}>
+          <div onMouseOver={() => setAnimate(true)} onMouseLeave={() => setAnimate(false)} className="d-flex  align-items-center cursor-pointer gap-1" onClick={(e) => {
+            e.stopPropagation()
+            handleRemoveFavorites()
+          }}>
             {<p className={`${favoriteCard.title} ${animate ? `${favoriteCard.visible}` : ""}`}>إزاله من المفضلة</p>}
             <button
               className={`border-0 rounded-circle ${favoriteCard["add-to-fav"]}`}
