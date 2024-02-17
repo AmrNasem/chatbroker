@@ -9,7 +9,7 @@ import { memo, useState } from "react";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Home/Badge";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { removeFromFavorites } from '../store/favoritesSlice';
 
 
@@ -17,7 +17,6 @@ const FavoriteCard = (props) => {
   const navigate = useNavigate();
   let { product } = props;
   const [animate, setAnimate] = useState(false)
-  product = useSelector((state) => state.shared.propToCopy);
 
   const dispatch = useDispatch();
 

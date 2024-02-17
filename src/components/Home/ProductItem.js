@@ -5,7 +5,7 @@ import {
   faStar,
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
-import { memo, useState } from "react";
+import { memo } from "react";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as heart } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
@@ -15,14 +15,15 @@ import {
   addToFavorites,
   removeFromFavorites,
 } from "../../store/favoritesSlice";
-import { setPropToCopy } from "../../store/shredSlice";
 
 const ProductItem = ({ minWidth, product }) => {
   const navigate = useNavigate();
-  const [liked, setLiked] = useState(false);
+  let { product } = props;
   const dispatch = useDispatch();
   const favoritesList = useSelector((state) => state.favorites.list);
-  const isFavorite = favoritesList.includes(product);
+  const isFavorite = favoritesList.find(
+    (singleProduct) => singleProduct.productId === product.productId
+  );
 
   const handleToggleFavorites = () => {
     if (isFavorite) {
@@ -30,10 +31,7 @@ const ProductItem = ({ minWidth, product }) => {
     } else {
       dispatch(addToFavorites(product));
     }
-    dispatch(setPropToCopy(product));
-    setLiked(!liked);
   };
-  // if (!product)
 
   return (
     <div
@@ -58,7 +56,7 @@ const ProductItem = ({ minWidth, product }) => {
             title="أضف إلى المفضلة"
             style={{ color: "#707070", backgroundColor: "var(--card-color)" }}
           >
-            {liked ? (
+            {isFavorite ? (
               <FontAwesomeIcon icon={heart} style={{ color: "#f00" }} />
             ) : (
               <FontAwesomeIcon icon={faHeart} />
