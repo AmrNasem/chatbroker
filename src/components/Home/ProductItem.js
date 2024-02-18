@@ -18,12 +18,23 @@ import {
 
 const ProductItem = ({ minWidth, product }) => {
   const navigate = useNavigate();
-  let { product } = props;
   const dispatch = useDispatch();
   const favoritesList = useSelector((state) => state.favorites.list);
   const isFavorite = favoritesList.find(
     (singleProduct) => singleProduct.productId === product.productId
   );
+
+  if (!product)
+    product = {
+      total_rate: 4.5,
+      image: require("../../assets/prod3.png"),
+      title: "إم دبليو",
+      desc: "أكثر السيارات رفاهية وفخامةوجودة حيث أنها تمتلك وجه أمامية",
+      city: "الدقهلية/المنصورة/أجا",
+      amount: 500,
+      duration: 1,
+      enum_durations: "يوم",
+    };
 
   const handleToggleFavorites = () => {
     if (isFavorite) {

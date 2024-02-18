@@ -42,13 +42,15 @@ const Login = ({ setAlert }) => {
         .then((res) => res.json())
         .then((data) => {
           const { message } = data;
-          console.log(message);
+          const reset = () => ({ value: "", isTouched: false });
           if (message) setAlert(() => ({ error: true, message }));
           else {
             setAlert(() => ({
               error: false,
               message: "تم تسجيل الدخول بنجاح!",
             }));
+            setEmail(reset);
+            setPassword(reset);
             setTimeout(() => {
               dispatch(authenticateUser(data));
               setParams((prev) => {

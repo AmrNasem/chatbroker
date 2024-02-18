@@ -51,10 +51,15 @@ const Register = ({ setAlert }) => {
       })
         .then((res) => res.json())
         .then(({ message }) => {
+          const reset = () => ({ value: "", isTouched: false });
           if (message)
             setAlert(() => ({ error: true, message: message?.email[0] }));
           else {
             setAlert(() => ({ error: false, message: "تم التسجيل بنجاح!" }));
+            setName(reset);
+            setPhone(reset);
+            setEmail(reset);
+            setPassword(reset);
             navigate("?auth=login");
           }
           setLoading(false);
