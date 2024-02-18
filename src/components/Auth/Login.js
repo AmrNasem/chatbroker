@@ -1,22 +1,28 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import classes from "./Auth.module.css";
 import AuthInput from "./AuthInput";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { authenticateUser } from "../../store/auth-slice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Spinner from "../../UI/Spinner";
+import { backend } from "../../App";
 
 const emailConstraint = (value) =>
   /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
 const passowrdConstraint = (value) =>
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value);
 
-const Login = () => {
+const Login = ({ setAlert }) => {
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.auth);
   const [email, setEmail] = useState({ value: "", isTouched: false });
   const [password, setPassword] = useState({ value: "", isTouched: false });
+  const [loading, setLoading] = useState(false);
+  const setParams = useSearchParams()[1];
+
+  useEffect(() => {
+    setAlert({ error: false, message: "" });
+  }, [setAlert]);
 
   const loginHandler = (e) => {
     e.preventDefault();
@@ -28,7 +34,35 @@ const Login = () => {
       formdata.append("email", email.value);
       formdata.append("password", password.value);
 
-      dispatch(authenticateUser("users/login", formdata));
+      setLoading(true);
+      fetch(`${backend}/users/login`, {
+        method: "POST",
+        body: formdata,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          const { message } = data;
+          console.log(message);
+          if (message) setAlert(() => ({ error: true, message }));
+          else {
+            setAlert(() => ({
+              error: false,
+              message: "تم تسجيل الدخول بنجاح!",
+            }));
+            setTimeout(() => {
+              dispatch(authenticateUser(data));
+              setParams((prev) => {
+                prev.delete("auth");
+                return prev;
+              });
+            }, 2000);
+          }
+          setLoading(false);
+        })
+        .catch(() => {
+          setAlert(() => ({ error: true, message: "خطأ في التسجيل!" }));
+          setLoading(false);
+        });
     } else {
       setEmail((prev) => {
         return { ...prev, isTouched: true };
@@ -55,7 +89,7 @@ const Login = () => {
       <AuthInput
         constraint={passowrdConstraint}
         icon={useMemo(() => faLock, [])}
-        message="لابد أن لا تكون كلمة السر أقل من 8 رموز وتتضمن حروف كبيرة وصغير وأرقام"
+        message="لابد أن تكون كلمة السر مكونة من 8 رموز فأكثر وتتضمن حروف كبيرة وصغير وأرقام"
         placeholder="كلمة السر"
         type="password"
         onChange={setPassword}

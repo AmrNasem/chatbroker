@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { backend } from "../App";
 
-const initialState = { loading: false, categories: null, error: null };
+const initialState = { loading: true, categories: null, error: null };
 
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",

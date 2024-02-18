@@ -55,7 +55,9 @@ const settings = {
 };
 
 const HomeCategory = () => {
-  const { categories, error } = useSelector((state) => state.categories);
+  const { categories, error, loading } = useSelector(
+    (state) => state.categories
+  );
   const dispatch = useDispatch();
 
   console.log(error);
@@ -68,6 +70,8 @@ const HomeCategory = () => {
       dispatch(fetchCategories());
     }
   }, [dispatch, categories]);
+
+  if (!(categories?.length || error || loading)) return;
 
   return (
     <Container className="my-5">
@@ -87,12 +91,12 @@ const HomeCategory = () => {
                     className={`rounded-circle mx-auto overflow-hidden d-flex align-items-center justify-content-center ${classes.image}`}
                   >
                     <img
-                      src={item.image}
+                      src={item.image || require("../../assets/Artboard.png")}
                       className="w-100 d-block"
-                      alt={item.title_ar}
+                      alt={item.title}
                     />
                   </div>
-                  <p className={classes.title}>{item.title_ar}</p>
+                  <p className={classes.title}>{item.title}</p>
                 </div>
               </Link>
             );

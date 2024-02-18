@@ -45,7 +45,7 @@ const Footer = () => {
                     to={`category/${cat.id}`}
                     className="text-decoration-none text-white"
                   >
-                    {cat.title_ar}
+                    {cat.title}
                   </Link>
                 ))
               ) : (
@@ -126,7 +126,7 @@ const Footer = () => {
             </div>
             <div className={`my-3 ${classes.contact}`}>
               <p className="fw-light mb-0">أو من خلال البريد الإلكتروني</p>
-              <span className="fw-semibold d-block">info@lepgo.com</span>
+              <span className="fw-semibold d-block">info@chat-broker.com</span>
             </div>
             <div className={`my-3 ${classes.contact}`}>
               <p className="fw-light mb-0">أو عبر الهاتف</p>

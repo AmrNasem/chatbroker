@@ -28,7 +28,7 @@ const Categories = (props) => {
             className="text-decoration-none d-block text-nowrap p-2 d-inline-block"
             to={`/category/${cat.id}`}
           >
-            {cat.title_ar}
+            {cat.title}
           </Link>
         ))
       ) : (

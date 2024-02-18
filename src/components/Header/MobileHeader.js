@@ -3,21 +3,12 @@ import {} from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useCallback, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Aside from "./Aside";
 import Overlay from "../../UI/Overlay";
-import Auth from "../Auth/Auth";
 
 const MobileHeader = () => {
   const [dispalyAside, setDisplayAside] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
-  const params = new URLSearchParams(location.search);
-
-  const closeAuthHandler = useCallback(
-    () => navigate(location.pathname),
-    [navigate, location]
-  );
 
   const closeAsideHandler = useCallback(() => setDisplayAside(false), []);
 
@@ -25,8 +16,12 @@ const MobileHeader = () => {
     <header
       className={`${classes["main-header"]} d-flex align-items-center gap-3 py-3 border-bottom bg-white`}
     >
-      <Link to="/" className="ms-3">
-        <img src={require("../../assets/logo.png")} alt="Lepgo" />
+      <Link
+        to="/"
+        className="ms-3 fw-semibold text-nowrap fs-4 text-decoration-none"
+      >
+        <span className="text-sec">Chat </span>
+        <span className="text-main">Broker</span>
       </Link>
       <form
         className={`d-flex flex-grow-1 border rounded-2 overflow-hidden ${classes.search}`}
@@ -49,11 +44,6 @@ const MobileHeader = () => {
       {dispalyAside && (
         <Overlay onClick={closeAsideHandler}>
           <Aside />
-        </Overlay>
-      )}
-      {params.get("auth") && (
-        <Overlay className="px-2" onClick={closeAuthHandler}>
-          <Auth onClick={closeAuthHandler} />
         </Overlay>
       )}
     </header>

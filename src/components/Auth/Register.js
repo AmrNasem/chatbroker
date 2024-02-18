@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import AuthInput from "./AuthInput";
 import {
   faEnvelope,
@@ -6,9 +6,9 @@ import {
   faPhone,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { useDispatch, useSelector } from "react-redux";
-import { authenticateUser } from "../../store/auth-slice";
 import Spinner from "../../UI/Spinner";
+import { backend } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 const nameConstraint = (value) => /^[a-zA-Z0-9_]{3,20}$/.test(value);
 const telConstraint = (value) => /^\d{6,}$/.test(value);
@@ -17,13 +17,17 @@ const emailConstraint = (value) =>
 const passowrdConstraint = (value) =>
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value);
 
-const Register = () => {
-  const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.auth);
+const Register = ({ setAlert }) => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState({ value: "", isTouched: false });
   const [phone, setPhone] = useState({ value: "", isTouched: false });
   const [email, setEmail] = useState({ value: "", isTouched: false });
   const [password, setPassword] = useState({ value: "", isTouched: false });
+
+  useEffect(() => {
+    setAlert({ error: false, message: "" });
+  }, [setAlert]);
 
   const registerHandler = (e) => {
     e.preventDefault();
@@ -36,29 +40,36 @@ const Register = () => {
     if (isFormValid) {
       const formdata = new FormData();
       formdata.append("name", name.value);
-      formdata.append("phone", phone.value);
+      formdata.append("phone_number", phone.value);
       formdata.append("email", email.value);
       formdata.append("password", password.value);
 
-      console.log(name.value);
-      console.log(phone.value);
-      console.log(email.value);
-      console.log(password.value);
-
-      dispatch(authenticateUser("users/register", formdata));
+      setLoading(true);
+      fetch(`${backend}/users/register`, {
+        method: "POST",
+        body: formdata,
+      })
+        .then((res) => res.json())
+        .then(({ message }) => {
+          if (message)
+            setAlert(() => ({ error: true, message: message?.email[0] }));
+          else {
+            setAlert(() => ({ error: false, message: "تم التسجيل بنجاح!" }));
+            navigate("?auth=login");
+          }
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err.message);
+          setAlert(() => ({ error: true, message: "خطأ في التسجيل!" }));
+          setLoading(false);
+        });
     } else {
-      setName((prev) => {
-        return { ...prev, isTouched: true };
-      });
-      setPhone((prev) => {
-        return { ...prev, isTouched: true };
-      });
-      setEmail((prev) => {
-        return { ...prev, isTouched: true };
-      });
-      setPassword((prev) => {
-        return { ...prev, isTouched: true };
-      });
+      const touchInput = (prev) => ({ ...prev, isTouched: true });
+      setName(touchInput);
+      setPhone(touchInput);
+      setEmail(touchInput);
+      setPassword(touchInput);
     }
   };
 
@@ -99,7 +110,7 @@ const Register = () => {
       <AuthInput
         constraint={passowrdConstraint}
         icon={useMemo(() => faLock, [])}
-        message="لابد أن تكون كلمة السر مكونة من 6 رموز أو أكثر"
+        message="لابد أن تكون كلمة السر مكونة من 8 رموز فأكثر وتتضمن حروف كبيرة وصغير وأرقام"
         placeholder="كلمة السر"
         type="password"
         onChange={setPassword}

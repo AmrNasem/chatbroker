@@ -23,7 +23,7 @@ const NewProduct = () => {
   const [discount, setDiscount] = useState("");
   const [gov, setGov] = useState("");
   const [discription, setDescription] = useState("");
-  const [constrains, setConstrains] = useState("");
+  const [constraints, setConstraints] = useState("");
   const [images, setImages] = useState([]);
 
   const handleSubmit = (e) => {
@@ -35,7 +35,7 @@ const NewProduct = () => {
       <div className="container d-flex gap-5 my-4 flex-wrap flex-lg-nowrap">
         <ProductPreview setImages={setImages} images={images} />
         <form className="flex-grow-1" onSubmit={handleSubmit}>
-          <div className="my-3">
+          <div className="my-4">
             <label htmlFor="category" className="mb-2">
               نوع المنتج
             </label>
@@ -52,7 +52,7 @@ const NewProduct = () => {
               ))}
             </select>
           </div>
-          <div className="my-3">
+          <div className="my-4">
             <label htmlFor="name" className="mb-2">
               اسم المنتج
             </label>
@@ -65,7 +65,7 @@ const NewProduct = () => {
               className={`d-block p-2 rounded-2 outline-none border transition-main w-100 ${classes.input}`}
             />
           </div>
-          <div className="my-3 d-flex gap-3 flex-column flex-sm-row align-items-end">
+          <div className="my-4 d-flex gap-3 flex-column flex-sm-row align-items-end">
             <div className="flex-grow-1">
               <label htmlFor="duration" className="mb-2">
                 مدة الحجز
@@ -92,7 +92,7 @@ const NewProduct = () => {
               ))}
             </select>
           </div>
-          <div className="my-3 d-flex gap-3 flex-column flex-sm-row align-items-end">
+          <div className="my-4 d-flex gap-3 flex-column flex-sm-row align-items-end">
             <div className="flex-grow-1">
               <label htmlFor="price" className="mb-2">
                 سعر الحجز{" "}
@@ -126,7 +126,7 @@ const NewProduct = () => {
               />
             </div>
           </div>
-          <div className="my-3">
+          <div className="my-4">
             <label htmlFor="gov" className="mb-2">
               المحافظة
             </label>
@@ -143,7 +143,7 @@ const NewProduct = () => {
               ))}
             </select>
           </div>
-          <div className="my-3">
+          <div className="my-4">
             <label htmlFor="desc" className="mb-2">
               وصف المنتج
             </label>
@@ -157,16 +157,16 @@ const NewProduct = () => {
               className={`d-block scrollbar-none p-2 rounded-2 outline-none border transition-main w-100 ${classes.input}`}
             ></textarea>
           </div>
-          <div className="my-3">
-            <label htmlFor="desc" className="mb-2">
+          <div className="my-4">
+            <label htmlFor="constraints" className="mb-2">
               شروط المنتج
             </label>
             <textarea
               cols="30"
               rows="10"
-              id="desc"
-              onChange={(e) => setConstrains(e.target.value)}
-              value={constrains}
+              id="constraints"
+              onChange={(e) => setConstraints(e.target.value)}
+              value={constraints}
               placeholder="اكتب هنا.."
               className={`d-block scrollbar-none p-2 rounded-2 outline-none border transition-main w-100 ${classes.input}`}
             ></textarea>

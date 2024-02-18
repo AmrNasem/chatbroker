@@ -4,8 +4,10 @@ import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
+import { useState } from "react";
 
 const Auth = (props) => {
+  const [alert, setAlert] = useState({ error: false, message: "" });
   const location = useLocation();
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
@@ -22,11 +24,23 @@ const Auth = (props) => {
       >
         <FontAwesomeIcon icon={faClose} />
       </button>
+      {alert.message && (
+        <p
+          className={`text-center ${
+            alert.error ? "text-danger" : "text-success"
+          }`}
+        >
+          {alert.message}
+        </p>
+      )}
       <img
         className={classes.img}
-        src={require("../../assets/logoIt.png")}
+        src={require("../../assets/logo.png")}
         alt="Lepgo"
       />
+      <h5 className="text-main text-nowrap mt-1 mb-3">
+        <span className="text-sec">Chat</span> Broker
+      </h5>
       {authStatus === "login" && (
         <h6 style={{ color: "#424750" }} className={`${classes.hello} mb-0`}>
           مرحبًا بك
@@ -48,7 +62,11 @@ const Auth = (props) => {
           {authStatus === "login" ? "اشترك دلوقتي" : "تسجيل دخول"}
         </button>
       </p>
-      {authStatus === "login" ? <Login /> : <Register />}
+      {authStatus === "login" ? (
+        <Login setAlert={setAlert} />
+      ) : (
+        <Register setAlert={setAlert} />
+      )}
     </div>
   );
 };

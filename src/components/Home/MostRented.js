@@ -6,12 +6,14 @@ import CardSkeleton from "../Skeleton/CardSkeleton";
 import { fetchProducts } from "../../store/products-slice";
 
 const MostRented = () => {
-  const { products, error } = useSelector((state) => state.products);
+  const { products, error, loading } = useSelector((state) => state.products);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!products) dispatch(fetchProducts());
   }, [dispatch, products]);
+
+  if (!(products?.length || loading || error)) return;
 
   return (
     <Container className="my-5">

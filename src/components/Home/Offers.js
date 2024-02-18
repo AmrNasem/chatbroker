@@ -7,12 +7,16 @@ import { Link } from "react-router-dom";
 import OfferSkeleton from "../Skeleton/OfferSkeleton";
 
 const Offers = () => {
-  const { offers, error } = useSelector((state) => state.offers);
+  const { offers, error, loading } = useSelector((state) => state.offers);
   const dispatch = useDispatch();
+
+  console.log(offers);
 
   useEffect(() => {
     if (!offers) dispatch(fetchOffers());
   }, [dispatch, offers]);
+
+  if (!(offers?.most_offers?.length || error || loading)) return;
 
   return (
     <Container className="my-5">

@@ -19,6 +19,8 @@ const Recommends = () => {
   );
   const dispatch = useDispatch();
 
+  if (!(products?.length || loading || error)) return;
+
   return (
     <Container className="my-5">
       <h4 className="mb-4">منتجات قد تعجبك</h4>

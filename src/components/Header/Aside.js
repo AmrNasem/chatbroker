@@ -9,10 +9,14 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Categories from "./Categories";
+import { useSelector } from "react-redux";
 
 const Aside = () => {
+  const authedUser = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
+
   return (
     <aside
       className={`py-3 bg-white ${classes.aside} h-100`}
@@ -20,20 +24,21 @@ const Aside = () => {
     >
       <div className={`h-100 overflow-auto ${classes.main}`}>
         <Link
-          to="?auth=login"
+          to={authedUser ? "/profile" : "?auth=login"}
           className={`px-3 my-2 py-1 text-decoration-none bg-transparent fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
         >
           <FontAwesomeIcon icon={faUser} className="fs-5" />
-          <span>حسابي</span>
+          <span>{authedUser ? authedUser.name : "حسابي"}</span>
         </Link>
         <Link
-          to="new-product"
+          to={authedUser ? "/new-product" : "?auth=login"}
           className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
         >
           <FontAwesomeIcon icon={faSquarePlus} className="fs-5" />
           <span>إضافة منتج للحجز</span>
         </Link>
         <button
+          onClick={() => (authedUser ? null : navigate("?auth=login"))}
           className={`px-3 my-2 py-1 bg-transparent fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
         >
           <div className="position-relative">
@@ -46,7 +51,7 @@ const Aside = () => {
         </button>
         <Link
           className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
-          to="/chat"
+          to={authedUser ? "/chat" : "?auth=login"}
         >
           <div className="position-relative">
             <span
@@ -60,7 +65,7 @@ const Aside = () => {
         </Link>
         <Link
           className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
-          to="/favorites"
+          to={authedUser ? "/favorites" : "?auth=login"}
         >
           <div className="position-relative">
             <span
@@ -73,7 +78,7 @@ const Aside = () => {
           <span>المفضلة</span>
         </Link>
         <Link
-          to="/cart"
+          to={authedUser ? "/cart" : "?auth=login"}
           className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
         >
           <div className="position-relative">

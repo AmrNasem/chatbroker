@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { backend } from "../App";
 
 const initialState = {
-  loading: false,
+  loading: true,
   products: null,
   error: null,
   lastPage: null,

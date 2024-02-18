@@ -8,35 +8,36 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { faSearch, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { memo, useCallback } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { memo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import Categories from "./Categories";
-import Auth from "../Auth/Auth";
-import Overlay from "../../UI/Overlay";
+import { useSelector } from "react-redux";
 
 const Header = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const params = new URLSearchParams(location.search);
-
-  const closeAuthHandler = useCallback(
-    () => navigate(location.pathname),
-    [navigate, location]
-  );
+  const [, setParams] = useSearchParams();
+  const authedUser = useSelector((state) => state.auth.user);
 
   return (
     <header className="bg-white z-1 position-relative">
       <div
         className={`d-flex align-items-center gap-3 py-3 border-bottom ${classes["main-header"]}`}
       >
-        <Link to="/" className="ms-3">
-          <img
-            src={require("../../assets/LEPGO.png")}
-            style={{ width: "90px" }}
-            alt="Lepgo"
-          />
+        <Link
+          to="/"
+          className="ms-3 fw-semibold text-nowrap fs-4 text-decoration-none"
+        >
+          <span className="text-sec">Chat </span>
+          <span className="text-main">Broker</span>
         </Link>
         <button
+          onClick={() =>
+            authedUser
+              ? null
+              : setParams((prev) => {
+                  prev.set("auth", "login");
+                  return prev;
+                })
+          }
           className={`px-2 py-1 bg-transparent d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
         >
           <div className="position-relative">
@@ -61,27 +62,22 @@ const Header = () => {
           />
         </form>
         <Link
-          to="new-product"
+          to={authedUser ? "/new-product" : "?auth=login"}
           className={`px-lg-2 py-1 text-decoration-none d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
         >
           <span>إضافة منتج للحجز</span>
           <FontAwesomeIcon icon={faSquarePlus} className="fs-5" />
         </Link>
         <Link
-          to="?auth=login"
+          to={authedUser ? "/profile" : "?auth=login"}
           className={`px-2 py-1 text-decoration-none bg-transparent d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
         >
-          <span>حسابي</span>
+          <span>{authedUser ? authedUser.name : "حسابي"}</span>
           <FontAwesomeIcon icon={faUser} className="fs-5" />
         </Link>
-        {params.get("auth") && (
-          <Overlay onClick={closeAuthHandler}>
-            <Auth onClick={closeAuthHandler} />
-          </Overlay>
-        )}
         <Link
           className={`px-xl-2 py-1 text-decoration-none d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
-          to="/chat"
+          to={authedUser ? "/chat" : "?auth=login"}
         >
           <span className="d-none d-xl-inline-block">الدردشة</span>
           <div className="position-relative">
@@ -95,7 +91,7 @@ const Header = () => {
         </Link>
         <Link
           className={`px-xl-2 py-1 text-decoration-none d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
-          to="/favorites"
+          to={authedUser ? "/favorites" : "?auth=login"}
         >
           <span className="d-none d-xl-inline-block">المفضلة</span>
           <div className="position-relative">
@@ -108,7 +104,7 @@ const Header = () => {
           </div>
         </Link>
         <Link
-          to="/cart"
+          to={authedUser ? "/cart" : "?auth=login"}
           className={`px-xl-2 py-1 text-decoration-none d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
         >
           <span className="d-none d-xl-inline-block">عربة التسوق</span>
