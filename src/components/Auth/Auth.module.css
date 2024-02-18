@@ -72,3 +72,6 @@
 .forgot-password:hover {
   color: var(--main-color);
 }
+.alert {
+  font-size: 0.92rem;
+}

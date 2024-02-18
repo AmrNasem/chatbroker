@@ -7,8 +7,8 @@ import { useCallback, useEffect, useState } from "react";
 import Header from "./components/Header/Header";
 import MobileHeader from "./components/Header/MobileHeader";
 import Footer from "./components/Footer";
-import { Offers } from "./pages/Offers";
-import { SingleCategory } from "./pages/singleCategory";
+import Offers from "./pages/Offers";
+import SingleCategory from "./pages/SingleCategory";
 import Favorites from "./pages/Favorites";
 import SingleProduct from "./pages/SingleProduct";
 import Auth from "./components/Auth/Auth";
@@ -76,7 +76,7 @@ function App() {
         )}
         <Route path="/offers" element={<Offers />} />
         <Route path="/product/:productId" element={<SingleProduct />} />
-        <Route path="/category" element={<SingleCategory />} />
+        <Route path="/category/:categoryId" element={<SingleCategory />} />
         <Route
           path="/*"
           element={
