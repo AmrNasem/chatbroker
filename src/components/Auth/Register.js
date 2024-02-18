@@ -8,7 +8,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../../UI/Spinner";
 import { backend } from "../../App";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { authenticateUser } from "../../store/auth-slice";
+import { useDispatch } from "react-redux";
 
 const nameConstraint = (value) => /^[a-zA-Z0-9_]{3,20}$/.test(value);
 const telConstraint = (value) => /^\d{6,}$/.test(value);
@@ -18,7 +20,8 @@ const passowrdConstraint = (value) =>
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value);
 
 const Register = ({ setAlert }) => {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [, setParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState({ value: "", isTouched: false });
   const [phone, setPhone] = useState({ value: "", isTouched: false });
@@ -50,18 +53,25 @@ const Register = ({ setAlert }) => {
         body: formdata,
       })
         .then((res) => res.json())
-        .then(({ message }) => {
+        .then((data) => {
           const reset = () => ({ value: "", isTouched: false });
-          if (message)
-            setAlert(() => ({ error: true, message: message?.email[0] }));
-          else {
+          console.log(data);
+          if (data.token) {
             setAlert(() => ({ error: false, message: "تم التسجيل بنجاح!" }));
             setName(reset);
             setPhone(reset);
             setEmail(reset);
             setPassword(reset);
-            navigate("?auth=login");
-          }
+            setTimeout(() => {
+              dispatch(authenticateUser(data));
+              setParams((prev) => {
+                prev.delete("auth");
+                return prev;
+              });
+            }, 2000);
+          } else if (data.message?.email && data.message?.email.length)
+            setAlert(() => ({ error: true, message: data.message.email[0] }));
+          else setAlert(() => ({ error: true, message: "خطأ في التسجيل" }));
           setLoading(false);
         })
         .catch((err) => {

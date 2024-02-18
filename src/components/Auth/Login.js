@@ -43,8 +43,7 @@ const Login = ({ setAlert }) => {
         .then((data) => {
           const { message } = data;
           const reset = () => ({ value: "", isTouched: false });
-          if (message) setAlert(() => ({ error: true, message }));
-          else {
+          if (data.token) {
             setAlert(() => ({
               error: false,
               message: "تم تسجيل الدخول بنجاح!",
@@ -58,7 +57,8 @@ const Login = ({ setAlert }) => {
                 return prev;
               });
             }, 2000);
-          }
+          } else if (message) setAlert(() => ({ error: true, message }));
+          else setAlert(() => ({ error: true, message: "خطأ في التسجيل!" }));
           setLoading(false);
         })
         .catch(() => {
