@@ -16,3 +16,16 @@
 .transition-main {
   transition: 0.15s;
 }
+.border-top-sec {
+  border-top-color: var(--secondary-color) !important;
+}
+.input-focus:focus {
+  border-color: var(--secondary-color) !important;
+}
+.cursor-pointer {
+  cursor: pointer !important;
+}
+.invalid {
+  border-color: red !important;
+  background-color: rgb(255, 230, 230);
+}

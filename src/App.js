@@ -12,6 +12,7 @@ import Auth from "./components/Auth/Auth";
 import NewProduct from "./pages/NewProduct";
 import { useSelector } from "react-redux";
 import Overlay from "./UI/Overlay";
+import Profile from "./pages/Profile";
 
 export const backend = "https://chat-broker-api.azurewebsites.net/api/v1";
 
@@ -47,14 +48,7 @@ function App() {
         <Route path="/" element={<Home />} />
         {authedUser && (
           <>
-            <Route
-              path="/profile"
-              element={
-                <main>
-                  <h2>Profile</h2>
-                </main>
-              }
-            />
+            <Route path="/profile/*" element={<Profile />} />
             <Route
               path="/chat"
               element={

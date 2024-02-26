@@ -47,6 +47,8 @@ const ProductPreview = ({ className, images, setImages }) => {
   }, [images]);
 
   const handleImageSelction = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
     const reader = new FileReader();
     reader.onload = (event) => {
       const newImage = {
@@ -56,7 +58,7 @@ const ProductPreview = ({ className, images, setImages }) => {
       setActive(newImage);
       setImages((prev) => [newImage, ...prev]);
     };
-    reader.readAsDataURL(e.target.files[0]);
+    reader.readAsDataURL(file);
   };
 
   const handleDragDropImage = (e) => {
