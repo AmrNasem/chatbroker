@@ -1,9 +1,17 @@
 import { useSelector } from "react-redux";
 import FavoriteCard from "../components/FavoriteCard"
 import favorites from "./Favorites.module.css"
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from 'react-redux';
+import { fetchFavorites } from '../store/favoritesSlice';
 
 const Favorites = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchFavorites());
+  }, [dispatch]);
+
   const favoriteProducts = useSelector((state) => state.favorites.list);
 
   const [visibleItems = 5, setVisibleItems] = useState();
@@ -17,8 +25,8 @@ const Favorites = () => {
     <>
       <p className={favorites.title}>المفضلة ({favoriteProducts.length} منتجات)</p>
       <div className={favorites.offersContainer} >
-        {visibleData.map((product, index) => (
-          <div className={favorites.card} key={index}>
+        {visibleData.map((product) => (
+          <div className={favorites.card} key={product.id}>
             <FavoriteCard product={product} />
           </div>
         )

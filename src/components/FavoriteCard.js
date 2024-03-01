@@ -5,12 +5,12 @@ import {
   faStar,
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Home/Badge";
-import { useDispatch } from 'react-redux';
-import { removeFromFavorites } from '../store/favoritesSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFavorites, removeFromFavorites } from '../store/favoritesSlice';
 
 
 const FavoriteCard = (props) => {
@@ -20,13 +20,19 @@ const FavoriteCard = (props) => {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchFavorites());
+  }, [dispatch]);
+
   const handleRemoveFavorites = () => {
     dispatch(removeFromFavorites(product));
   }
+  const favoritesList = useSelector((state) => state.favorites.list);
+  console.log(favoritesList);
 
   return (
     <div
-      onClick={() => navigate(`product/1`)}
+      onClick={() => navigate(`product/${product.id}`)}
       className={`${favoriteCard.product} d-flex flex-row rounded-3`}
     >
       <div className={`position-relative overflow-hidden  ${favoriteCard.head}`}>
