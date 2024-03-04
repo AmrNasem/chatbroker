@@ -76,6 +76,7 @@ const Register = ({ setAlert }) => {
   return (
     <form>
       <AuthInput
+        autoFocus
         constraint={nameConstraint}
         icon={useMemo(() => faUser, [])}
         message="الاسم غير صحيح"

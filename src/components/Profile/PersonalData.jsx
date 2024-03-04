@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import ProfileHeader from "./ProfileHeader";
 import { useSelector } from "react-redux";
+import { backend } from "../../App";
+import Spinner from "../../UI/Spinner";
 
 const fNameConstraint = (value) => /^[a-zA-Z0-9_]{3,20}$/.test(value);
 const phoneConstraint = (value) => /^\d{6,}$/.test(value);
@@ -9,20 +11,21 @@ const emailConstraint = (value) =>
 
 const PersonalData = () => {
   const [edit, setEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {
     name: userName,
     phone_number,
     email: storedEmail,
   } = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
   const [image, setImage] = useState(require("../../assets/person.jpeg"));
   const [firstName, setFirstName] = useState({
     value: userName.split(" ")[0],
     valid: true,
   });
-  const [lastName, setLastName] = useState({
-    value: userName.split(" ").slice(1).join(" "),
-    valid: true,
-  });
+  const [lastName, setLastName] = useState(
+    userName.split(" ").slice(1).join(" ")
+  );
   const [phone, setPhone] = useState({ value: phone_number, valid: true });
   const [email, setEmail] = useState({ value: storedEmail, valid: true });
 
@@ -45,8 +48,36 @@ const PersonalData = () => {
       phoneConstraint(phone.value)
     ) {
       // Send request
+      const updateData = async () => {
+        try {
+          setLoading(true);
+          const res = await fetch(`${backend}/users/update_details`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              name: firstName,
+              phone_number,
+              city_id: 1,
+              address: "",
+            }),
+          });
+          if (!res.ok) throw new Error();
+          const data = await res.json();
+          console.log(data);
+        } catch (err) {
+          console.log(err);
+          console.log(err.message);
+        }
+        setLoading(false);
+      };
+      updateData();
     }
   };
+
+  console.log("lastname ", lastName);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -124,7 +155,7 @@ const PersonalData = () => {
               </label>
               <input
                 disabled={!edit}
-                value={lastName.value}
+                value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 type="text"
                 id="last"
@@ -192,11 +223,22 @@ const PersonalData = () => {
           </div>
         </div>
       </div>
-      {edit && (
-        <button className="my-3 mx-auto d-block bg-sec text-white px-4 py-2 rounded-3 border-0">
-          حفظ التعديلات
-        </button>
-      )}
+      {edit &&
+        (loading ? (
+          <Spinner
+            side={45}
+            stroke={4}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
+        ) : (
+          <button
+            type="submit"
+            className="my-3 mx-auto d-block bg-sec text-white px-4 py-2 rounded-3 border-0"
+          >
+            حفظ التعديلات
+          </button>
+        ))}
     </form>
   );
 };

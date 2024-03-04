@@ -76,6 +76,7 @@ const Login = ({ setAlert }) => {
   return (
     <form>
       <AuthInput
+        autoFocus
         constraint={emailConstraint}
         icon={useMemo(() => faEnvelope, [])}
         message="البريد الإلكتروني غير صحيح"
