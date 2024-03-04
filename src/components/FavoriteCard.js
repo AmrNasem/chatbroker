@@ -10,7 +10,9 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Home/Badge";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFavorites, removeFromFavorites } from '../store/favoritesSlice';
+import { removeFromFavorites } from '../store/favoritesSlice';
+import { deleteFavorite, fetchFavorites } from '../store/favoritesSlice';
+
 
 
 const FavoriteCard = (props) => {
@@ -19,16 +21,21 @@ const FavoriteCard = (props) => {
   const [animate, setAnimate] = useState(false)
 
   const dispatch = useDispatch();
+  const authToken = useSelector((state) => state.auth.token);
 
-  useEffect(() => {
-    dispatch(fetchFavorites());
-  }, [dispatch]);
 
-  const handleRemoveFavorites = () => {
-    dispatch(removeFromFavorites(product));
-  }
+  // useEffect(() => {
+
+  // }, [dispatch, authToken]);
+
   const favoritesList = useSelector((state) => state.favorites.list);
-  console.log(favoritesList);
+  // console.log(favoritesList);
+
+  const handleRemoveFavorites = (e) => {
+    e.stopPropagation()
+    dispatch(removeFromFavorites(product));
+    dispatch(deleteFavorite({ authToken, favoriteId: product.id }));
+  }
 
   return (
     <div
@@ -77,10 +84,9 @@ const FavoriteCard = (props) => {
             <Badge className={favoriteCard.badge} swap />
             <Badge className={favoriteCard.badge} />
           </div>
-          <div onMouseOver={() => setAnimate(true)} onMouseLeave={() => setAnimate(false)} className="d-flex  align-items-center cursor-pointer gap-1" onClick={(e) => {
-            e.stopPropagation()
-            handleRemoveFavorites()
-          }}>
+          <div onMouseOver={() => setAnimate(true)} onMouseLeave={() => setAnimate(false)} className="d-flex  align-items-center cursor-pointer gap-1" onClick={
+            handleRemoveFavorites
+          }>
             {<p className={`${favoriteCard.title} ${animate ? `${favoriteCard.visible}` : ""}`}>إزاله من المفضلة</p>}
             <button
               className={`border-0 rounded-circle ${favoriteCard["add-to-fav"]}`}

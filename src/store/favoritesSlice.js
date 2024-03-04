@@ -2,19 +2,44 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { backend } from '../App';
 import axios from 'axios';
 
+// Async thunk to fetch favorites
 export const fetchFavorites = createAsyncThunk(
   "favorites/fetchFavorites",
-  async () => {
+  async (_, { getState }) => {
+    const authToken = getState().auth.token;
     try {
-      const response = await axios.get(`${backend}/favorites`);
-      return console.log(response.data)
-        ;
+      const response = await axios.get(`${backend}/favorites`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      return response.data.data;
     } catch (error) {
-      console.error("Error fetching data:", error.message);
+      console.error("Error fetching favorites:", error.message);
       throw error;
     }
   }
 );
+
+// Async thunk to delete favorites
+// Async thunk to delete a specific favorite item
+export const deleteFavorite = createAsyncThunk(
+  "favorites/deleteFavorite",
+  async ({ authToken, favoriteId }) => {
+    try {
+      await axios.delete(`${backend}/favorites/${favoriteId}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      return favoriteId; // Return the ID of the deleted favorite
+    } catch (error) {
+      console.error("Error deleting favorite:", error.message);
+      throw error;
+    }
+  }
+);
+
 
 const favoritesSlice = createSlice({
   name: 'favorites',
@@ -41,6 +66,17 @@ const favoritesSlice = createSlice({
         state.list = action.payload;
       })
       .addCase(fetchFavorites.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(deleteFavorite.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(deleteFavorite.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.list = state.list.filter((product) => product.id !== action.payload.id);
+      })
+      .addCase(deleteFavorite.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });

@@ -1,23 +1,27 @@
 import { useSelector } from "react-redux";
 import FavoriteCard from "../components/FavoriteCard"
 import favorites from "./Favorites.module.css"
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
-import { fetchFavorites } from '../store/favoritesSlice';
+import { deleteFavorite, fetchFavorites } from '../store/favoritesSlice';
+
 
 const Favorites = () => {
   const dispatch = useDispatch();
 
+  const authToken = useSelector((state) => state.auth.token);
+
   useEffect(() => {
-    dispatch(fetchFavorites());
-  }, [dispatch]);
+    dispatch(fetchFavorites(authToken));
+  }, [dispatch, authToken]);
 
   const favoriteProducts = useSelector((state) => state.favorites.list);
+  // console.log(favoriteProducts)
 
   const [visibleItems = 5, setVisibleItems] = useState();
 
   const handleShowMore = () => {
-    setVisibleItems(visibleItems + 5);
+    setVisibleItems((prev) => prev + 5);
   };
 
   const visibleData = favoriteProducts.slice(0, visibleItems);
@@ -39,4 +43,4 @@ const Favorites = () => {
   )
 }
 
-export default Favorites;
+export default memo(Favorites);
