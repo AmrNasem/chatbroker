@@ -1,33 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProfileHeader from "./ProfileHeader";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { backend } from "../../App";
 import Spinner from "../../UI/Spinner";
+import { updateUserData } from "../../store/auth-slice";
 
 const fNameConstraint = (value) => /^[a-zA-Z0-9_]{3,20}$/.test(value);
 const phoneConstraint = (value) => /^\d{6,}$/.test(value);
 const emailConstraint = (value) =>
   /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
 
-const PersonalData = () => {
-  const [edit, setEdit] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const {
-    name: userName,
-    phone_number,
-    email: storedEmail,
-  } = useSelector((state) => state.auth.user);
+const PersonalData = ({ loading, data, error }) => {
   const token = useSelector((state) => state.auth.token);
-  const [image, setImage] = useState(require("../../assets/person.jpeg"));
+  const [edit, setEdit] = useState(false);
+  const [updateLoading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [image, setImage] = useState(null);
   const [firstName, setFirstName] = useState({
-    value: userName.split(" ")[0],
+    value: "",
     valid: true,
   });
-  const [lastName, setLastName] = useState(
-    userName.split(" ").slice(1).join(" ")
-  );
-  const [phone, setPhone] = useState({ value: phone_number, valid: true });
-  const [email, setEmail] = useState({ value: storedEmail, valid: true });
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState({ value: "", valid: true });
+  const [email, setEmail] = useState({ value: "", valid: true });
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (data) {
+      setImage(require("../../assets/person.jpeg"));
+      setFirstName((prev) => ({ ...prev, value: data.name }));
+      setPhone((prev) => ({ ...prev, value: data.phone_number }));
+      setEmail((prev) => ({ ...prev, value: data.email }));
+    }
+  }, [data]);
+
+  const handleUploadImage = async (file) => {
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await fetch(`${backend}/users/update_img`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      if (!res.ok) throw new Error();
+      console.log("Uploaded image successfully");
+    } catch (err) {
+      console.log(err.message);
+    }
+    setUploadingImage(false);
+  };
 
   const handleChangePhoto = (e) => {
     const file = e.target.files[0];
@@ -35,6 +61,8 @@ const PersonalData = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         setImage(e.target.result);
+        console.log(e.target.result);
+        handleUploadImage(file);
       };
       reader.readAsDataURL(file);
     }
@@ -47,28 +75,27 @@ const PersonalData = () => {
       emailConstraint(email.value) &&
       phoneConstraint(phone.value)
     ) {
-      // Send request
       const updateData = async () => {
+        setLoading(true);
         try {
-          setLoading(true);
+          const newData = {
+            name: firstName.value,
+            phone_number: phone.value,
+            city_id: 1,
+          };
+
           const res = await fetch(`${backend}/users/update_details`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({
-              name: firstName,
-              phone_number,
-              city_id: 1,
-              address: "",
-            }),
+            body: JSON.stringify({ ...newData, address: "st" }),
           });
           if (!res.ok) throw new Error();
-          const data = await res.json();
-          console.log(data);
+          setEdit(false);
+          dispatch(updateUserData(newData));
         } catch (err) {
-          console.log(err);
           console.log(err.message);
         }
         setLoading(false);
@@ -82,19 +109,43 @@ const PersonalData = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="bg-light rounded-3 my-3 overflow-hidden">
-        <ProfileHeader edit={edit} setEdit={setEdit} title="البيانات الشخصية" />
-        <div style={{ maxWidth: "80%" }} className="mx-auto my-3">
-          <div
-            style={{ width: "90px", height: "90px" }}
-            className="position-relative"
-          >
-            <img
-              className="rounded-circle d-block w-100 h-100 object-fit-cover"
-              src={image}
-              alt=""
-            />
-            {edit && (
-              <>
+        <ProfileHeader
+          edit={edit || loading || error}
+          setEdit={setEdit}
+          title="البيانات الشخصية"
+        />
+        {error ? (
+          <p className="text-center">حدث خطأ ما</p>
+        ) : loading ? (
+          <Spinner
+            side={50}
+            stroke={4}
+            color="var(--secondary-color)"
+            className="mx-auto my-3"
+          />
+        ) : (
+          <div style={{ maxWidth: "80%" }} className="mx-auto my-3">
+            <div
+              style={{ width: "90px", height: "90px" }}
+              className="position-relative"
+            >
+              {uploadingImage && (
+                <div className="position-absolute top-50 start-50 translate-middle z-3">
+                  <Spinner
+                    side={25}
+                    stroke={3}
+                    color="var(--secondary-color)"
+                  />
+                </div>
+              )}
+              <img
+                className={`rounded-circle ${
+                  uploadingImage ? "opacity-50" : ""
+                } d-block w-100 h-100 object-fit-cover`}
+                src={image}
+                alt=""
+              />
+              {!uploadingImage && (
                 <label
                   style={{ fontSize: "0.65rem" }}
                   className="d-block px-2 py-1 cursor-pointer bottom-0 end-0 translate-middle position-absolute bg-sec text-white border-0 rounded-pill"
@@ -102,24 +153,76 @@ const PersonalData = () => {
                 >
                   تغيير الصورة
                 </label>
+              )}
+              <input
+                onChange={handleChangePhoto}
+                type="file"
+                id="change-photo"
+                hidden
+                accept="image/*"
+              />
+            </div>
+            <div className="d-flex align-items-center gap-3 my-3">
+              <div className="flex-grow-1">
+                <label
+                  htmlFor="first"
+                  className="mb-1 text-secondary"
+                  style={{ fontSize: "0.85rem" }}
+                >
+                  الاسم الأول
+                  {edit && (
+                    <span className="d-inline-block text-danger me-1 fw-semibold">
+                      *
+                    </span>
+                  )}
+                </label>
                 <input
-                  onChange={handleChangePhoto}
-                  type="file"
-                  id="change-photo"
-                  hidden
-                  accept="image/*"
+                  disabled={!edit}
+                  value={firstName.value}
+                  onChange={(e) =>
+                    setFirstName({
+                      value: e.target.value,
+                      valid: fNameConstraint(e.target.value),
+                    })
+                  }
+                  type="text"
+                  id="first"
+                  className={`border transition-main ${
+                    firstName.valid ? "input-focus" : "invalid"
+                  } py-1 px-2 d-block w-100 rounded-2 outline-none`}
                 />
-              </>
-            )}
-          </div>
-          <div className="d-flex align-items-center gap-3 my-3">
-            <div className="flex-grow-1">
+              </div>
+              <div className="flex-grow-1">
+                <label
+                  htmlFor="last"
+                  className="mb-1 text-secondary"
+                  style={{ fontSize: "0.85rem" }}
+                >
+                  الاسم الأخير
+                  <span
+                    style={{ color: "#aaa" }}
+                    className="d-inline-block me-2"
+                  >
+                    (اختياري)
+                  </span>
+                </label>
+                <input
+                  disabled={!edit}
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  type="text"
+                  id="last"
+                  className="border transition-main input-focus py-1 px-2 d-block w-100 rounded-2 outline-none"
+                />
+              </div>
+            </div>
+            <div className="my-3">
               <label
-                htmlFor="first"
+                htmlFor="phone"
                 className="mb-1 text-secondary"
                 style={{ fontSize: "0.85rem" }}
               >
-                الاسم الأول
+                رقم الهاتف
                 {edit && (
                   <span className="d-inline-block text-danger me-1 fw-semibold">
                     *
@@ -128,103 +231,54 @@ const PersonalData = () => {
               </label>
               <input
                 disabled={!edit}
-                value={firstName.value}
+                value={phone.value}
                 onChange={(e) =>
-                  setFirstName({
+                  setPhone({
                     value: e.target.value,
-                    valid: fNameConstraint(e.target.value),
+                    valid: phoneConstraint(e.target.value),
                   })
                 }
                 type="text"
-                id="first"
+                id="phone"
                 className={`border transition-main ${
-                  firstName.valid ? "input-focus" : "invalid"
+                  phone.valid ? "input-focus" : "invalid"
                 } py-1 px-2 d-block w-100 rounded-2 outline-none`}
               />
             </div>
-            <div className="flex-grow-1">
+            <div className="my-3">
               <label
-                htmlFor="last"
+                htmlFor="email"
                 className="mb-1 text-secondary"
                 style={{ fontSize: "0.85rem" }}
               >
-                الاسم الأخير
-                <span style={{ color: "#aaa" }} className="d-inline-block me-2">
-                  (اختياري)
-                </span>
+                البريد الإلكتروني
+                {edit && (
+                  <span className="d-inline-block text-danger me-1 fw-semibold">
+                    *
+                  </span>
+                )}
               </label>
               <input
                 disabled={!edit}
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={email.value}
+                onChange={(e) =>
+                  setEmail({
+                    value: e.target.value,
+                    valid: emailConstraint(e.target.value),
+                  })
+                }
                 type="text"
-                id="last"
-                className="border transition-main input-focus py-1 px-2 d-block w-100 rounded-2 outline-none"
+                id="email"
+                className={`border transition-main ${
+                  email.valid ? "input-focus" : "invalid"
+                } py-1 px-2 d-block w-100 rounded-2 outline-none`}
               />
             </div>
           </div>
-          <div className="my-3">
-            <label
-              htmlFor="phone"
-              className="mb-1 text-secondary"
-              style={{ fontSize: "0.85rem" }}
-            >
-              رقم الهاتف
-              {edit && (
-                <span className="d-inline-block text-danger me-1 fw-semibold">
-                  *
-                </span>
-              )}
-            </label>
-            <input
-              disabled={!edit}
-              value={phone.value}
-              onChange={(e) =>
-                setPhone({
-                  value: e.target.value,
-                  valid: phoneConstraint(e.target.value),
-                })
-              }
-              type="text"
-              id="phone"
-              className={`border transition-main ${
-                phone.valid ? "input-focus" : "invalid"
-              } py-1 px-2 d-block w-100 rounded-2 outline-none`}
-            />
-          </div>
-          <div className="my-3">
-            <label
-              htmlFor="email"
-              className="mb-1 text-secondary"
-              style={{ fontSize: "0.85rem" }}
-            >
-              البريد الإلكتروني
-              {edit && (
-                <span className="d-inline-block text-danger me-1 fw-semibold">
-                  *
-                </span>
-              )}
-            </label>
-            <input
-              disabled={!edit}
-              value={email.value}
-              onChange={(e) =>
-                setEmail({
-                  value: e.target.value,
-                  valid: emailConstraint(e.target.value),
-                })
-              }
-              type="text"
-              id="email"
-              className={`border transition-main ${
-                email.valid ? "input-focus" : "invalid"
-              } py-1 px-2 d-block w-100 rounded-2 outline-none`}
-            />
-          </div>
-        </div>
+        )}
       </div>
       {edit &&
-        (loading ? (
+        (updateLoading ? (
           <Spinner
             side={45}
             stroke={4}

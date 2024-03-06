@@ -49,13 +49,11 @@ const Login = ({ setAlert }) => {
               error: false,
               message: "تم تسجيل الدخول بنجاح!",
             }));
-            setTimeout(() => {
-              dispatch(authenticateUser(data));
-              setParams((prev) => {
-                prev.delete("auth");
-                return prev;
-              });
-            }, 2000);
+            dispatch(authenticateUser(data));
+            setParams((prev) => {
+              prev.delete("auth");
+              return prev;
+            });
           }
           setLoading(false);
         })

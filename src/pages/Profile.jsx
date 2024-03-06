@@ -3,6 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 import PersonalData from "../components/Profile/PersonalData";
 import MyProducts from "../components/Profile/MyProducts";
+import { useEffect, useState } from "react";
+import { backend } from "../App";
+import { useSelector } from "react-redux";
 
 const className = ({ isActive }) =>
   isActive
@@ -23,6 +26,36 @@ const links = [
 ];
 
 const Profile = () => {
+  const { token, user } = useSelector((state) => state.auth);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getProfile = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(
+          `${backend}/users/get_user_profile/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        console.log(data);
+        setProfile(data);
+      } catch (err) {
+        setError(err.message);
+      }
+      setLoading(false);
+    };
+
+    getProfile();
+  }, [user, token]);
   return (
     <main className="container my-3">
       <div className="d-flex align-items-center my-3">
@@ -35,8 +68,26 @@ const Profile = () => {
       </div>
       <Routes>
         <Route path="" element={<Navigate replace to="data" />} />
-        <Route path="data" element={<PersonalData />} />
-        <Route path="products" element={<MyProducts />} />
+        <Route
+          path="data"
+          element={
+            <PersonalData
+              loading={loading}
+              data={profile?.user}
+              error={error}
+            />
+          }
+        />
+        <Route
+          path="products"
+          element={
+            <MyProducts
+              loading={loading}
+              products={profile?.products}
+              error={error}
+            />
+          }
+        />
       </Routes>
     </main>
   );

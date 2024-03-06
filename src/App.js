@@ -10,9 +10,11 @@ import Footer from "./components/Footer";
 import SingleProduct from "./pages/SingleProduct";
 import Auth from "./components/Auth/Auth";
 import NewProduct from "./pages/NewProduct";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Overlay from "./UI/Overlay";
 import Profile from "./pages/Profile";
+import { getCookie } from "./utils/general";
+import { authenticateUser } from "./store/auth-slice";
 
 export const backend = "https://chat-broker-api.azurewebsites.net/api/v1";
 
@@ -20,6 +22,7 @@ function App() {
   const [screenSize, setScreenSize] = useState(window.innerWidth);
   const authedUser = useSelector((state) => state.auth.user);
   const [params, setParams] = useSearchParams();
+  const dispatch = useDispatch();
 
   const closeAuthHandler = useCallback(
     () =>
@@ -29,6 +32,14 @@ function App() {
       }),
     [setParams]
   );
+
+  useEffect(() => {
+    const user = getCookie("userData");
+    if (user) {
+      dispatch(authenticateUser(JSON.parse(user)));
+      console.log(user);
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     const changeSize = () => setScreenSize(window.innerWidth);
