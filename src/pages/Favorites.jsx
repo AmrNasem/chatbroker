@@ -3,7 +3,7 @@ import FavoriteCard from "../components/FavoriteCard"
 import favorites from "./Favorites.module.css"
 import { memo, useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
-import { deleteFavorite, fetchFavorites } from '../store/favoritesSlice';
+import { fetchFavorites } from '../store/favoritesSlice';
 
 
 const Favorites = () => {

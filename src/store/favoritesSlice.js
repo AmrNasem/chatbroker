@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { backend } from '../App';
 import axios from 'axios';
 
-// Async thunk to fetch favorites
 export const fetchFavorites = createAsyncThunk(
   "favorites/fetchFavorites",
   async (_, { getState }) => {
@@ -21,8 +20,6 @@ export const fetchFavorites = createAsyncThunk(
   }
 );
 
-// Async thunk to delete favorites
-// Async thunk to delete a specific favorite item
 export const deleteFavorite = createAsyncThunk(
   "favorites/deleteFavorite",
   async ({ authToken, favoriteId }) => {
@@ -32,7 +29,7 @@ export const deleteFavorite = createAsyncThunk(
           Authorization: `Bearer ${authToken}`,
         },
       });
-      return favoriteId; // Return the ID of the deleted favorite
+      return favoriteId;
     } catch (error) {
       console.error("Error deleting favorite:", error.message);
       throw error;

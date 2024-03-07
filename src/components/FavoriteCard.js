@@ -5,13 +5,13 @@ import {
   faStar,
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
-import { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Home/Badge";
 import { useDispatch, useSelector } from 'react-redux';
 import { removeFromFavorites } from '../store/favoritesSlice';
-import { deleteFavorite, fetchFavorites } from '../store/favoritesSlice';
+import { deleteFavorite } from '../store/favoritesSlice';
 
 
 
@@ -22,14 +22,6 @@ const FavoriteCard = (props) => {
 
   const dispatch = useDispatch();
   const authToken = useSelector((state) => state.auth.token);
-
-
-  // useEffect(() => {
-
-  // }, [dispatch, authToken]);
-
-  const favoritesList = useSelector((state) => state.favorites.list);
-  // console.log(favoritesList);
 
   const handleRemoveFavorites = (e) => {
     e.stopPropagation()

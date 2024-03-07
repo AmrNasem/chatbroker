@@ -1,5 +1,5 @@
 import classes from "./Header.module.css";
-import {} from "@fortawesome/free-regular-svg-icons";
+import { } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useCallback, useState } from "react";

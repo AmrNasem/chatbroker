@@ -11,17 +11,25 @@ import {
   faUser,
 } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Categories from "./Categories";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Notifications from "./Notifications";
 import Modal from "../../UI/Modal";
+import { fetchFavorites } from "../../store/favoritesSlice";
 
 const Aside = ({ onClick, closing }) => {
   const authedUser = useSelector((state) => state.auth.user);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const favoriteProducts = useSelector((state) => state.favorites.list);
+
+  useEffect(() => {
+    dispatch(fetchFavorites());
+  }, [dispatch]);
 
   return (
     <Modal
@@ -92,7 +100,7 @@ const Aside = ({ onClick, closing }) => {
               <span
                 className={`position-absolute top-0 end-0 rounded-circle text-white d-flex justify-content-center align-items-center ${classes.amount}`}
               >
-                0
+                {favoriteProducts.length}
               </span>
               <FontAwesomeIcon icon={faHeart} className="fs-5" />
             </div>
