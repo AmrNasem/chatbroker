@@ -1,0 +1,7 @@
+.person:hover {
+  background-color: #fcf8f3;
+}
+
+.person.active {
+  background-color: #fff2e2;
+}

@@ -15,6 +15,7 @@ import Overlay from "./UI/Overlay";
 import Profile from "./pages/Profile";
 import { getCookie } from "./utils/general";
 import { authenticateUser } from "./store/auth-slice";
+import Chat from "./pages/Chat";
 
 export const backend = "https://chat-broker-api.azurewebsites.net/api/v1";
 
@@ -57,14 +58,7 @@ function App() {
         {authedUser && (
           <>
             <Route path="/profile/*" element={<Profile />} />
-            <Route
-              path="/chat"
-              element={
-                <main>
-                  <h2>Chat</h2>
-                </main>
-              }
-            />
+            <Route path="/chat" element={<Chat />} />
             <Route
               path="/favorites"
               element={

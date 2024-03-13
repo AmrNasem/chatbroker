@@ -17,7 +17,7 @@
   color: var(--main-color);
 }
 .bg-sec {
-  background-color: var(--secondary-color);
+  background-color: var(--secondary-color) !important;
 }
 .bg-main {
   background-color: var(--main-color);
@@ -29,6 +29,9 @@
   border-top-color: var(--secondary-color) !important;
 }
 .input-focus:focus {
+  border-color: var(--secondary-color) !important;
+}
+.parent-input-focus:has(input:focus) {
   border-color: var(--secondary-color) !important;
 }
 .cursor-pointer {
