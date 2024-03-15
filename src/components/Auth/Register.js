@@ -29,7 +29,7 @@ const Register = ({ setAlert }) => {
     setAlert({ error: false, message: "" });
   }, [setAlert]);
 
-  const registerHandler = (e) => {
+  const registerHandler = async (e) => {
     e.preventDefault();
     const isFormValid =
       nameConstraint(name.value) &&
@@ -45,20 +45,20 @@ const Register = ({ setAlert }) => {
       formdata.append("password", password.value);
 
       setLoading(true);
-      fetch(`${backend}/users/register`, {
-        method: "POST",
-        body: formdata,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          navigate("?auth=login");
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err.message);
-          setAlert(() => ({ error: true, message: "خطأ في التسجيل!" }));
-          setLoading(false);
+      try {
+        const res = await fetch(`${backend}/users/register`, {
+          method: "POST",
+          body: formdata,
         });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        console.log(data);
+        navigate("?auth=login");
+      } catch (err) {
+        console.log(err);
+        setAlert({ error: true, message: err.message });
+      }
+      setLoading(false);
     } else {
       const touchInput = (prev) => ({ ...prev, isTouched: true });
       setName(touchInput);

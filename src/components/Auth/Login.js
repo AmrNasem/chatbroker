@@ -24,7 +24,7 @@ const Login = ({ setAlert }) => {
     setAlert({ error: false, message: "" });
   }, [setAlert]);
 
-  const loginHandler = (e) => {
+  const loginHandler = async (e) => {
     e.preventDefault();
     const isFormValid =
       emailConstraint(email.value) && passowrdConstraint(password.value);
@@ -35,39 +35,30 @@ const Login = ({ setAlert }) => {
       formdata.append("password", password.value);
 
       setLoading(true);
-      fetch(`${backend}/users/login`, {
-        method: "POST",
-        body: formdata,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          const { message } = data;
-          console.log(message);
-          if (message) setAlert(() => ({ error: true, message }));
-          else {
-            setAlert(() => ({
-              error: false,
-              message: "تم تسجيل الدخول بنجاح!",
-            }));
-            dispatch(authenticateUser(data));
-            setParams((prev) => {
-              prev.delete("auth");
-              return prev;
-            });
-          }
-          setLoading(false);
-        })
-        .catch(() => {
-          setAlert(() => ({ error: true, message: "خطأ في التسجيل!" }));
-          setLoading(false);
+      try {
+        const res = await fetch(`${backend}/users/login`, {
+          method: "POST",
+          body: formdata,
         });
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        console.log(data);
+        dispatch(authenticateUser(data));
+        setParams((prev) => {
+          prev.delete("auth");
+          return prev;
+        });
+      } catch (err) {
+        console.log(err);
+        setAlert({ error: true, message: err.message });
+      }
+      setLoading(false);
     } else {
-      setEmail((prev) => {
+      const touchInput = (prev) => {
         return { ...prev, isTouched: true };
-      });
-      setPassword((prev) => {
-        return { ...prev, isTouched: true };
-      });
+      };
+      setEmail(touchInput);
+      setPassword(touchInput);
     }
   };
 
