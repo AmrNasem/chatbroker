@@ -29,7 +29,6 @@ button.button {
 .bullet {
   width: 8px;
   height: 8px;
-  background-color: var(--main-color);
   border: 2px solid white;
   transform: translate(10%, 25%);
 }
@@ -48,5 +47,23 @@ button.button {
 @keyframes fade-in {
   0% {
     transform: translateX(100%);
+  }
+}
+.notifications {
+  top: calc(100% + 1.25rem);
+  min-width: 350px;
+  animation: apearing 0.2s;
+}
+.vanishing {
+  animation: vanishing 0.2s;
+}
+@keyframes apearing {
+  0% {
+    opacity: 0;
+  }
+}
+@keyframes vanishing {
+  100% {
+    opacity: 0;
   }
 }

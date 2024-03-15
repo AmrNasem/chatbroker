@@ -1,0 +1,23 @@
+.notification:hover {
+  background-color: #0037560a;
+}
+.notification {
+  margin: 1px 0;
+}
+.unread {
+  background-color: #08324b1a !important;
+}
+.avatar {
+  min-width: 45px;
+  min-height: 45px;
+  width: 45px;
+  height: 45px;
+}
+.text {
+  color: var(--address-color);
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  text-overflow: ellipsis;
+}

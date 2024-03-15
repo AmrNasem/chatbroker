@@ -1,10 +1,12 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ChatArea from "../components/Chat/ChatArea";
 import Person from "../components/Chat/Person";
 import classes from "./Chat.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { contacts } from "../utils/general";
+
+const chatAreaStyle = { flexBasis: "66%" };
 
 const Chat = () => {
   const [active, setActive] = useState(null);
@@ -14,6 +16,15 @@ const Chat = () => {
     () => setAsideDisplayed((prev) => !prev),
     []
   );
+
+  useEffect(() => {
+    const deactivate = (e) => {
+      if (e.key === "Escape") setActive(null);
+    };
+    window.addEventListener("keydown", deactivate);
+    return () => window.removeEventListener("keydown", deactivate);
+  }, []);
+
   return (
     <main className={`container d-flex mb-4 ${classes.page}`}>
       <aside
@@ -43,7 +54,7 @@ const Chat = () => {
       </aside>
       {active ? (
         <ChatArea
-          style={{ flexBasis: "66%" }}
+          style={chatAreaStyle}
           className="flex-grow-1"
           active={active}
           onToggleAside={handleToggleAside}

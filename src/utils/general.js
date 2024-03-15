@@ -271,4 +271,52 @@ export const contacts = [
       },
     ],
   },
+  {
+    id: 8,
+    image: require("../assets/person.jpeg"),
+    name: "ندى",
+    date: "9:21م",
+    messages: [
+      {
+        text: "كيف يمكنني التواصل معك",
+        me: false,
+      },
+      {
+        text: "أعجبني هذا المنتج",
+        me: false,
+      },
+      {
+        text: "يسرني سماع هذا",
+        me: true,
+      },
+      {
+        text: "عن طريق واتساب ولينكد إن",
+        me: true,
+      },
+    ],
+  },
+  {
+    id: 9,
+    image: require("../assets/person.jpeg"),
+    name: "منة بوريك",
+    date: "9:21م",
+    messages: [
+      {
+        text: "كيف يمكنني التواصل معك",
+        me: false,
+      },
+      {
+        text: "أعجبني هذا المنتج",
+        me: false,
+      },
+      {
+        text: "يسرني سماع هذا",
+        me: true,
+      },
+      {
+        text: "عن طريق واتساب ولينكد إن",
+        me: true,
+      },
+    ],
+  },
 ];

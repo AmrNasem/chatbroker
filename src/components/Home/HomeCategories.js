@@ -90,7 +90,7 @@ const HomeCategory = () => {
                   >
                     <img
                       src={item.image || require("../../assets/Artboard.png")}
-                      className="w-100 d-block"
+                      className="w-100 d-block object-fit-cover"
                       alt={item.title}
                     />
                   </div>

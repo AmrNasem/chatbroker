@@ -7,7 +7,7 @@ import {
 import { faSmile } from "@fortawesome/free-regular-svg-icons";
 import Message from "./Message";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { memo, useState } from "react";
 import classes from "./ChatArea.module.css";
 
 const ChatArea = ({ active, style, className, onToggleAside }) => {
@@ -94,4 +94,4 @@ const ChatArea = ({ active, style, className, onToggleAside }) => {
   );
 };
 
-export default ChatArea;
+export default memo(ChatArea);

@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 import ProductItem from "./ProductItem";
-import { memo, useEffect } from "react";
+import { memo, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CardSkeleton from "../Skeleton/CardSkeleton";
 import { fetchProducts } from "../../store/products-slice";
@@ -8,6 +8,8 @@ import { fetchProducts } from "../../store/products-slice";
 const MostRented = () => {
   const { products, error, loading } = useSelector((state) => state.products);
   const dispatch = useDispatch();
+
+  const mostRentedProducts = useMemo(() => products?.slice(3, 9), [products]);
 
   useEffect(() => {
     if (!products) dispatch(fetchProducts());
@@ -21,12 +23,10 @@ const MostRented = () => {
       <div className="d-flex gap-4 py-3 px-2 overflow-auto scrollbar-none">
         {error ? (
           <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
-        ) : products ? (
-          products
-            .slice(3, 9)
-            .map((product, index) => (
-              <ProductItem minWidth="230px" key={index} product={product} />
-            ))
+        ) : mostRentedProducts ? (
+          mostRentedProducts.map((product, index) => (
+            <ProductItem minWidth="230px" key={index} product={product} />
+          ))
         ) : (
           <div className="d-flex gap-4 my-4 overflow-auto scrollbar-none">
             {[...Array(3).keys()].map((key) => (

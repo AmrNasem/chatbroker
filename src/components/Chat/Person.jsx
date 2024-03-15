@@ -1,3 +1,4 @@
+import { memo } from "react";
 import classes from "./Person.module.css";
 
 const Person = ({ contact, active, setActive, onToggleAside }) => {
@@ -58,4 +59,4 @@ const Person = ({ contact, active, setActive, onToggleAside }) => {
   );
 };
 
-export default Person;
+export default memo(Person);

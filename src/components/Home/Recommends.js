@@ -19,7 +19,7 @@ const Recommends = () => {
   );
   const dispatch = useDispatch();
 
-  console.log(products)
+  console.log(products);
 
   if (!(products?.length || loading || error)) return;
 

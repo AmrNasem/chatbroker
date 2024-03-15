@@ -8,14 +8,42 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { faSearch, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Categories from "./Categories";
 import { useSelector } from "react-redux";
+import Notifications from "./Notifications";
 
 const Header = () => {
   const [, setParams] = useSearchParams();
   const authedUser = useSelector((state) => state.auth.user);
+  const [notificationsVisible, setNotificationsVisible] = useState(false);
+  const [notificationsVanishing, setNotificationsVanishing] = useState(false);
+
+  const handleNotificationsClosure = () => {
+    setNotificationsVanishing(true);
+    setTimeout(() => {
+      setNotificationsVisible(false);
+      setNotificationsVanishing(false);
+    }, 200);
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", handleNotificationsClosure);
+    return () =>
+      window.removeEventListener("click", handleNotificationsClosure);
+  }, []);
+
+  const handleToggleNotifications = () => {
+    if (authedUser)
+      if (notificationsVisible) handleNotificationsClosure();
+      else setNotificationsVisible(true);
+    else
+      setParams((prev) => {
+        prev.set("auth", "login");
+        return prev;
+      });
+  };
 
   return (
     <header className="bg-white z-1 position-relative">
@@ -29,26 +57,30 @@ const Header = () => {
           <span className="text-sec">Chat </span>
           <span className="text-main">Broker</span>
         </Link>
-        <button
-          onClick={() =>
-            authedUser
-              ? null
-              : setParams((prev) => {
-                  prev.set("auth", "login");
-                  return prev;
-                })
-          }
-          className={`px-2 py-1 bg-transparent d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
-        >
-          <div className="position-relative">
-            <span
-              className={`position-absolute top-0 end-0 rounded-circle ${classes.bullet}`}
-            ></span>
+        <div onClick={(e) => e.stopPropagation()} className="position-relative">
+          <button
+            onClick={handleToggleNotifications}
+            className={`px-2 py-1 bg-transparent d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
+          >
+            <div className="position-relative">
+              <span
+                className={`position-absolute top-0 end-0 rounded-circle ${
+                  notificationsVisible ? "bg-sec" : "bg-main"
+                } ${classes.bullet}`}
+              ></span>
 
-            <FontAwesomeIcon icon={faBell} className="fs-5" />
-          </div>
-          <span className="d-none d-lg-inline-block">الإشعارات</span>
-        </button>
+              <FontAwesomeIcon icon={faBell} className="fs-5" />
+            </div>
+            <span className="d-none d-lg-inline-block">الإشعارات</span>
+          </button>
+          {notificationsVisible && (
+            <Notifications
+              className={`${classes.notifications} ${
+                notificationsVanishing ? classes.vanishing : ""
+              } position-absolute end-0 shadow rounded-2`}
+            />
+          )}
+        </div>
         <form
           className={`d-flex flex-grow-1 border rounded-2 overflow-hidden ${classes.search}`}
         >

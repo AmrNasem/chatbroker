@@ -1,8 +1,8 @@
 .fade-out {
-  animation: fade-out 0.15s both;
+  animation: fade-out 0.25s both;
 }
 .fade-in {
-  animation: fade-in 0.15s both;
+  animation: fade-in 0.25s both 0.1s;
 }
 @keyframes fade-out {
   100% {

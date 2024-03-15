@@ -104,8 +104,6 @@ const PersonalData = ({ loading, data, error }) => {
     }
   };
 
-  console.log("lastname ", lastName);
-
   return (
     <form onSubmit={handleSubmit}>
       <div className="bg-light rounded-3 my-3 overflow-hidden">
