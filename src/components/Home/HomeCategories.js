@@ -60,8 +60,6 @@ const HomeCategory = () => {
   );
   const dispatch = useDispatch();
 
-  console.log(error);
-
   if (categories && categories.length < 10)
     settings.slidesToShow = categories.length;
 

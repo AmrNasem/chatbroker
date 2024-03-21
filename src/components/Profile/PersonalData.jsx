@@ -115,7 +115,7 @@ const PersonalData = ({ loading, data, error }) => {
           title="البيانات الشخصية"
         />
         {error ? (
-          <p className="text-center">حدث خطأ ما</p>
+          <p className="text-center text-danger">{error.message} البيانات!</p>
         ) : loading ? (
           <Spinner
             side={50}

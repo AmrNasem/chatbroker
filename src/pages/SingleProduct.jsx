@@ -1,65 +1,136 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import ProductDetails from "../components/Product/ProductDetails";
 import ProductPreview from "../components/Product/ProductPreview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
 import classes from "./SingleProduct.module.css";
+import { backend } from "../App";
+import { useParams } from "react-router";
+import Spinner from "../UI/Spinner";
+import { Link } from "react-router-dom";
 
 const SingleProduct = () => {
+  const [product, setProduct] = useState(null);
+  const { productId } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  console.log(product);
+
+  useEffect(() => {
+    const getSingleProduct = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`${backend}/products/${productId}`);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        setProduct(data.data);
+        console.log(data);
+      } catch (err) {
+        console.log(err.message);
+        setError(err.message);
+      }
+      setLoading(false);
+    };
+    getSingleProduct();
+  }, [productId]);
   return (
     <main className="container my-4 d-flex gap-4 flex-wrap flex-xl-nowrap">
       <div
         className={`d-flex gap-4 flex-wrap w-100 flex-lg-nowrap ${classes.details}`}
       >
-        <ProductPreview className="flex-grow-1" />
-        <ProductDetails className="flex-grow-1" />
+        {loading ? (
+          <Spinner
+            side={50}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
+        ) : error ? (
+          <p>No Images</p>
+        ) : (
+          <ProductPreview
+            images={product.images}
+            loading={loading}
+            error={error}
+            className="flex-grow-1"
+          />
+        )}
+        {loading ? (
+          <Spinner
+            side={50}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
+        ) : error ? (
+          <p>No Details</p>
+        ) : (
+          <ProductDetails
+            details={product}
+            loading={loading}
+            error={error}
+            className="flex-grow-1"
+          />
+        )}
       </div>
       <div className="flex-grow-1">
-        <div style={{ border: "1px solid #707070" }} className="rounded-3 p-2">
-          <h5 className="text-main text-center">للمزيد من البيانات</h5>
-          <p
-            className="text-sec text-center fw-semibold"
-            style={{ fontSize: "0.8rem" }}
-          >
-            تواصل مع البائع
-          </p>
+        {loading ? (
+          <Spinner
+            side={50}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
+        ) : (
           <div
-            style={{ height: "100px", border: "1px solid #707070" }}
-            className="position-relative rounded-3 bg-light my-5"
+            style={{ border: "1px solid #707070" }}
+            className="rounded-3 p-2"
           >
+            <h5 className="text-main text-center">للمزيد من البيانات</h5>
+            <p
+              className="text-sec text-center fw-semibold"
+              style={{ fontSize: "0.8rem" }}
+            >
+              تواصل مع البائع
+            </p>
             <div
-              style={{
-                transform: "translateY(-50%)",
-                border: "1px solid #707070",
-              }}
-              className="bg-light text-main position-absolute end-0 rounded-pill d-flex align-items-center gap-2"
+              style={{ height: "100px", border: "1px solid #707070" }}
+              className="position-relative rounded-3 bg-light my-5"
             >
               <div
-                style={{ maxWidth: "33px", maxHeight: "33px" }}
-                className="rounded-circle overflow-hidden"
+                style={{
+                  transform: "translateY(-50%)",
+                  border: "1px solid #707070",
+                }}
+                className="bg-light text-main position-absolute end-0 rounded-pill d-flex align-items-center gap-2"
               >
-                <img
-                  src={require("../assets/avatar.png")}
-                  className="w-100 h-100 object-fit-cover"
-                  alt=""
-                />
+                <div
+                  style={{ maxWidth: "33px", maxHeight: "33px" }}
+                  className="rounded-circle overflow-hidden"
+                >
+                  <img
+                    src={product?.user.image}
+                    className="w-100 h-100 object-fit-cover"
+                    alt=""
+                  />
+                </div>
+                <span
+                  className="d-block ms-3 fw-semibold text-truncate"
+                  style={{ fontSize: "0.8rem" }}
+                >
+                  {product?.user.name}
+                </span>
               </div>
-              <span
-                className="d-block ms-3 fw-semibold text-truncate"
-                style={{ fontSize: "0.8rem" }}
+              <Link
+                to="/chat"
+                style={{ fontSize: "0.9rem" }}
+                className="text-white text-decoration-none bg-sec border-0 text-nowrap rounded-2 px-2 py-1 position-absolute start-50 top-100 translate-middle"
               >
-                عمرو نسيم عبد القادر
-              </span>
+                <FontAwesomeIcon icon={faComments} className="ms-1" />
+                تواصل معي
+              </Link>
             </div>
-            <button
-              style={{ fontSize: "0.9rem" }}
-              className="text-white bg-sec border-0 text-nowrap rounded-2 px-2 py-1 position-absolute start-50 top-100 translate-middle"
-            >
-              <FontAwesomeIcon icon={faComments} className="ms-1" />
-              تواصل معي
-            </button>
           </div>
-        </div>
+        )}
       </div>
     </main>
   );

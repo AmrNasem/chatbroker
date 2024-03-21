@@ -35,10 +35,7 @@ function App() {
 
   useEffect(() => {
     const user = getCookie("userData");
-    if (user) {
-      dispatch(authenticateUser(JSON.parse(user)));
-      console.log(user);
-    }
+    if (user) dispatch(authenticateUser(JSON.parse(user)));
   }, [dispatch]);
 
   useEffect(() => {

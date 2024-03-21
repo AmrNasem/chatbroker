@@ -36,7 +36,7 @@ const Auth = (props) => {
       <img
         className={classes.img}
         src={require("../../assets/logo.png")}
-        alt="Lepgo"
+        alt="Chat Broker"
       />
       <h5 className="text-main text-nowrap mt-1 mb-3">
         <span className="text-sec">Chat</span> Broker

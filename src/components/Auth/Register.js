@@ -50,13 +50,8 @@ const Register = ({ setAlert }) => {
         body: formdata,
       })
         .then((res) => res.json())
-        .then(({ message }) => {
-          if (message)
-            setAlert(() => ({ error: true, message: message?.email[0] }));
-          else {
-            setAlert(() => ({ error: false, message: "تم التسجيل بنجاح!" }));
-            navigate("?auth=login");
-          }
+        .then((data) => {
+          navigate("?auth=login");
           setLoading(false);
         })
         .catch((err) => {

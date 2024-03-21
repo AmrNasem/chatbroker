@@ -11,7 +11,7 @@ import { backend } from "../../App";
 const emailConstraint = (value) =>
   /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
 const passowrdConstraint = (value) =>
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value);
+  true || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value);
 
 const Login = ({ setAlert }) => {
   const dispatch = useDispatch();

@@ -3,11 +3,14 @@ import MyProductCard from "./MyProductCard";
 import ProfileHeader from "./ProfileHeader";
 
 const MyProducts = ({ products, loading, error }) => {
+  console.log(error);
+  console.log(loading);
+  console.log(products);
   return (
     <div className="bg-light rounded-3 my-3 overflow-hidden">
       <ProfileHeader title="منتجاتي" />
       {error ? (
-        <p className="text-center">حدث خطأ ما</p>
+        <p className="text-center text-danger">{error.message} المنتجات!</p>
       ) : loading ? (
         <Spinner
           side={50}

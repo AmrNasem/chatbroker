@@ -8,7 +8,7 @@ export const fetchCategories = createAsyncThunk(
   async () => {
     try {
       const res = await fetch(`${backend}/categories`);
-      if (!res.ok) throw new Error("Network error");
+      if (!res.ok) throw new Error("خطأ في تحميل الفئات");
       const data = await res.json();
       return data;
     } catch (err) {

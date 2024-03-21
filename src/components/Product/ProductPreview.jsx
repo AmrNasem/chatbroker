@@ -1,79 +1,51 @@
 import React, { memo, useEffect, useState } from "react";
 import classes from "./ProductPreview.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClose,
+  faExclamationCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { validateImages } from "../../utils/general";
 
-const imgs = [
-  {
-    id: 1,
-    src: require("../../assets/villa.png"),
-  },
-  {
-    id: 2,
-    src: require("../../assets/villa2.png"),
-  },
-  {
-    id: 3,
-    src: require("../../assets/villa.png"),
-  },
-  {
-    id: 4,
-    src: require("../../assets/villa3.png"),
-  },
-  {
-    id: 5,
-    src: require("../../assets/villa2.png"),
-  },
-  {
-    id: 6,
-    src: require("../../assets/villa2.png"),
-  },
-  {
-    id: 7,
-    src: require("../../assets/villa.png"),
-  },
-  {
-    id: 8,
-    src: require("../../assets/villa3.png"),
-  },
-];
-const ProductPreview = ({ className, images, setImages }) => {
-  images = images || imgs;
-  const [active, setActive] = useState(images[0]);
+const ProductPreview = ({ className, images, setImages, invalid }) => {
+  const [active, setActive] = useState(null);
   const [dragging, setDragging] = useState(false);
 
   useEffect(() => {
     setActive((prev) => images.find((img) => prev?.id === img.id) || images[0]);
   }, [images]);
 
+  const viewImage = (files) => {
+    files.forEach((file) => {
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const newImage = {
+            id: Math.random().toString(),
+            image: e.target.result,
+            file,
+          };
+          setImages((prev) => ({
+            ...prev,
+            value: [...prev.value, newImage],
+            invalid: validateImages([...prev.value, newImage]),
+          }));
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  };
+
   const handleImageSelction = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const newImage = {
-        id: Math.random().toString(),
-        src: event.target.result,
-      };
-      setActive(newImage);
-      setImages((prev) => [newImage, ...prev]);
-    };
-    reader.readAsDataURL(file);
+    const files = e.target.files;
+    viewImage([...files]);
   };
 
   const handleDragDropImage = (e) => {
     e.preventDefault();
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const newImage = {
-        id: Math.random().toString(),
-        src: event.target.result,
-      };
-      setActive(newImage);
-      setImages((prev) => [newImage, ...prev]);
-    };
-    reader.readAsDataURL(e.dataTransfer.files[0]);
+    const files = e.dataTransfer.files;
     setDragging(false);
+    viewImage([...files]);
   };
 
   const handleDragEnter = (e) => {
@@ -88,9 +60,20 @@ const ProductPreview = ({ className, images, setImages }) => {
   return (
     <div className={`${classes.navigator} w-100 ${className}`}>
       <div
-        className="p-2 rounded-2 position-sticky"
+        className={`p-2 rounded-2 position-sticky ${
+          invalid ? "border invalid" : ""
+        }`}
         style={{ backgroundColor: "var(--card-color)", top: "1rem" }}
       >
+        {invalid && (
+          <p
+            style={{ fontSize: "0.9rem" }}
+            className="d-flex gap-1 align-items-center justify-content-center fw-semibold text-danger"
+          >
+            <FontAwesomeIcon icon={faExclamationCircle} />
+            <span className="d-block">{invalid}</span>
+          </p>
+        )}
         {setImages ? (
           <label
             htmlFor="add-photo"
@@ -107,7 +90,7 @@ const ProductPreview = ({ className, images, setImages }) => {
               <>
                 <img
                   className="w-100 h-100 object-fit-cover d-block"
-                  src={active.src}
+                  src={active.image}
                   alt=""
                 />
                 <h4
@@ -115,7 +98,7 @@ const ProductPreview = ({ className, images, setImages }) => {
                     backgroundColor: "#f0f0f0",
                     opacity: dragging ? 0.8 : 0,
                   }}
-                  className="d-block transition-main position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                  className="user-select-none d-block transition-main position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
                 >
                   <img
                     style={{ width: "2.5rem" }}
@@ -146,10 +129,11 @@ const ProductPreview = ({ className, images, setImages }) => {
             )}
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg, image/jpg, image/png, image/bmp"
               onChange={handleImageSelction}
               id="add-photo"
               hidden
+              multiple
             />
           </label>
         ) : (
@@ -159,7 +143,7 @@ const ProductPreview = ({ className, images, setImages }) => {
           >
             <img
               className="w-100 h-100 object-fit-cover d-block"
-              src={active.src}
+              src={active?.image}
               alt=""
             />
           </div>
@@ -185,9 +169,16 @@ const ProductPreview = ({ className, images, setImages }) => {
                   <span
                     onClick={(e) => {
                       e.stopPropagation();
-                      setImages((prev) =>
-                        prev.filter((item) => item.id !== img.id)
-                      );
+                      setImages((prev) => {
+                        const newImages = prev.value.filter(
+                          (item) => item.id !== img.id
+                        );
+                        return {
+                          ...prev,
+                          value: newImages,
+                          invalid: validateImages(newImages),
+                        };
+                      });
                     }}
                     style={{
                       width: "18px",
@@ -201,7 +192,7 @@ const ProductPreview = ({ className, images, setImages }) => {
                 )}
                 <img
                   className="w-100 h-100 object-fit-cover d-block rounded-1"
-                  src={img.src}
+                  src={img.image}
                   alt=""
                 />
               </button>

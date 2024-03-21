@@ -14,6 +14,7 @@ const ProductItem = ({ minWidth, product }) => {
   const navigate = useNavigate();
   if (!product)
     product = {
+      id: "1",
       total_rate: 4.5,
       image: require("../../assets/prod3.png"),
       title: "إم دبليو",
@@ -27,7 +28,7 @@ const ProductItem = ({ minWidth, product }) => {
   return (
     <div
       style={{ minWidth }}
-      onClick={() => navigate(`/product/1`)}
+      onClick={() => navigate(`/product/${product.id}`)}
       className={`${classes.product} d-flex flex-column rounded-3`}
     >
       <div className={`position-relative overflow-hidden ${classes.head}`}>

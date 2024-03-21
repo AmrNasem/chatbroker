@@ -3,6 +3,9 @@
     max-width: 45%;
   }
 }
+.navigator {
+  min-width: 45%;
+}
 .image {
   width: 100px;
   height: 100px;

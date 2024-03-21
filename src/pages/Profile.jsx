@@ -31,6 +31,8 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  console.log(profile);
+
   useEffect(() => {
     const getProfile = async () => {
       setLoading(true);
@@ -44,12 +46,12 @@ const Profile = () => {
             },
           }
         );
-        if (!res.ok) throw new Error();
+        if (!res.ok) throw new Error("خطأ في تحميل ");
         const data = await res.json();
         console.log(data);
         setProfile(data);
       } catch (err) {
-        setError(err.message);
+        setError(err);
       }
       setLoading(false);
     };
