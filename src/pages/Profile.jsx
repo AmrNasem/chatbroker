@@ -87,6 +87,7 @@ const Profile = () => {
               loading={loading}
               products={profile?.products}
               error={error}
+              setProfile={setProfile}
             />
           }
         />

@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 .text-sec {
-  color: var(--secondary-color);
+  color: var(--secondary-color) !important;
 }
 .text-main {
   color: var(--main-color);
@@ -21,6 +21,9 @@
 }
 .bg-main {
   background-color: var(--main-color);
+}
+.border-sec {
+  border-color: var(--secondary-color) !important;
 }
 .transition-main {
   transition: 0.15s;

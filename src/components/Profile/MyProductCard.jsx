@@ -7,11 +7,18 @@ import {
   faTag,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { memo } from "react";
-import { useNavigate } from "react-router-dom";
+import { memo, useCallback, useState } from "react";
+import { Link } from "react-router-dom";
+import Confirm from "../../UI/Confirm";
+import { backend } from "../../App";
+import { useSelector } from "react-redux";
 
-const ProductItem = ({ minWidth, product }) => {
-  const navigate = useNavigate();
+const ProductItem = ({ minWidth, product, setProfile }) => {
+  const [confirm, setConfirm] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const token = useSelector((state) => state.auth.token);
+
   if (!product)
     product = {
       id: "1",
@@ -25,64 +32,115 @@ const ProductItem = ({ minWidth, product }) => {
       enum_durations: "يوم",
     };
 
+  const handleClosure = useCallback(() => {
+    setClosing(true);
+    setTimeout(() => {
+      setConfirm(false);
+      setClosing(false);
+    }, 200);
+  }, []);
+
+  const handleDeleteProduct = useCallback(async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch(`${backend}/products/${product.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error("خطأ في حذف المنتج");
+      const data = await res.json();
+      console.log(data);
+      setProfile((prev) => ({
+        ...prev,
+        products: prev.products.filter((p) => p.id !== product.id),
+      }));
+      handleClosure();
+    } catch (err) {
+      console.log(err.message);
+    }
+    setDeleting(false);
+  }, [handleClosure, product, setProfile, token]);
+
   return (
-    <div
-      style={{ minWidth }}
-      onClick={() => navigate(`/product/${product.id}`)}
-      className={`${classes.product} d-flex rounded-3 bg-white my-3`}
-    >
-      <div
-        style={{ backgroundColor: "var(--pink-color)" }}
-        className={`position-relative overflow-hidden rounded-end-3 ${styles.head}`}
+    <>
+      <Link
+        style={{ minWidth }}
+        to={`/product/${product.id}`}
+        className={`${classes.product} text-decoration-none d-flex flex-sm-row flex-column rounded-3 bg-white my-3`}
       >
-        <img
-          className={`w-100 h-100 object-fit-cover`}
-          src={product.image}
-          alt={product.title}
-        />
-      </div>
-      <div className={`${classes.body} flex-grow-1 d-flex flex-column p-2`}>
-        <h5>{product.title}</h5>
-        <p className="fw-semibold overflow-hidden text-ellipsis mt-2 mb-1">
-          {product.desc}
-        </p>
-        <div className={classes.location}>
-          <FontAwesomeIcon className="ms-1" icon={faLocationDot} />
-          {product.city}{" "}
+        <div
+          style={{ backgroundColor: "var(--pink-color)" }}
+          className={`w-100 position-relative overflow-hidden rounded-top-3 ${styles.head}`}
+        >
+          <img
+            className={`w-100 h-100 object-fit-cover`}
+            src={product.image}
+            alt={product.title}
+          />
         </div>
-        <div className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}>
-          <FontAwesomeIcon icon={faTag} />
-          <span className="fw-semibold">{product.amount} جنيه</span>
-          <span className={classes.duration}>
-            لمدة {product.duration} {product.enum_durations}
-          </span>
-        </div>
-        <div className="d-flex gap-1 align-items-center my-2">
-          <button
-            style={{ color: "var(--address-color)" }}
-            className="border bg-transparent border-2 rounded-2 px-1"
+        <div className={`${classes.body} flex-grow-1 d-flex flex-column p-2`}>
+          <h5>{product.title}</h5>
+          <p className="fw-semibold overflow-hidden text-ellipsis mt-2 mb-1">
+            {product.desc}
+          </p>
+          <div className={classes.location}>
+            <FontAwesomeIcon className="ms-1" icon={faLocationDot} />
+            {product.city}{" "}
+          </div>
+          <div
+            className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
           >
-            <FontAwesomeIcon
-              icon={faPen}
-              style={{ fontSize: "0.8rem" }}
-              className="text-success ms-1"
-            />
-            <span>تعديل</span>
-          </button>
-          <button
-            style={{ color: "var(--address-color)" }}
-            className="border bg-transparent border-2 rounded-2 px-1"
-          >
-            <FontAwesomeIcon
-              icon={faTrash}
-              style={{ fontSize: "0.8rem" }}
-              className="text-danger ms-1"
-            />
-            <span>حذف</span>
-          </button>
+            <FontAwesomeIcon icon={faTag} />
+            <span className="fw-semibold">{product.amount} جنيه</span>
+            <span className={classes.duration}>
+              لمدة {product.duration} {product.enum_durations}
+            </span>
+          </div>
+          <div className="d-flex gap-1 align-items-center my-2">
+            <button
+              style={{ color: "var(--address-color)" }}
+              className="border bg-transparent border-2 rounded-2 px-1"
+            >
+              <FontAwesomeIcon
+                icon={faPen}
+                style={{ fontSize: "0.8rem" }}
+                className="text-success ms-1"
+              />
+              <span>تعديل</span>
+            </button>
+            <button
+              style={{ color: "var(--address-color)" }}
+              className="border bg-transparent border-2 rounded-2 px-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setConfirm(true);
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faTrash}
+                style={{ fontSize: "0.8rem" }}
+                className="text-danger ms-1"
+              />
+              <span>حذف</span>
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
+      </Link>
+      {confirm && (
+        <Confirm
+          actionHandler={handleDeleteProduct}
+          closureHandler={handleClosure}
+          closing={closing}
+          loading={deleting}
+        >
+          هل تريد حقًا حذف هذا المنتج{" "}
+          <span className="fw-semibold">({product.title})</span>؟
+        </Confirm>
+      )}
+    </>
   );
 };
 
