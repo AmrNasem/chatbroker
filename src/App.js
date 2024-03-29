@@ -11,7 +11,6 @@ import SingleProduct from "./pages/SingleProduct";
 import Auth from "./components/Auth/Auth";
 import NewProduct from "./pages/NewProduct";
 import { useDispatch, useSelector } from "react-redux";
-import Overlay from "./UI/Overlay";
 import Profile from "./pages/Profile";
 import { getCookie } from "./utils/general";
 import { authenticateUser } from "./store/auth-slice";
@@ -24,15 +23,18 @@ function App() {
   const authedUser = useSelector((state) => state.auth.user);
   const [params, setParams] = useSearchParams();
   const dispatch = useDispatch();
+  const [authClosing, setAuthClosing] = useState(false);
 
-  const closeAuthHandler = useCallback(
-    () =>
+  const closeAuthHandler = useCallback(() => {
+    setAuthClosing(true);
+    setTimeout(() => {
       setParams((prev) => {
         prev.delete("auth");
         return prev;
-      }),
-    [setParams]
-  );
+      });
+      setAuthClosing(false);
+    }, 200);
+  }, [setParams]);
 
   useEffect(() => {
     const user = getCookie("userData");
@@ -48,9 +50,7 @@ function App() {
   return (
     <div className="App d-flex flex-column">
       {!authedUser && params.get("auth") && (
-        <Overlay className="px-2" onClick={closeAuthHandler}>
-          <Auth onClick={closeAuthHandler} />
-        </Overlay>
+        <Auth closing={authClosing} onClick={closeAuthHandler} />
       )}
       {screenSize < 768 ? <MobileHeader /> : <Header />}
       <Routes>

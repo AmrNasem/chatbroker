@@ -16,16 +16,20 @@ import { Link, useNavigate } from "react-router-dom";
 import Categories from "./Categories";
 import { useSelector } from "react-redux";
 import Notifications from "./Notifications";
+import Modal from "../../UI/Modal";
 
-const Aside = () => {
+const Aside = ({ onClick, closing }) => {
   const authedUser = useSelector((state) => state.auth.user);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const navigate = useNavigate();
 
   return (
-    <aside
-      className={`py-3 bg-white overflow-hidden ${classes.aside} h-100`}
-      onClick={(e) => e.stopPropagation()}
+    <Modal
+      onClick={onClick}
+      closing={closing}
+      className={`${classes.aside} ${
+        closing ? classes["slide-out"] : ""
+      } py-3 bg-white position-fixed top-0 end-0 overflow-hidden h-100`}
     >
       <div
         className={`transition-main position-relative h-100 ${
@@ -128,7 +132,7 @@ const Aside = () => {
           {notificationsVisible && <Notifications className="h-100" mobile />}
         </div>
       </div>
-    </aside>
+    </Modal>
   );
 };
 

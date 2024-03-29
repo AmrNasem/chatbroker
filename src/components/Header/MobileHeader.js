@@ -5,12 +5,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import Aside from "./Aside";
-import Overlay from "../../UI/Overlay";
 
 const MobileHeader = () => {
   const [dispalyAside, setDisplayAside] = useState(false);
+  const [closingAside, setClosingAside] = useState(false);
 
-  const closeAsideHandler = useCallback(() => setDisplayAside(false), []);
+  const closeAsideHandler = useCallback(() => {
+    setClosingAside(true);
+    setTimeout(() => {
+      setDisplayAside(false);
+      setClosingAside(false);
+    }, 200);
+  }, []);
 
   return (
     <header
@@ -42,9 +48,7 @@ const MobileHeader = () => {
         <FontAwesomeIcon icon={faBars} className="fs-5" />
       </button>
       {dispalyAside && (
-        <Overlay onClick={closeAsideHandler}>
-          <Aside />
-        </Overlay>
+        <Aside closing={closingAside} onClick={closeAsideHandler} />
       )}
     </header>
   );

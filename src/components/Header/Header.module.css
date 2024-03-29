@@ -42,10 +42,18 @@ button.button {
 .aside {
   width: 300px;
   box-shadow: -1px 0 10px rgba(0, 0, 0, 0.351);
-  animation: fade-in 0.3s;
+  animation: slide-in 0.2s;
 }
-@keyframes fade-in {
+.slide-out {
+  animation: slide-out 0.2s both !important;
+}
+@keyframes slide-in {
   0% {
+    transform: translateX(100%);
+  }
+}
+@keyframes slide-out {
+  100% {
     transform: translateX(100%);
   }
 }

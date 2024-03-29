@@ -32,7 +32,7 @@ const AuthInput = ({
           value={value}
           type={type || "text"}
           placeholder={placeholder}
-          className="p-2 flex-grow-1 border-0 outline-none"
+          className="w-100 p-2 flex-grow-1 border-0 outline-none"
           style={{ direction: "rtl" }}
         />
         <FontAwesomeIcon icon={icon} />

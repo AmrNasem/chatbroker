@@ -1,10 +1,27 @@
 .auth {
-  max-width: 400px;
-  transform: translate(50%, -50%);
+  max-width: 100%;
+  width: 400px;
+  box-shadow: -1px 0 10px rgba(0, 0, 0, 0.351);
+  transform: translate(-50%, -50%);
+  animation: opening 0.2s;
+}
+.closing {
+  animation: closing 0.2s both !important;
+}
+@keyframes opening {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 30px));
+  }
+}
+@keyframes closing {
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 30px));
+  }
 }
 .close {
-  right: 15px;
-  top: 15px;
+  inset: 15px 15px auto auto;
   width: 30px;
   height: 30px;
   color: var(--address-color);

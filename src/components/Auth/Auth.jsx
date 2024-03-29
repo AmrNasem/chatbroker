@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
 import { useState } from "react";
+import Modal from "../../UI/Modal";
 
 const Auth = (props) => {
   const [alert, setAlert] = useState({ error: false, message: "" });
@@ -14,9 +15,12 @@ const Auth = (props) => {
   const authStatus = params.get("auth");
 
   return (
-    <div
-      onClick={(e) => e.stopPropagation()}
-      className={`${classes.auth} bg-white position-relative top-50 end-50 d-flex flex-column align-items-center p-4 rounded-3`}
+    <Modal
+      onClick={props.onClick}
+      closing={props.closing}
+      className={`${classes.auth} ${
+        props.closing ? classes.closing : ""
+      } bg-white position-fixed top-50 start-50  d-flex flex-column align-items-center p-4 rounded-3`}
     >
       <button
         onClick={props.onClick}
@@ -67,7 +71,7 @@ const Auth = (props) => {
       ) : (
         <Register setAlert={setAlert} />
       )}
-    </div>
+    </Modal>
   );
 };
 
