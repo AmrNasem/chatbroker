@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useState } from "react";
 import classes from "./Auth.module.css";
 import AuthInput from "./AuthInput";
 import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
@@ -8,31 +8,44 @@ import { useDispatch } from "react-redux";
 import Spinner from "../../UI/Spinner";
 import { backend } from "../../App";
 
-const emailConstraint = (value) =>
-  /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
-const passowrdConstraint = (value) =>
-  true || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value);
+const inputs = [
+  {
+    type: "email",
+    id: "email",
+    icon: faEnvelope,
+    message: "البريد الإلكتروني غير صحيح",
+    placeholder: "البريد الإلكتروني",
+    validate: (value) =>
+      /^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)?@[a-zA-Z_]\w*\.[a-zA-Z]{2,}$/.test(value),
+  },
+  {
+    type: "password",
+    id: "password",
+    icon: faLock,
+    message: "كلمة السر غير صحيحة",
+    placeholder: "كلمة السر",
+    validate: (value) =>
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value),
+  },
+];
 
-const Login = ({ setAlert }) => {
+const Login = () => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState({ value: "", isTouched: false });
-  const [password, setPassword] = useState({ value: "", isTouched: false });
+  const [formData, setFormData] = useState({});
+  const [inputsTouched, setInputsTouched] = useState({});
   const [loading, setLoading] = useState(false);
   const setParams = useSearchParams()[1];
 
-  useEffect(() => {
-    setAlert({ error: false, message: "" });
-  }, [setAlert]);
-
   const loginHandler = async (e) => {
     e.preventDefault();
-    const isFormValid =
-      emailConstraint(email.value) && passowrdConstraint(password.value);
+
+    const isFormValid = inputs.every((input) =>
+      input.validate(formData[input.id])
+    );
 
     if (isFormValid) {
       const formdata = new FormData();
-      formdata.append("email", email.value);
-      formdata.append("password", password.value);
+      inputs.forEach((input) => formdata.append(input.id, formData[input.id]));
 
       setLoading(true);
       try {
@@ -50,43 +63,36 @@ const Login = ({ setAlert }) => {
         });
       } catch (err) {
         console.log(err);
-        setAlert({ error: true, message: err.message });
       }
       setLoading(false);
     } else {
-      const touchInput = (prev) => {
-        return { ...prev, isTouched: true };
-      };
-      setEmail(touchInput);
-      setPassword(touchInput);
+      const allTouched = {};
+      inputs.forEach((input) => {
+        allTouched[input.id] = true;
+      });
+      setInputsTouched(allTouched);
     }
   };
 
   return (
     <form>
-      <AuthInput
-        autoFocus
-        constraint={emailConstraint}
-        icon={useMemo(() => faEnvelope, [])}
-        message="البريد الإلكتروني غير صحيح"
-        placeholder="البريد الإلكتروني"
-        type="email"
-        onChange={setEmail}
-        onBlur={setEmail}
-        value={email.value}
-        isTouched={email.isTouched}
-      />
-      <AuthInput
-        constraint={passowrdConstraint}
-        icon={useMemo(() => faLock, [])}
-        message="لابد أن تكون كلمة السر مكونة من 8 رموز فأكثر وتتضمن حروف كبيرة وصغير وأرقام"
-        placeholder="كلمة السر"
-        type="password"
-        onChange={setPassword}
-        onBlur={setPassword}
-        value={password.value}
-        isTouched={password.isTouched}
-      />
+      {inputs.map((input) => (
+        <AuthInput
+          key={input.id}
+          id={input.id}
+          type={input.type}
+          autoFocus={input.id === "email"}
+          icon={input.icon}
+          message={input.message}
+          placeholder={input.placeholder}
+          onChange={setFormData}
+          onBlur={setInputsTouched}
+          value={formData[input.id]}
+          invalid={
+            !input.validate(formData[input.id]) && inputsTouched[input.id]
+          }
+        />
+      ))}
       <Link
         className={`${classes["forgot-password"]} mt-2 text-decoration-none d-inline-block`}
       >

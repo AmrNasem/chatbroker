@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useState } from "react";
 import AuthInput from "./AuthInput";
 import {
   faEnvelope,
@@ -10,39 +10,58 @@ import Spinner from "../../UI/Spinner";
 import { backend } from "../../App";
 import { useNavigate } from "react-router-dom";
 
-const nameConstraint = (value) => /^[a-zA-Z0-9_]{3,20}$/.test(value);
-const telConstraint = (value) => /^\d{6,}$/.test(value);
-const emailConstraint = (value) =>
-  /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
-const passowrdConstraint = (value) =>
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value);
+const inputs = [
+  {
+    id: "name",
+    icon: faUser,
+    message: "الاسم غير صحيح!",
+    placeholder: "الاسم",
+    validate: (value = "") => /^[a-zA-Z_]\w{2,20}$/.test(value),
+  },
+  {
+    type: "tel",
+    id: "phone_number",
+    icon: faPhone,
+    message: "رقم الهاتف غير صحيح!",
+    placeholder: "رقم الهاتف",
+    validate: (value = "") => /^\d{6,}$/.test(value),
+  },
+  {
+    type: "email",
+    id: "email",
+    icon: faEnvelope,
+    message: "البريد الإلكتروني غير صحيح",
+    placeholder: "البريد الإلكتروني",
+    validate: (value = "") =>
+      /^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)?@[a-zA-Z_]\w*\.[a-zA-Z]{2,}$/.test(value),
+  },
+  {
+    type: "password",
+    id: "password",
+    icon: faLock,
+    message: "كلمة السر غير صحيحة",
+    placeholder: "كلمة السر",
+    validate: (value = "") =>
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value),
+  },
+];
 
-const Register = ({ setAlert }) => {
+const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState({ value: "", isTouched: false });
-  const [phone, setPhone] = useState({ value: "", isTouched: false });
-  const [email, setEmail] = useState({ value: "", isTouched: false });
-  const [password, setPassword] = useState({ value: "", isTouched: false });
-
-  useEffect(() => {
-    setAlert({ error: false, message: "" });
-  }, [setAlert]);
+  const [formData, setFormData] = useState({});
+  const [inputsTouched, setInputsTouched] = useState({});
 
   const registerHandler = async (e) => {
     e.preventDefault();
-    const isFormValid =
-      nameConstraint(name.value) &&
-      telConstraint(phone.value) &&
-      emailConstraint(email.value) &&
-      passowrdConstraint(password.value);
+
+    const isFormValid = inputs.every((input) =>
+      input.validate(formData[input.id])
+    );
 
     if (isFormValid) {
       const formdata = new FormData();
-      formdata.append("name", name.value);
-      formdata.append("phone_number", phone.value);
-      formdata.append("email", email.value);
-      formdata.append("password", password.value);
+      inputs.forEach((input) => formdata.append(input.id, formData[input.id]));
 
       setLoading(true);
       try {
@@ -56,64 +75,37 @@ const Register = ({ setAlert }) => {
         navigate("?auth=login");
       } catch (err) {
         console.log(err);
-        setAlert({ error: true, message: err.message });
       }
       setLoading(false);
     } else {
-      const touchInput = (prev) => ({ ...prev, isTouched: true });
-      setName(touchInput);
-      setPhone(touchInput);
-      setEmail(touchInput);
-      setPassword(touchInput);
+      const allTouched = {};
+      inputs.forEach((input) => (allTouched[input.id] = true));
+      setInputsTouched(allTouched);
     }
   };
 
+  console.log(formData.name, inputs[0].validate(formData.name));
+  console.log(inputsTouched.name);
+
   return (
     <form>
-      <AuthInput
-        autoFocus
-        constraint={nameConstraint}
-        icon={useMemo(() => faUser, [])}
-        message="الاسم غير صحيح"
-        placeholder="الاسم"
-        onChange={setName}
-        onBlur={setName}
-        value={name.value}
-        isTouched={name.isTouched}
-      />
-      <AuthInput
-        constraint={telConstraint}
-        icon={useMemo(() => faPhone, [])}
-        message="رقم الهاتف غير صحيح"
-        placeholder="رقم الهاتف"
-        type="tel"
-        onChange={setPhone}
-        onBlur={setPhone}
-        value={phone.value}
-        isTouched={phone.isTouched}
-      />
-      <AuthInput
-        constraint={emailConstraint}
-        icon={useMemo(() => faEnvelope, [])}
-        message="البريد الإلكتروني غير صحيح"
-        placeholder="البريد الإلكتروني"
-        type="email"
-        onChange={setEmail}
-        onBlur={setEmail}
-        value={email.value}
-        isTouched={email.isTouched}
-      />
-      <AuthInput
-        constraint={passowrdConstraint}
-        icon={useMemo(() => faLock, [])}
-        message="لابد أن تكون كلمة السر مكونة من 8 رموز فأكثر وتتضمن حروف كبيرة وصغير وأرقام"
-        placeholder="كلمة السر"
-        type="password"
-        onChange={setPassword}
-        onBlur={setPassword}
-        value={password.value}
-        isTouched={password.isTouched}
-      />
+      {inputs.map((input) => (
+        <AuthInput
+          key={input.id}
+          id={input.id}
+          type={input.type}
+          autoFocus={input.id === "name"}
+          icon={input.icon}
+          message={input.message}
+          placeholder={input.placeholder}
+          onChange={setFormData}
+          onBlur={setInputsTouched}
+          value={formData[input.id]}
+          invalid={
+            !input.validate(formData[input.id]) && inputsTouched[input.id]
+          }
+        />
+      ))}
       {loading ? (
         <Spinner
           side={30}

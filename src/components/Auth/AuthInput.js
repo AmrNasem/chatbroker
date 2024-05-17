@@ -3,19 +3,17 @@ import classes from "./AuthInput.module.css";
 import { memo } from "react";
 
 const AuthInput = ({
-  constraint,
-  type,
+  type = "text",
   placeholder,
   icon,
   message,
   autoFocus,
   onChange,
   onBlur,
-  value,
-  isTouched,
+  value = "",
+  id,
+  invalid,
 }) => {
-  const invalid = isTouched && !constraint(value);
-
   return (
     <div>
       <div
@@ -25,12 +23,13 @@ const AuthInput = ({
       >
         <input
           autoFocus={autoFocus}
-          onBlur={() => onBlur((prev) => ({ ...prev, isTouched: true }))}
+          id={id}
           onChange={(e) =>
-            onChange((prev) => ({ ...prev, value: e.target.value }))
+            onChange((prev) => ({ ...prev, [e.target.id]: e.target.value }))
           }
+          onBlur={(e) => onBlur((prev) => ({ ...prev, [e.target.id]: true }))}
           value={value}
-          type={type || "text"}
+          type={type}
           placeholder={placeholder}
           className="w-100 p-2 flex-grow-1 border-0 outline-none"
           style={{ direction: "rtl" }}
