@@ -1,21 +1,38 @@
 import { memo, useState } from "react";
-import classes from "./Auth.module.css";
 import AuthInput from "./AuthInput";
-import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
-import { Link, useSearchParams } from "react-router-dom";
-import { authenticateUser } from "../../store/auth-slice";
-import { useDispatch } from "react-redux";
+import {
+  faEnvelope,
+  faLock,
+  faPhone,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../../UI/Spinner";
 import { backend } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 const inputs = [
+  {
+    id: "name",
+    icon: faUser,
+    message: "الاسم غير صحيح!",
+    placeholder: "الاسم",
+    validate: (value = "") => /^[a-zA-Z_]\w{2,20}$/.test(value),
+  },
+  {
+    type: "tel",
+    id: "phone_number",
+    icon: faPhone,
+    message: "رقم الهاتف غير صحيح!",
+    placeholder: "رقم الهاتف",
+    validate: (value = "") => /^\d{6,}$/.test(value),
+  },
   {
     type: "email",
     id: "email",
     icon: faEnvelope,
     message: "البريد الإلكتروني غير صحيح",
     placeholder: "البريد الإلكتروني",
-    validate: (value) =>
+    validate: (value = "") =>
       /^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)?@[a-zA-Z_]\w*\.[a-zA-Z]{2,}$/.test(value),
   },
   {
@@ -24,19 +41,19 @@ const inputs = [
     icon: faLock,
     message: "كلمة السر غير صحيحة",
     placeholder: "كلمة السر",
-    validate: (value) =>
+    validate: (value = "") =>
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value),
   },
 ];
 
-const Login = () => {
-  const dispatch = useDispatch();
+const Register = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({});
   const [inputsTouched, setInputsTouched] = useState({});
-  const [loading, setLoading] = useState(false);
-  const setParams = useSearchParams()[1];
 
-  const loginHandler = async (e) => {
+  const registerHandler = async (e) => {
     e.preventDefault();
 
     const isFormValid = inputs.every((input) =>
@@ -48,28 +65,23 @@ const Login = () => {
       inputs.forEach((input) => formdata.append(input.id, formData[input.id]));
 
       setLoading(true);
+      setError("");
       try {
-        const res = await fetch(`${backend}/users/login`, {
+        const res = await fetch(`${backend}/users/register`, {
           method: "POST",
           body: formdata,
         });
-        if (!res.ok) throw new Error();
+        if (!res.ok) throw new Error("خطأ في إنشاء حساب، حاول في وقت آخر");
         const data = await res.json();
         console.log(data);
-        dispatch(authenticateUser(data));
-        setParams((prev) => {
-          prev.delete("auth");
-          return prev;
-        });
+        navigate("?auth=login");
       } catch (err) {
-        console.log(err);
+        setError(err.message);
       }
       setLoading(false);
     } else {
       const allTouched = {};
-      inputs.forEach((input) => {
-        allTouched[input.id] = true;
-      });
+      inputs.forEach((input) => (allTouched[input.id] = true));
       setInputsTouched(allTouched);
     }
   };
@@ -81,7 +93,7 @@ const Login = () => {
           key={input.id}
           id={input.id}
           type={input.type}
-          autoFocus={input.id === "email"}
+          autoFocus={input.id === "name"}
           icon={input.icon}
           message={input.message}
           placeholder={input.placeholder}
@@ -93,11 +105,12 @@ const Login = () => {
           }
         />
       ))}
-      <Link
-        className={`${classes["forgot-password"]} mt-2 text-decoration-none d-inline-block`}
+      <p
+        style={{ fontSize: "0.85rem" }}
+        className="fw-semibold mt-2 text-center text-danger"
       >
-        هل نسيت كلمة السر؟
-      </Link>
+        {error}
+      </p>
       {loading ? (
         <Spinner
           side={30}
@@ -109,13 +122,13 @@ const Login = () => {
         <button
           className="d-block w-100 p-2 mt-4 rounded-2 border-0 text-white"
           style={{ backgroundColor: "var(--secondary-color)" }}
-          onClick={loginHandler}
+          onClick={registerHandler}
         >
-          تسجيل الدخول
+          إنشاء حساب
         </button>
       )}
     </form>
   );
 };
 
-export default memo(Login);
+export default memo(Register);

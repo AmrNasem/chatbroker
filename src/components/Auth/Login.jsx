@@ -1,38 +1,21 @@
 import { memo, useState } from "react";
+import classes from "./Auth.module.css";
 import AuthInput from "./AuthInput";
-import {
-  faEnvelope,
-  faLock,
-  faPhone,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
+import { Link, useSearchParams } from "react-router-dom";
+import { authenticateUser } from "../../store/auth-slice";
+import { useDispatch } from "react-redux";
 import Spinner from "../../UI/Spinner";
 import { backend } from "../../App";
-import { useNavigate } from "react-router-dom";
 
 const inputs = [
-  {
-    id: "name",
-    icon: faUser,
-    message: "الاسم غير صحيح!",
-    placeholder: "الاسم",
-    validate: (value = "") => /^[a-zA-Z_]\w{2,20}$/.test(value),
-  },
-  {
-    type: "tel",
-    id: "phone_number",
-    icon: faPhone,
-    message: "رقم الهاتف غير صحيح!",
-    placeholder: "رقم الهاتف",
-    validate: (value = "") => /^\d{6,}$/.test(value),
-  },
   {
     type: "email",
     id: "email",
     icon: faEnvelope,
     message: "البريد الإلكتروني غير صحيح",
     placeholder: "البريد الإلكتروني",
-    validate: (value = "") =>
+    validate: (value) =>
       /^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)?@[a-zA-Z_]\w*\.[a-zA-Z]{2,}$/.test(value),
   },
   {
@@ -41,18 +24,20 @@ const inputs = [
     icon: faLock,
     message: "كلمة السر غير صحيحة",
     placeholder: "كلمة السر",
-    validate: (value = "") =>
+    validate: (value) =>
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value),
   },
 ];
 
-const Register = () => {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+const Login = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
   const [inputsTouched, setInputsTouched] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const setParams = useSearchParams()[1];
 
-  const registerHandler = async (e) => {
+  const loginHandler = async (e) => {
     e.preventDefault();
 
     const isFormValid = inputs.every((input) =>
@@ -64,28 +49,32 @@ const Register = () => {
       inputs.forEach((input) => formdata.append(input.id, formData[input.id]));
 
       setLoading(true);
+      setError("");
       try {
-        const res = await fetch(`${backend}/users/register`, {
+        const res = await fetch(`${backend}/users/login`, {
           method: "POST",
           body: formdata,
         });
-        if (!res.ok) throw new Error();
+        if (!res.ok) throw new Error("خطأ في تسجيل الدخول");
         const data = await res.json();
         console.log(data);
-        navigate("?auth=login");
+        dispatch(authenticateUser(data));
+        setParams((prev) => {
+          prev.delete("auth");
+          return prev;
+        });
       } catch (err) {
-        console.log(err);
+        setError(err.message);
       }
       setLoading(false);
     } else {
       const allTouched = {};
-      inputs.forEach((input) => (allTouched[input.id] = true));
+      inputs.forEach((input) => {
+        allTouched[input.id] = true;
+      });
       setInputsTouched(allTouched);
     }
   };
-
-  console.log(formData.name, inputs[0].validate(formData.name));
-  console.log(inputsTouched.name);
 
   return (
     <form>
@@ -94,7 +83,7 @@ const Register = () => {
           key={input.id}
           id={input.id}
           type={input.type}
-          autoFocus={input.id === "name"}
+          autoFocus={input.id === "email"}
           icon={input.icon}
           message={input.message}
           placeholder={input.placeholder}
@@ -106,6 +95,17 @@ const Register = () => {
           }
         />
       ))}
+      <Link
+        className={`${classes["forgot-password"]} mt-2 text-decoration-none d-inline-block`}
+      >
+        هل نسيت كلمة السر؟
+      </Link>
+      <p
+        style={{ fontSize: "0.85rem" }}
+        className="fw-semibold mt-2 text-center text-danger"
+      >
+        {error}
+      </p>
       {loading ? (
         <Spinner
           side={30}
@@ -117,13 +117,13 @@ const Register = () => {
         <button
           className="d-block w-100 p-2 mt-4 rounded-2 border-0 text-white"
           style={{ backgroundColor: "var(--secondary-color)" }}
-          onClick={registerHandler}
+          onClick={loginHandler}
         >
-          إنشاء حساب
+          تسجيل الدخول
         </button>
       )}
     </form>
   );
 };
 
-export default memo(Register);
+export default memo(Login);

@@ -1,7 +1,4 @@
-import {
-  faArrowRight,
-  faShoppingCart,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import classes from "./Header.module.css";
 import {
   faBell,
@@ -98,7 +95,7 @@ const Aside = ({ onClick, closing }) => {
             </div>
             <span>المفضلة</span>
           </Link>
-          <Link
+          {/* <Link
             to={authedUser ? "/cart" : "?auth=login"}
             className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
           >
@@ -111,7 +108,7 @@ const Aside = ({ onClick, closing }) => {
               <FontAwesomeIcon icon={faShoppingCart} className="fs-5" />
             </div>
             <span>عربة التسوق</span>
-          </Link>
+          </Link> */}
           <div>
             <h4
               style={{ color: "var(--secondary-color)" }}

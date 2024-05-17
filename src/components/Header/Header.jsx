@@ -6,7 +6,7 @@ import {
   faSquarePlus,
   faUser,
 } from "@fortawesome/free-regular-svg-icons";
-import { faSearch, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -135,7 +135,7 @@ const Header = () => {
             <FontAwesomeIcon icon={faHeart} className="fs-5" />
           </div>
         </Link>
-        <Link
+        {/* <Link
           to={authedUser ? "/cart" : "?auth=login"}
           className={`px-xl-2 py-1 text-decoration-none d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
         >
@@ -148,7 +148,7 @@ const Header = () => {
             </span>
             <FontAwesomeIcon icon={faShoppingCart} className="fs-5" />
           </div>
-        </Link>
+        </Link> */}
       </div>
       <Categories className="d-flex align-items-center overflow-auto gap-3" />
     </header>
