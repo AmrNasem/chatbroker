@@ -18,12 +18,13 @@ import Profile from "./pages/Profile";
 import { getCookie } from "./utils/general";
 import { authenticateUser } from "./store/auth-slice";
 import Chat from "./pages/Chat";
+import { fetchFavorites } from "./store/favoritesSlice";
 
 export const backend = "https://chat-broker-api.azurewebsites.net/api/v1";
 
 function App() {
   const [screenSize, setScreenSize] = useState(window.innerWidth);
-  const authedUser = useSelector((state) => state.auth.user);
+  const { user: authedUser, token } = useSelector((state) => state.auth);
   const [params, setParams] = useSearchParams();
   const dispatch = useDispatch();
   const [authClosing, setAuthClosing] = useState(false);
@@ -49,6 +50,10 @@ function App() {
     window.addEventListener("resize", changeSize);
     return () => window.removeEventListener("resize", changeSize);
   }, []);
+
+  useEffect(() => {
+    if (token) dispatch(fetchFavorites(token));
+  }, [dispatch, token]);
 
   return (
     <div className="App d-flex flex-column">

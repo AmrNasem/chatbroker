@@ -4,14 +4,25 @@ import {
   faLocationDot,
   faStar,
   faTag,
+  faHeart as faHeartSolid,
 } from "@fortawesome/free-solid-svg-icons";
 import { memo } from "react";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Badge";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToFavorites,
+  removeFromFavorites,
+} from "../../store/favoritesSlice";
+import { backend } from "../../App";
 
 const ProductItem = ({ minWidth, product }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.favorites.list);
+  const isFav = favorites.find((item) => item.id === product.id);
+
   if (!product)
     product = {
       id: "1",
@@ -24,6 +35,36 @@ const ProductItem = ({ minWidth, product }) => {
       duration: 1,
       enum_durations: "يوم",
     };
+
+  const authToken = useSelector((state) => state.auth.token);
+
+  const handleToggleFav = async (e) => {
+    e.stopPropagation();
+
+    if (!authToken) return navigate("?auth=login");
+
+    try {
+      dispatch(isFav ? removeFromFavorites(product) : addToFavorites(product));
+      const res = await fetch(
+        `${backend}/favorites/${isFav ? product.id : "store"}`,
+        {
+          method: isFav ? "DELETE" : "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": isFav ? undefined : "application/json",
+          },
+          body: isFav ? undefined : JSON.stringify(product),
+        }
+      );
+      if (!res.ok)
+        throw new Error(
+          `Could not ${isFav ? "add to" : "remove from"} favorites`
+        );
+    } catch (error) {
+      console.log(error.message, isFav);
+      dispatch(isFav ? addToFavorites(product) : removeFromFavorites(product));
+    }
+  };
 
   return (
     <div
@@ -40,12 +81,16 @@ const ProductItem = ({ minWidth, product }) => {
             <span className=" align-text-bottom">(495)</span>
           </div>
           <button
-            onClick={(e) => e.stopPropagation()}
+            onClick={handleToggleFav}
             className={`border-0 rounded-circle ${classes["add-to-fav"]}`}
             title="أضف إلى المفضلة"
             style={{ color: "#707070", backgroundColor: "var(--card-color)" }}
           >
-            <FontAwesomeIcon icon={faHeart} />
+            {isFav ? (
+              <FontAwesomeIcon icon={faHeartSolid} style={{ color: "red" }} />
+            ) : (
+              <FontAwesomeIcon icon={faHeart} />
+            )}
           </button>
         </div>
         <img
