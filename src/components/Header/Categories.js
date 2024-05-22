@@ -27,6 +27,7 @@ const Categories = (props) => {
             key={cat.id}
             className="text-decoration-none d-block text-nowrap p-2 d-inline-block"
             to={`/category/${cat.id}`}
+            onClick={props.onClick}
           >
             {cat.title}
           </Link>

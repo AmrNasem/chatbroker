@@ -8,25 +8,19 @@ import {
   faUser,
 } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Categories from "./Categories";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Notifications from "./Notifications";
 import Modal from "../../UI/Modal";
-import { fetchFavorites } from "../../store/favoritesSlice";
 
 const Aside = ({ onClick, closing }) => {
   const authedUser = useSelector((state) => state.auth.user);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
   const favoriteProducts = useSelector((state) => state.favorites.list);
-
-  useEffect(() => {
-    dispatch(fetchFavorites());
-  }, [dispatch]);
 
   return (
     <Modal
@@ -44,6 +38,7 @@ const Aside = ({ onClick, closing }) => {
       >
         <div className={`w-50 overflow-auto ${classes.main}`}>
           <Link
+            onClick={onClick}
             to={authedUser ? "/profile" : "?auth=login"}
             className={`px-3 my-2 py-1 text-decoration-none bg-transparent fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
           >
@@ -51,6 +46,7 @@ const Aside = ({ onClick, closing }) => {
             <span>{authedUser ? authedUser.name : "حسابي"}</span>
           </Link>
           <Link
+            onClick={onClick}
             to={authedUser ? "/new-product" : "?auth=login"}
             className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
           >
@@ -76,6 +72,7 @@ const Aside = ({ onClick, closing }) => {
             <span>الإشعارات</span>
           </button>
           <Link
+            onClick={onClick}
             className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
             to={authedUser ? "/chat" : "?auth=login"}
           >
@@ -90,6 +87,7 @@ const Aside = ({ onClick, closing }) => {
             <span>الدردشة</span>
           </Link>
           <Link
+            onClick={onClick}
             className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
             to={authedUser ? "/favorites" : "?auth=login"}
           >
@@ -97,7 +95,7 @@ const Aside = ({ onClick, closing }) => {
               <span
                 className={`position-absolute top-0 end-0 rounded-circle text-white d-flex justify-content-center align-items-center ${classes.amount}`}
               >
-                {favoriteProducts.length}
+                {favoriteProducts?.length || 0}
               </span>
               <FontAwesomeIcon icon={faHeart} className="fs-5" />
             </div>
@@ -110,7 +108,7 @@ const Aside = ({ onClick, closing }) => {
             >
               الفئات
             </h4>
-            <Categories />
+            <Categories onClick={onClick} />
           </div>
         </div>
         <div className="w-50">

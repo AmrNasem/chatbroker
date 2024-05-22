@@ -21,7 +21,7 @@ const ProductItem = ({ minWidth, product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites.list);
-  const isFav = favorites.find((item) => item.id === product.id);
+  const isFav = favorites?.find((item) => item.id === product?.id);
 
   if (!product)
     product = {
@@ -45,23 +45,27 @@ const ProductItem = ({ minWidth, product }) => {
 
     try {
       dispatch(isFav ? removeFromFavorites(product) : addToFavorites(product));
+      const formData = new FormData();
+      formData.append("product_id", product.id);
+
       const res = await fetch(
         `${backend}/favorites/${isFav ? product.id : "store"}`,
         {
           method: isFav ? "DELETE" : "POST",
           headers: {
             Authorization: `Bearer ${authToken}`,
-            "Content-Type": isFav ? undefined : "application/json",
+            Accept: "application/json",
           },
-          body: isFav ? undefined : JSON.stringify(product),
+          body: isFav ? undefined : formData,
         }
       );
       if (!res.ok)
         throw new Error(
-          `Could not ${isFav ? "add to" : "remove from"} favorites`
+          `Could not ${isFav ? "remove from" : "add to"} favorites`
         );
+      console.log(await res.json());
     } catch (error) {
-      console.log(error.message, isFav);
+      console.log(error.message);
       dispatch(isFav ? addToFavorites(product) : removeFromFavorites(product));
     }
   };

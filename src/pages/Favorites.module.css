@@ -1,24 +1,14 @@
-.offersContainer{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-wrap: wrap;
-  margin: 80px;
-  gap: 30px;
-  justify-content: center;
+.offersContainer {
+  max-width: 90%;
+  margin: auto;
 }
-.card{
-  /* display: flex; */
-  width: 90%;
-}
-.title{
-  margin-right: 150px;
+.title {
+  max-width: 90%;
+  margin: 0 auto 20px;
   font-size: 25px;
-  color: #3B3B3B;
-  margin-bottom: -40px;
-  margin-top: 40px;
+  color: #3b3b3b;
 }
-.showMore{
+.showMore {
   background-color: transparent;
   padding: 5px 8px;
   font-weight: bold;
@@ -28,8 +18,8 @@
   border-radius: 8px;
   box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.2);
 }
-.showMore:hover{
+.showMore:hover {
   color: #dbb285;
-  transition: .1s;
+  transition: 0.1s;
   transform: scale(1.02);
 }
