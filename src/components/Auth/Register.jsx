@@ -71,7 +71,7 @@ const Register = () => {
           method: "POST",
           body: formdata,
         });
-        if (!res.ok) throw new Error("خطأ في إنشاء حساب، حاول في وقت آخر");
+        if (!res.ok) throw new Error("خطأ في إنشاء الحساب، حاول في وقت آخر");
         const data = await res.json();
         console.log(data);
         navigate("?auth=login");

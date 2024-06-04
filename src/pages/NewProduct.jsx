@@ -10,16 +10,34 @@ import { validateImages } from "../utils/general";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 
-const units = ["hour", "day", "week", "month", "year"];
-const govs = [
-  "الدقهلية",
-  "القاهرة",
-  "الجيزة",
-  "الشرقية",
-  "الغربية",
-  "القليوبية",
-  "الفيوم",
-];
+const ErrMessage = ({ error, action, className }) => {
+  return (
+    <p
+      style={{ fontSize: "0.9rem" }}
+      className={`text-center text-danger fw-semibold ${className}`}
+    >
+      {error}،{" "}
+      <button
+        className="border-0 bg-transparent text-sec fw-semibold"
+        type="button"
+        onClick={action}
+      >
+        حاول مرة أخرى
+      </button>
+    </p>
+  );
+};
+
+// const units = ["hour", "day", "week", "month", "year"];
+// const govs = [
+//   "الدقهلية",
+//   "القاهرة",
+//   "الجيزة",
+//   "الشرقية",
+//   "الغربية",
+//   "القليوبية",
+//   "الفيوم",
+// ];
 // const text =
 //   "She works the night by the water she is gonna astry so far away from my father's daughter. She just wants a life for her baby all on her own no one will come she's gonna save him. She tells him ooh love no one's ever gonna hurt you love I'm gonna give you all of my love nobody matters like you. She tell him your life ain't going be nothing like my life you're gonna grow and have a good life I'm gonna do what I've got to do. so rockabye baby rockabye I'm gonna rock you rockabye baby don't you cry somebody's got you. Now she gotta six-year old trying to keep him warm trying to keep out the cold. When he looks in her eyes he don't know he's safe when she says: she tells him ooh love. nobody's gonna hurt you love I'm gonna give you all of my love nobody matters like you. She tells him your life ain't going be nothing like my life you're gonna grow and have a good life I'm gonna do what I've got to do. so rockabye baby rockabye I'm gonna rock you.";
 
@@ -35,19 +53,45 @@ const NewProduct = () => {
   const [category, setCategory] = useState(null);
   const [title, setTitle] = useState({ value: "", valid: true });
   const [duration, setDuration] = useState({ value: "1", valid: true });
-  const [timeUnit, setTimeUnit] = useState(units[0]);
+  const [timeUnit, setTimeUnit] = useState("");
   const [price, setPrice] = useState({ value: "", valid: true });
   const [discount, setDiscount] = useState("");
-  const [gov, setGov] = useState("");
+  const [gov, setGov] = useState(null);
+  const [city, setCity] = useState(null);
   const [description, setDescription] = useState({ value: "", valid: true });
   const [constraints, setConstraints] = useState({ value: "", valid: true });
   const [images, setImages] = useState({ value: [], invalid: "" });
+  const [pre, setPre] = useState({ data: null, loading: true, error: "" });
+
+  console.log(gov);
 
   const [loading, setLoading] = useState(false);
+
+  const fetchGovs = async () => {
+    try {
+      setPre((prev) => ({ ...prev, loading: true, error: "" }));
+      const res = await fetch(`${backend}/governorates`);
+      if (!res.ok) throw new Error("خطأ في التحميل!");
+      const data = await res.json();
+      setPre((prev) => ({ ...prev, data, loading: false }));
+      setGov(data.data[0]);
+    } catch (err) {
+      console.log(err.message);
+      setPre((prev) => ({ ...prev, error: err.message, loading: false }));
+    }
+  };
+
+  useEffect(() => {
+    fetchGovs();
+  }, []);
 
   useEffect(() => {
     if (!categories && !catsLoading && !error) dispatch(fetchCategories());
   }, [categories, catsLoading, error, dispatch]);
+
+  useEffect(() => {
+    if (gov) setCity(gov.cities[0]);
+  }, [gov]);
 
   useEffect(() => {
     if (categories) setCategory(categories[0]);
@@ -88,7 +132,7 @@ const NewProduct = () => {
       formData.append("model", "product"); // Static
       formData.append("amount", price.value);
       formData.append("duration", duration.value);
-      formData.append("city_id", 1); // Static
+      formData.append("city_id", city.id);
       formData.append("enum_durations", timeUnit);
       formData.append("discount", discount);
       try {
@@ -121,19 +165,10 @@ const NewProduct = () => {
         />
         <form className="flex-grow-1" onSubmit={handleSubmit}>
           {error ? (
-            <p
-              style={{ fontSize: "0.9rem" }}
-              className="text-center text-danger fw-semibold"
-            >
-              {error}،{" "}
-              <button
-                className="border-0 bg-transparent text-sec fw-semibold"
-                type="button"
-                onClick={() => dispatch(fetchCategories())}
-              >
-                حاول مرة أخرى
-              </button>
-            </p>
+            <ErrMessage
+              error={error}
+              action={() => dispatch(fetchCategories())}
+            />
           ) : catsLoading ? (
             <Skeleton className="my-3" style={{ height: "1.3rem" }} />
           ) : (
@@ -185,7 +220,7 @@ const NewProduct = () => {
             <label htmlFor="duration" className="mb-2">
               مدة الحجز
             </label>
-            <div className="d-flex gap-2">
+            <div className="d-flex align-items-center gap-2">
               <input
                 type="number"
                 id="duration"
@@ -200,18 +235,31 @@ const NewProduct = () => {
                   classes.input
                 }`}
               />
-              <select
-                id="unit"
-                className={`d-block flex-grow-1 p-2 rounded-2 outline-none border transition-main ${classes.input}`}
-                onChange={(e) => setTimeUnit(e.target.value)}
-                value={timeUnit}
-              >
-                {units.map((u, i) => (
-                  <option key={i} value={u}>
-                    {u}
-                  </option>
-                ))}
-              </select>
+              {pre.error ? (
+                <ErrMessage
+                  error={pre.error}
+                  action={fetchGovs}
+                  className="mb-0 flex-grow-1"
+                />
+              ) : pre.loading ? (
+                <Skeleton
+                  className="my-3"
+                  style={{ height: "1.3rem", flex: 1 }}
+                />
+              ) : (
+                <select
+                  id="unit"
+                  className={`d-block flex-grow-1 p-2 rounded-2 outline-none border transition-main ${classes.input}`}
+                  onChange={(e) => setTimeUnit(e.target.value)}
+                  value={timeUnit}
+                >
+                  {pre.data?.durationOptions.map((u, i) => (
+                    <option key={i} value={u}>
+                      {u}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
             {!duration.valid && (
               <p
@@ -272,22 +320,53 @@ const NewProduct = () => {
               </p>
             )}
           </div>
-          <div className="my-4">
-            <label htmlFor="gov" className="mb-2">
-              المحافظة
-            </label>
-            <select
-              id="gov"
-              className={`d-block p-2 rounded-2 outline-none border transition-main w-100 ${classes.input}`}
-              onChange={(e) => setGov(e.target.value)}
-              value={gov}
-            >
-              {govs.map((g, i) => (
-                <option key={i} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
+          <div className="my-4 d-flex gap-2">
+            {pre.error ? (
+              <ErrMessage error={pre.error} action={fetchGovs} />
+            ) : pre.loading ? (
+              <Skeleton className="my-3" style={{ height: "1.3rem" }} />
+            ) : (
+              <>
+                <div className="flex-grow-1">
+                  <label htmlFor="gov" className="mb-2">
+                    المحافظة
+                  </label>
+                  <select
+                    id="gov"
+                    className={`d-block p-2 rounded-2 outline-none border transition-main w-100 ${classes.input}`}
+                    onChange={(e) => {
+                      console.log(JSON.parse(e.target.value));
+                      setGov(JSON.parse(e.target.value));
+                    }}
+                    value={JSON.stringify(gov)}
+                  >
+                    {pre.data?.data.map((g, i) => (
+                      <option key={i} value={JSON.stringify(g)}>
+                        {g.name_ar}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex-grow-1">
+                  <label htmlFor="city" className="mb-2">
+                    المدينة
+                  </label>
+                  {console.log(gov.name_ar)}
+                  <select
+                    id="city"
+                    className={`d-block p-2 rounded-2 outline-none border transition-main w-100 ${classes.input}`}
+                    onChange={(e) => setCity(JSON.parse(e.target.value))}
+                    value={JSON.stringify(city)}
+                  >
+                    {gov.cities.map((city, i) => (
+                      <option key={i} value={JSON.stringify(city)}>
+                        {city.name_ar}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </>
+            )}
           </div>
           <div className="my-4">
             <label htmlFor="desc" className="mb-2">
