@@ -1,50 +1,9 @@
 import { memo, useState } from "react";
 import AuthInput from "./AuthInput";
-import {
-  faEnvelope,
-  faLock,
-  faPhone,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
 import Spinner from "../../UI/Spinner";
 import { backend } from "../../App";
 import { useNavigate } from "react-router-dom";
-
-const inputs = [
-  {
-    id: "name",
-    icon: faUser,
-    message: "الاسم غير صحيح!",
-    placeholder: "الاسم",
-    validate: (value = "") => /^[a-zA-Z_]\w{2,20}$/.test(value),
-  },
-  {
-    type: "tel",
-    id: "phone_number",
-    icon: faPhone,
-    message: "رقم الهاتف غير صحيح!",
-    placeholder: "رقم الهاتف",
-    validate: (value = "") => /^\d{6,}$/.test(value),
-  },
-  {
-    type: "email",
-    id: "email",
-    icon: faEnvelope,
-    message: "البريد الإلكتروني غير صحيح",
-    placeholder: "البريد الإلكتروني",
-    validate: (value = "") =>
-      /^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)?@[a-zA-Z_]\w*\.[a-zA-Z]{2,}$/.test(value),
-  },
-  {
-    type: "password",
-    id: "password",
-    icon: faLock,
-    message: "كلمة السر غير صحيحة",
-    placeholder: "كلمة السر",
-    validate: (value = "") =>
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value),
-  },
-];
+import { register as inputs } from "../../utils/inputs";
 
 const Register = () => {
   const navigate = useNavigate();

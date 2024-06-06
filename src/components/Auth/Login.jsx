@@ -1,33 +1,12 @@
 import { memo, useState } from "react";
 import classes from "./Auth.module.css";
 import AuthInput from "./AuthInput";
-import { faEnvelope, faLock } from "@fortawesome/free-solid-svg-icons";
 import { Link, useSearchParams } from "react-router-dom";
 import { authenticateUser } from "../../store/auth-slice";
 import { useDispatch } from "react-redux";
 import Spinner from "../../UI/Spinner";
 import { backend } from "../../App";
-
-const inputs = [
-  {
-    type: "email",
-    id: "email",
-    icon: faEnvelope,
-    message: "البريد الإلكتروني غير صحيح",
-    placeholder: "البريد الإلكتروني",
-    validate: (value) =>
-      /^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)?@[a-zA-Z_]\w*\.[a-zA-Z]{2,}$/.test(value),
-  },
-  {
-    type: "password",
-    id: "password",
-    icon: faLock,
-    message: "كلمة السر غير صحيحة",
-    placeholder: "كلمة السر",
-    validate: (value) =>
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value),
-  },
-];
+import { login as inputs } from "../../utils/inputs";
 
 const Login = () => {
   const dispatch = useDispatch();
