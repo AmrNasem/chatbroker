@@ -71,6 +71,7 @@ const NewProduct = () => {
   const token = useSelector((state) => state.auth.token);
 
   const [pre, setPre] = useState({ data: null, loading: true, error: "" });
+
   const [images, setImages] = useState({ value: [], invalid: "" });
   const [formData, setFormData] = useState({});
   const [inputsTouched, setInputsTouched] = useState({});
@@ -89,7 +90,6 @@ const NewProduct = () => {
         ...prev,
         data: { ...prev.data, ...data },
         loading: false || catsLoading,
-        // error: error && "خطأ في التحميل",
       }));
       setFormData((prev) => ({
         ...prev,
@@ -249,7 +249,10 @@ const NewProduct = () => {
           {inputs.map((input, i) => {
             if (input.flex)
               return (
-                <div key={i} className="d-flex my-4 gap-2 align-items-center">
+                <div
+                  key={i}
+                  className="d-flex flex-wrap my-4 gap-2 align-items-center"
+                >
                   {input.value.map((childInput) => getContent(childInput))}
                 </div>
               );

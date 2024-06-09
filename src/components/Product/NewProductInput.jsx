@@ -19,11 +19,14 @@ const NewProductInput = ({
   message,
 }) => {
   return (
-    <div style={{ flex: 1 }} className={`${className}`}>
+    <div style={{ flex: 1, minWidth: "200px" }} className={`${className}`}>
       <label htmlFor={id} className={`mb-2 ${label ? "" : "invisible"}`}>
         {label}{" "}
         {subLabel && (
-          <span className="d-inline-block me-1 text-black-50">
+          <span
+            style={{ fontSize: "0.8rem" }}
+            className="d-inline-block fw-semibold me-1 text-black-50"
+          >
             ({subLabel})
           </span>
         )}
