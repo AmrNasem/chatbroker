@@ -16,7 +16,7 @@ const Auth = (props) => {
       closing={props.closing}
       className={`${classes.auth} ${
         props.closing ? classes.closing : ""
-      } bg-white position-fixed top-50 start-50  d-flex flex-column align-items-center p-4 rounded-3`}
+      } bg-white position-fixed top-50 start-50 overflow-auto scrollbar-none d-flex flex-column align-items-center p-4 rounded-3`}
     >
       <button
         onClick={props.onClick}

@@ -101,6 +101,20 @@ const Aside = ({ onClick, closing }) => {
             </div>
             <span>المفضلة</span>
           </Link>
+          {/* <Link
+            to={authedUser ? "/cart" : "?auth=login"}
+            className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
+          >
+            <div className="position-relative">
+              <span
+                className={`position-absolute top-0 end-0 rounded-circle text-white d-flex justify-content-center align-items-center ${classes.amount}`}
+              >
+                0
+              </span>
+              <FontAwesomeIcon icon={faShoppingCart} className="fs-5" />
+            </div>
+            <span>عربة التسوق</span>
+          </Link> */}
           <div>
             <h4
               style={{ color: "var(--secondary-color)" }}

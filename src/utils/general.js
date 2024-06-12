@@ -27,6 +27,7 @@ export const validateImages = (images) => {
     return `يجب أن تكون الصورة بإحدى الصيغ (${availableExtensions.join(
       ", "
     )}).`;
+  else if (images.length > 2) return "يمكنك رفع صورتين فقط بحد أقصى";
   return null;
 };
 
