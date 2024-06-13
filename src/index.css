@@ -1,12 +1,13 @@
 :root {
-  --main-color: #08324b;
-  --secondary-color: #cb955b;
-  --gray-color: #302f2f;
-  --category-background: #f2f2f2;
-  --card-color: #f9f9fa;
-  --address-color: #666666;
-  --pink-color: #efdfce;
-  --product-text-color: #9399a3;
+  --main-color: rgb(8, 50, 74);
+  --secondary-color: rgb(203, 149, 91);
+  --gray-color: rgb(48, 47, 47);
+  --category-background: rgb(242, 242, 242);
+  --card-color: rgb(249, 249, 250);
+  --address-color: rgb(102, 102, 102);
+  --pink-color: rgb(239, 223, 206);
+  --product-text-color: rgb(147, 153, 163);
+  --page-background-color: rgb(240, 240, 247);
 }
 * {
   padding: 0;

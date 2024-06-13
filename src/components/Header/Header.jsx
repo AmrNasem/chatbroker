@@ -5,8 +5,9 @@ import {
   faMessage,
   faSquarePlus,
   faUser,
+
 } from "@fortawesome/free-regular-svg-icons";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faChartSimple, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -65,9 +66,8 @@ const Header = () => {
           >
             <div className="position-relative">
               <span
-                className={`position-absolute top-0 end-0 rounded-circle ${
-                  notificationsVisible ? "bg-sec" : "bg-main"
-                } ${classes.bullet}`}
+                className={`position-absolute top-0 end-0 rounded-circle ${notificationsVisible ? "bg-sec" : "bg-main"
+                  } ${classes.bullet}`}
               ></span>
 
               <FontAwesomeIcon icon={faBell} className="fs-5" />
@@ -76,9 +76,8 @@ const Header = () => {
           </button>
           {notificationsVisible && (
             <Notifications
-              className={`${classes.notifications} ${
-                notificationsVanishing ? classes.vanishing : ""
-              } position-absolute end-0 shadow rounded-2`}
+              className={`${classes.notifications} ${notificationsVanishing ? classes.vanishing : ""
+                } position-absolute end-0 shadow rounded-2`}
             />
           )}
         </div>
@@ -94,6 +93,13 @@ const Header = () => {
             placeholder="إنت بتدور على إيه؟"
           />
         </form>
+        <Link
+          to={"/dashboard"}
+          className={`px-lg-2 py-1 text-decoration-none d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
+        >
+          <span>الإحصائيات</span>
+          <FontAwesomeIcon icon={faChartSimple} className="fs-5" />
+        </Link>
         <Link
           to={authedUser ? "/new-product" : "?auth=login"}
           className={`px-lg-2 py-1 text-decoration-none d-flex align-items-center gap-2 text-nowrap ${classes.button}`}

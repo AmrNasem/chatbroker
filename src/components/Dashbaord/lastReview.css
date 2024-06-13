@@ -1,0 +1,23 @@
+.table-custom-color th{
+  color: #a3a6b4;
+}
+.table-custom-color td {
+  color: #7f7f7f;
+}
+.table-custom-color th{
+  background-color: #f5f6fa;
+  margin-bottom: 10px;
+}
+
+.button-custom {
+  border: none;
+  background: none;
+  color: #007bff;
+  font-size: 16px;
+  transition: border 0.3s ease-in-out;
+}
+
+.button-custom:hover {
+  border-bottom: 1px solid #007bff;
+  color: #007bff;
+}

@@ -19,6 +19,7 @@ import { getCookie } from "./utils/general";
 import { authenticateUser } from "./store/auth-slice";
 import Chat from "./pages/Chat";
 import { fetchFavorites } from "./store/favoritesSlice";
+import Dashboard from "./pages/Dashboard";
 
 export const backend = "https://chat-broker-api.azurewebsites.net/api/v1";
 
@@ -82,6 +83,7 @@ function App() {
         <Route path="/offers" element={<Offers />} />
         <Route path="/product/:productId" element={<SingleProduct />} />
         <Route path="/category/:categoryId" element={<SingleCategory />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route
           path="/*"
           element={
