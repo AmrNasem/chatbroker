@@ -1,0 +1,11 @@
+.input:focus {
+  border-color: var(--secondary-color) !important;
+}
+.input,
+.input::-webkit-inner-spin-button,
+.input::-webkit-outer-spin-button {
+  appearance: none;
+}
+textarea.input {
+  resize: none;
+}
