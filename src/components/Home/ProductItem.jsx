@@ -10,7 +10,7 @@ import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Badge";
 
-const ProductItem = ({ minWidth, product }) => {
+const ProductItem = ({ minWidth, maxWidth, width, product }) => {
   const navigate = useNavigate();
   if (!product)
     product = {
@@ -27,7 +27,7 @@ const ProductItem = ({ minWidth, product }) => {
 
   return (
     <div
-      style={{ minWidth }}
+      style={{ minWidth, maxWidth, width }}
       onClick={() => navigate(`/product/${product.id}`)}
       className={`${classes.product} d-flex flex-column rounded-3`}
     >

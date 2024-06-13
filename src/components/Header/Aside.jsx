@@ -47,7 +47,7 @@ const Aside = ({ onClick, closing }) => {
             className={`px-3 my-2 py-1 text-decoration-none fw-semibold d-flex align-items-center gap-2 text-nowrap border-0 ${classes.button}`}
           >
             <FontAwesomeIcon icon={faSquarePlus} className="fs-5" />
-            <span>إضافة منتج للحجز</span>
+            <span>إضافة منتج</span>
           </Link>
           <button
             onClick={() =>

@@ -9,7 +9,7 @@ const MostRented = () => {
   const { products, error, loading } = useSelector((state) => state.products);
   const dispatch = useDispatch();
 
-  const mostRentedProducts = useMemo(() => products?.slice(3, 9), [products]);
+  const mostRentedProducts = useMemo(() => products?.slice(0, 6), [products]);
 
   useEffect(() => {
     if (!products) dispatch(fetchProducts());
@@ -23,9 +23,9 @@ const MostRented = () => {
       <div className="d-flex gap-4 py-3 px-2 overflow-auto scrollbar-none">
         {error ? (
           <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
-        ) : mostRentedProducts ? (
+        ) : mostRentedProducts && mostRentedProducts.length ? (
           mostRentedProducts.map((product, index) => (
-            <ProductItem minWidth="230px" key={index} product={product} />
+            <ProductItem width="230px" key={index} product={product} />
           ))
         ) : (
           <div className="d-flex gap-4 my-4 overflow-auto scrollbar-none">
