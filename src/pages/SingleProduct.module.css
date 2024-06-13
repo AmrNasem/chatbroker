@@ -1,5 +1,3 @@
-@media (min-width: 1200px) {
-  .details {
-    max-width: 77%;
-  }
+.contact-me:disabled {
+  opacity: 0.9;
 }

@@ -9,9 +9,17 @@ import Message from "./Message";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useState } from "react";
 import classes from "./ChatArea.module.css";
+import { useSelector } from "react-redux";
+import Skeleton from "../Skeleton/Skeleton";
 
-const ChatArea = ({ active, style, className, onToggleAside }) => {
+const ChatArea = ({ style, className, onToggleAside }) => {
+  const { currentChat, messages, loading, error } = useSelector(
+    (state) => state.chats
+  );
   const [message, setMessage] = useState("");
+
+  console.log(currentChat, messages, loading, error);
+
   return (
     <div style={style} className={`${className} d-flex flex-column`}>
       <div className="d-flex align-items-center gap-1 px-3 py-2 border-bottom">
@@ -24,7 +32,7 @@ const ChatArea = ({ active, style, className, onToggleAside }) => {
         </button>
         <div className="flex-grow-1 d-flex justify-content-between gap-2 align-items-center">
           <h6 className="text-secondary mt-1" style={{ fontSize: "1.1rem" }}>
-            {active.name}
+            {currentChat.fullname}
           </h6>
           <div
             style={{ width: "40px", height: "40px" }}
@@ -36,7 +44,7 @@ const ChatArea = ({ active, style, className, onToggleAside }) => {
             ></span>
             <img
               className={`rounded-circle d-block w-100 h-100 object-fit-cover`}
-              src={active.image}
+              src={currentChat.image || require("../../assets/person.jpeg")}
               alt=""
             />
           </div>
@@ -46,9 +54,23 @@ const ChatArea = ({ active, style, className, onToggleAside }) => {
         className="p-3 flex-grow-1 overflow-auto scrollbar-none"
         style={{ maxHeight: "100%" }}
       >
-        {active.messages.map((message, i) => (
-          <Message key={i} message={message} />
-        ))}
+        {loading ? (
+          [...Array(4).keys()].map((i) => (
+            <Skeleton
+              key={i}
+              className={`my-4 ${i % 2 ? "me-auto" : ""}`}
+              style={{ maxWidth: "60%", height: "1rem" }}
+            />
+          ))
+        ) : error ? (
+          <p className="text-center text-danger fw-semibold my-2">{error}</p>
+        ) : messages.length ? (
+          messages.map((message, i) => <Message key={i} message={message} />)
+        ) : (
+          <h4 className="text-center position-relative top-50 start-50 opacity-75 translate-middle">
+            أرسل أول رسالة
+          </h4>
+        )}
       </div>
       <div className="d-flex gap-2 px-3 mt-1 align-items-center">
         <button
