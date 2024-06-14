@@ -4,6 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { backend } from "../../App";
 import Spinner from "../../UI/Spinner";
 import { updateUserData } from "../../store/auth-slice";
+import { logout } from '../../store/auth-slice'; // adjust the path as needed
+import { deleteCookie } from '../../utils/general'; // adjust the path as needed
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
 const fNameConstraint = (value) => /^[a-zA-Z0-9_]{3,20}$/.test(value);
 const phoneConstraint = (value) => /^\d{6,}$/.test(value);
@@ -24,6 +30,40 @@ const PersonalData = ({ loading, data, error }) => {
   const [phone, setPhone] = useState({ value: "", valid: true });
   const [email, setEmail] = useState({ value: "", valid: true });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+
+  const handleLogout = () => {
+    dispatch(logout());
+    deleteCookie('userData');
+    let timerInterval;
+
+    Swal.fire({
+      title: "logged out successfully",
+      // html: "Closing in <b></b> milliseconds.",
+      timer: 1500,
+      timerProgressBar: false,
+      icon: "success",
+      didOpen: () => {
+        const timer = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          if (timer) {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    }).then((result) => {
+      if (result.dismiss === Swal.DismissReason.timer) {
+        console.log("I was closed by the timer");
+      }
+    });
+    setTimeout(() => {
+      navigate('/');
+    }, 1500);
+  };
 
   useEffect(() => {
     if (data) {
@@ -137,9 +177,8 @@ const PersonalData = ({ loading, data, error }) => {
                 </div>
               )}
               <img
-                className={`rounded-circle ${
-                  uploadingImage ? "opacity-50" : ""
-                } d-block w-100 h-100 object-fit-cover`}
+                className={`rounded-circle ${uploadingImage ? "opacity-50" : ""
+                  } d-block w-100 h-100 object-fit-cover`}
                 src={image}
                 alt=""
               />
@@ -185,9 +224,8 @@ const PersonalData = ({ loading, data, error }) => {
                   }
                   type="text"
                   id="first"
-                  className={`border transition-main ${
-                    firstName.valid ? "input-focus" : "invalid"
-                  } py-1 px-2 d-block w-100 rounded-2 outline-none`}
+                  className={`border transition-main ${firstName.valid ? "input-focus" : "invalid"
+                    } py-1 px-2 d-block w-100 rounded-2 outline-none`}
                 />
               </div>
               <div className="flex-grow-1">
@@ -238,9 +276,8 @@ const PersonalData = ({ loading, data, error }) => {
                 }
                 type="text"
                 id="phone"
-                className={`border transition-main ${
-                  phone.valid ? "input-focus" : "invalid"
-                } py-1 px-2 d-block w-100 rounded-2 outline-none`}
+                className={`border transition-main ${phone.valid ? "input-focus" : "invalid"
+                  } py-1 px-2 d-block w-100 rounded-2 outline-none`}
               />
             </div>
             <div className="my-3">
@@ -267,10 +304,13 @@ const PersonalData = ({ loading, data, error }) => {
                 }
                 type="text"
                 id="email"
-                className={`border transition-main ${
-                  email.valid ? "input-focus" : "invalid"
-                } py-1 px-2 d-block w-100 rounded-2 outline-none`}
+                className={`border transition-main ${email.valid ? "input-focus" : "invalid"
+                  } py-1 px-2 d-block w-100 rounded-2 outline-none`}
               />
+            </div>
+            <div className="d-flex justify-content-end mt-5" style={{ width: "100%" }}>
+              {/* Your existing personal data content */}
+              <button onClick={handleLogout} className="p-2 rounded" style={{ color: "#bb0000", border: "1px solid #bb0000" }}><FontAwesomeIcon icon={faRightFromBracket} /> Logout</button>
             </div>
           </div>
         )}
