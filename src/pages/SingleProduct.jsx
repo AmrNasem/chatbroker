@@ -15,108 +15,71 @@ const SingleProduct = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log(product);
-
   useEffect(() => {
     const getSingleProduct = async () => {
       setLoading(true);
       setError(null);
       try {
         const res = await fetch(`${backend}/products/${productId}`);
-        if (!res.ok) throw new Error();
+        if (!res.ok) throw new Error("Failed to fetch product");
         const data = await res.json();
         setProduct(data.data);
-        console.log(data);
       } catch (err) {
-        console.log(err.message);
         setError(err.message);
       }
       setLoading(false);
     };
     getSingleProduct();
   }, [productId]);
+
+  const images = product ? product.images.map(image => image) : [];
+
+  const videos = [
+    { image: "https://img.youtube.com/vi/CH50zuS8DD0/0.jpg", video: "https://www.youtube.com/embed/CH50zuS8DD0" },
+    ...(product?.videos?.map(video => ({ image: video })) || [])
+  ];
+  const media = [...images, ...videos];
+
   return (
     <main className="container my-4 d-flex gap-4 flex-wrap flex-xl-nowrap">
-      <div
-        className={`d-flex gap-4 flex-wrap w-100 flex-lg-nowrap ${classes.details}`}
-      >
+      <div className={`d-flex gap-4 flex-wrap w-100 flex-lg-nowrap ${classes.details}`}>
         {loading ? (
-          <Spinner
-            side={50}
-            color="var(--secondary-color)"
-            className="mx-auto"
-          />
+          <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />
         ) : error ? (
           <p>No Images</p>
         ) : (
-          <ProductPreview
-            images={product.images}
-            loading={loading}
-            error={error}
-            className="flex-grow-1"
-          />
+          <ProductPreview images={media} loading={loading} error={error} className="flex-grow-1" />
         )}
         {loading ? (
-          <Spinner
-            side={50}
-            color="var(--secondary-color)"
-            className="mx-auto"
-          />
+          <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />
         ) : error ? (
           <p>No Details</p>
         ) : (
-          <ProductDetails
-            details={product}
-            loading={loading}
-            error={error}
-            className="flex-grow-1"
-          />
+          <ProductDetails details={product} loading={loading} error={error} className="flex-grow-1" />
         )}
       </div>
       <div className="flex-grow-1">
         {loading ? (
-          <Spinner
-            side={50}
-            color="var(--secondary-color)"
-            className="mx-auto"
-          />
+          <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />
         ) : (
-          <div
-            style={{ border: "1px solid #707070" }}
-            className="rounded-3 p-2"
-          >
+          <div style={{ border: "1px solid #707070" }} className="rounded-3 p-2">
             <h5 className="text-main text-center">للمزيد من البيانات</h5>
-            <p
-              className="text-sec text-center fw-semibold"
-              style={{ fontSize: "0.8rem" }}
-            >
+            <p className="text-sec text-center fw-semibold" style={{ fontSize: "0.8rem" }}>
               تواصل مع البائع
             </p>
-            <div
-              style={{ height: "100px", border: "1px solid #707070" }}
-              className="position-relative rounded-3 bg-light my-5"
-            >
+            <div style={{ height: "100px", border: "1px solid #707070" }} className="position-relative rounded-3 bg-light my-5">
               <div
-                style={{
-                  transform: "translateY(-50%)",
-                  border: "1px solid #707070",
-                }}
+                style={{ transform: "translateY(-50%)", border: "1px solid #707070" }}
                 className="bg-light text-main position-absolute end-0 rounded-pill d-flex align-items-center gap-2"
               >
-                <div
-                  style={{ maxWidth: "33px", maxHeight: "33px" }}
-                  className="rounded-circle overflow-hidden"
-                >
+                <div style={{ maxWidth: "33px", maxHeight: "33px" }} className="rounded-circle overflow-hidden">
                   <img
                     src={product?.user.image}
                     className="w-100 h-100 object-fit-cover"
                     alt=""
                   />
                 </div>
-                <span
-                  className="d-block ms-3 fw-semibold text-truncate"
-                  style={{ fontSize: "0.8rem" }}
-                >
+                <span className="d-block ms-3 fw-semibold text-truncate" style={{ fontSize: "0.8rem" }}>
                   {product?.user.name}
                 </span>
               </div>

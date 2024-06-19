@@ -17,7 +17,7 @@ export const getCookie = (name) => {
 };
 
 export const validateImages = (images) => {
-  const availableExtensions = ["png", "jpg", "jpeg", "bmp"];
+  const availableExtensions = ["png", "jpg", "jpeg", "bmp", "mp4", "avi", "mov", "mkv", "webm", "ogg"];
   const violatedImage = images.find(
     (img) => !availableExtensions.includes(img.file.type.split("/")[1])
   );

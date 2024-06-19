@@ -1,10 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import classes from "./ProductPreview.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClose,
-  faExclamationCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faClose, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { validateImages } from "../../utils/general";
 
 const ProductPreview = ({ className, images, setImages, invalid }) => {
@@ -36,7 +33,7 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
     });
   };
 
-  const handleImageSelction = (e) => {
+  const handleImageSelection = (e) => {
     const files = e.target.files;
     viewImage([...files]);
   };
@@ -60,9 +57,7 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
   return (
     <div className={`${classes.navigator} w-100 ${className}`}>
       <div
-        className={`p-2 rounded-2 position-sticky ${
-          invalid ? "border invalid" : ""
-        }`}
+        className={`p-2 rounded-2 position-sticky ${invalid ? "border invalid" : ""}`}
         style={{ backgroundColor: "var(--card-color)", top: "1rem" }}
       >
         {invalid && (
@@ -82,17 +77,26 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
             onDragOver={handleDragOver}
             onDrop={handleDragDropImage}
             style={{ height: "400px", cursor: "pointer" }}
-            className={`${
-              images.length ? "" : "bg-white p-3"
-            } rounded-2  d-flex flex-column position-relative gap-3 justify-content-between`}
+            className={`${images.length ? "" : "bg-white p-3"} rounded-2 d-flex flex-column position-relative gap-3 justify-content-between`}
           >
             {active ? (
               <>
-                <img
-                  className="w-100 h-100 object-fit-cover d-block"
-                  src={active.image}
-                  alt=""
-                />
+                {active.video ? (
+                  <iframe
+                    className="w-100 h-100 object-fit-cover d-block"
+                    src={active.video}
+                    title="Video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                ) : (
+                  <img
+                    className="w-100 h-100 object-fit-cover d-block"
+                    src={active.image}
+                    alt=""
+                  />
+                )}
                 <h4
                   style={{
                     backgroundColor: "#f0f0f0",
@@ -129,50 +133,50 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
             )}
             <input
               type="file"
-              accept="image/jpeg, image/jpg, image/png, image/bmp"
-              onChange={handleImageSelction}
+              accept="image/jpeg, image/jpg, image/png, image/bmp, video/mp4, video/avi, video/mov, video/mkv, video/webm, video/ogg"
+              onChange={handleImageSelection}
               id="add-photo"
               hidden
               multiple
             />
           </label>
         ) : (
-          <div
-            style={{ height: "400px" }}
-            className="rounded-2 overflow-hidden"
-          >
-            <img
-              className="w-100 h-100 object-fit-cover d-block"
-              src={active?.image}
-              alt=""
-            />
+          <div style={{ height: "400px" }} className="rounded-2 overflow-hidden">
+            {active?.video ? (
+              <iframe
+                className="w-100 h-100 object-fit-cover d-block"
+                src={active.video}
+                title="Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            ) : (
+              <img
+                className="w-100 h-100 object-fit-cover d-block"
+                src={active?.image}
+                alt=""
+              />
+            )}
           </div>
         )}
         {!!images.length && (
           <div
-            className={`d-flex gap-2 ${
-              setImages ? "px-2" : ""
-            } pt-2 overflow-auto scrollbar-none flex-grow-1`}
+            className={`d-flex gap-2 ${setImages ? "px-2" : ""} pt-2 overflow-auto scrollbar-none flex-grow-1`}
           >
             {images.map((img, i) => (
               <button
                 value={i}
                 key={i}
                 onClick={() => setActive(img)}
-                className={`${
-                  active?.id === img.id ? classes.active : "border"
-                } bg-transparent position-relative transition-main rounded-2 ${
-                  classes.image
-                }`}
+                className={`${active?.id === img.id ? classes.active : "border"} bg-transparent position-relative transition-main rounded-2 ${classes.image}`}
               >
                 {setImages && (
                   <span
                     onClick={(e) => {
                       e.stopPropagation();
                       setImages((prev) => {
-                        const newImages = prev.value.filter(
-                          (item) => item.id !== img.id
-                        );
+                        const newImages = prev.value.filter((item) => item.id !== img.id);
                         return {
                           ...prev,
                           value: newImages,
@@ -190,11 +194,19 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
                     <FontAwesomeIcon className="d-block" icon={faClose} />
                   </span>
                 )}
-                <img
-                  className="w-100 h-100 object-fit-cover d-block rounded-1"
-                  src={img.image}
-                  alt=""
-                />
+                {img.video ? (
+                  <img
+                    className="w-100 h-100 object-fit-cover d-block rounded-1"
+                    src={img.image}
+                    alt="Video thumbnail"
+                  />
+                ) : (
+                  <img
+                    className="w-100 h-100 object-fit-cover d-block rounded-1"
+                    src={img.image}
+                    alt=""
+                  />
+                )}
               </button>
             ))}
           </div>
