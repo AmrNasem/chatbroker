@@ -7,7 +7,7 @@ import TotalExchangeChart from "./Column Chart";
 const StatisticsCard = ({ statisticsTitle, color, value, ChangeInValue }) => {
   const [isIncreased] = useState(true);
   // This flag should come from the backend
-  setIsIncreased(true)
+  // setIsIncreased(true)
   return (
     <div className="container" dir="ltr">
       <div className="cursor-pointer bg-white p-4 shadow-sm hover:shadow">
@@ -21,9 +21,8 @@ const StatisticsCard = ({ statisticsTitle, color, value, ChangeInValue }) => {
             <div className="d-flex flex-column align-items-center">
               <p className="text-primary fw-bolder fs-5 mb-0">{value}</p>
               <p
-                className={`fs-6 ${
-                  isIncreased ? "text-success" : "text-danger"
-                }`}
+                className={`fs-6 ${isIncreased ? "text-success" : "text-danger"
+                  }`}
               >
                 {ChangeInValue}{" "}
                 {isIncreased ? (
