@@ -6,7 +6,7 @@ import {
   faTag,
   faHeart as faHeartSolid,
 } from "@fortawesome/free-solid-svg-icons";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Badge";
@@ -17,11 +17,19 @@ import {
 } from "../../store/favoritesSlice";
 import { backend } from "../../App";
 
-const ProductItem = ({ minWidth, product }) => {
+const ProductItem = ({ minWidth, maxWidth, width, product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites.list);
-  const isFav = favorites?.find((item) => item.id === product?.id);
+  const [isFav, setIsFav] = useState(false);
+
+  useEffect(() => {
+    if (favorites && product) {
+      setIsFav(
+        favorites.find((item) => item.product_id === product.id) ? true : false
+      );
+    }
+  }, [favorites, product]);
 
   if (!product)
     product = {
@@ -44,7 +52,7 @@ const ProductItem = ({ minWidth, product }) => {
     if (!authToken) return navigate("?auth=login");
 
     try {
-      dispatch(isFav ? removeFromFavorites(product) : addToFavorites(product));
+      setIsFav((prev) => !prev);
       const formData = new FormData();
       formData.append("product_id", product.id);
 
@@ -59,20 +67,22 @@ const ProductItem = ({ minWidth, product }) => {
           body: isFav ? undefined : formData,
         }
       );
-      if (!res.ok)
-        throw new Error(
-          `Could not ${isFav ? "remove from" : "add to"} favorites`
-        );
-      console.log(await res.json());
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Something went wrong!");
+      dispatch(
+        isFav ? removeFromFavorites(product.id) : addToFavorites(data.data)
+      );
+      console.log(data);
     } catch (error) {
       console.log(error.message);
-      dispatch(isFav ? addToFavorites(product) : removeFromFavorites(product));
+      setIsFav((prev) => !prev);
+      removeFromFavorites(product.id);
     }
   };
 
   return (
     <div
-      style={{ minWidth }}
+      style={{ minWidth, maxWidth, width }}
       onClick={() => navigate(`/product/${product.id}`)}
       className={`${classes.product} d-flex flex-column rounded-3`}
     >

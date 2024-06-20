@@ -25,17 +25,18 @@ export const fetchFavorites = createAsyncThunk(
 const favoritesSlice = createSlice({
   name: "favorites",
   initialState: {
-    list: [],
+    list: null,
     status: "loading",
     error: null,
   },
   reducers: {
     addToFavorites: (state, action) => {
-      state.list.unshift(action.payload);
+      if (state.list) state.list.unshift(action.payload);
+      else state.list = [action.payload];
     },
     removeFromFavorites: (state, action) => {
       state.list = state.list.filter(
-        (product) => product.id !== action.payload.id
+        (product) => product.product_id !== action.payload
       );
     },
   },

@@ -7,7 +7,7 @@ import {
   faStarHalf,
   faHeart as faHeartSolid,
 } from "@fortawesome/free-solid-svg-icons";
-import { memo, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import SingleReview from "./SingleReview";
 import Spinner from "../../UI/Spinner";
 import { useNavigate } from "react-router-dom";
@@ -86,13 +86,19 @@ const itemsPerPage = 2;
 // ];
 
 const ProductDetails = ({ className, product, error, loading }) => {
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites.list);
-  const isFav = favorites?.find((item) => item.id === product?.id);
-
   const authToken = useSelector((state) => state.auth.token);
+  const [isFav, setIsFav] = useState(false);
+
+  useEffect(() => {
+    if (favorites && product) {
+      setIsFav(
+        favorites.find((item) => item.product_id === product.id) ? true : false
+      );
+    }
+  }, [favorites, product]);
 
   const handleToggleFav = async (e) => {
     e.stopPropagation();
@@ -100,7 +106,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
     if (!authToken) return navigate("?auth=login");
 
     try {
-      dispatch(isFav ? removeFromFavorites(product) : addToFavorites(product));
+      setIsFav((prev) => !prev);
       const formData = new FormData();
       formData.append("product_id", product.id);
 
@@ -115,14 +121,15 @@ const ProductDetails = ({ className, product, error, loading }) => {
           body: isFav ? undefined : formData,
         }
       );
-      if (!res.ok)
-        throw new Error(
-          `Could not ${isFav ? "remove from" : "add to"} favorites`
-        );
-      console.log(await res.json());
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Something went wrong!");
+      dispatch(
+        isFav ? removeFromFavorites(product.id) : addToFavorites(data.data)
+      );
+      console.log(data);
     } catch (error) {
       console.log(error.message);
-      dispatch(isFav ? addToFavorites(product) : removeFromFavorites(product));
+      setIsFav((prev) => !prev);
     }
   };
 
@@ -134,6 +141,11 @@ const ProductDetails = ({ className, product, error, loading }) => {
         product?.reviews.length,
       [product]
     ) || 0;
+
+  const {
+    city_name_ar: city,
+    governorate: { governorate_name_ar: gov },
+  } = product?.city;
   return (
     <div className={className}>
       {loading ? (
@@ -153,10 +165,16 @@ const ProductDetails = ({ className, product, error, loading }) => {
                   onClick={handleToggleFav}
                   className={`border-0 rounded-circle ${classes["add-to-fav"]}`}
                   title="أضف إلى المفضلة"
-                  style={{ color: "#707070", backgroundColor: "var(--card-color)" }}
+                  style={{
+                    color: "#707070",
+                    backgroundColor: "var(--card-color)",
+                  }}
                 >
                   {isFav ? (
-                    <FontAwesomeIcon icon={faHeartSolid} style={{ color: "red" }} />
+                    <FontAwesomeIcon
+                      icon={faHeartSolid}
+                      style={{ color: "red" }}
+                    />
                   ) : (
                     <FontAwesomeIcon icon={faHeart} />
                   )}
@@ -180,7 +198,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
                   className="d-block"
                   style={{ color: "var(--product-text-color" }}
                 >
-                  {product.city.city_name_ar}
+                  {gov} / {city}
                 </span>
               </div>
             </div>
