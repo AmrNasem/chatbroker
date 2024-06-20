@@ -17,7 +17,7 @@ import {
 } from "../../store/favoritesSlice";
 import { backend } from "../../App";
 
-const ProductItem = ({ minWidth, product }) => {
+const ProductItem = ({ minWidth, maxWidth, width, product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites.list);
@@ -72,7 +72,7 @@ const ProductItem = ({ minWidth, product }) => {
 
   return (
     <div
-      style={{ minWidth }}
+      style={{ minWidth, maxWidth, width }}
       onClick={() => navigate(`/product/${product.id}`)}
       className={`${classes.product} d-flex flex-column rounded-3`}
     >

@@ -104,7 +104,7 @@ const Header = () => {
           to={authedUser ? "/new-product" : "?auth=login"}
           className={`px-lg-2 py-1 text-decoration-none d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
         >
-          <span>إضافة منتج للحجز</span>
+          <span>إضافة منتج</span>
           <FontAwesomeIcon icon={faSquarePlus} className="fs-5" />
         </Link>
         <Link

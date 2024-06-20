@@ -86,7 +86,6 @@ const itemsPerPage = 2;
 // ];
 
 const ProductDetails = ({ className, product, error, loading }) => {
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites.list);
@@ -134,6 +133,11 @@ const ProductDetails = ({ className, product, error, loading }) => {
         product?.reviews.length,
       [product]
     ) || 0;
+
+  const {
+    city_name_ar: city,
+    governorate: { governorate_name_ar: gov },
+  } = details?.city;
   return (
     <div className={className}>
       {loading ? (
@@ -153,10 +157,16 @@ const ProductDetails = ({ className, product, error, loading }) => {
                   onClick={handleToggleFav}
                   className={`border-0 rounded-circle ${classes["add-to-fav"]}`}
                   title="أضف إلى المفضلة"
-                  style={{ color: "#707070", backgroundColor: "var(--card-color)" }}
+                  style={{
+                    color: "#707070",
+                    backgroundColor: "var(--card-color)",
+                  }}
                 >
                   {isFav ? (
-                    <FontAwesomeIcon icon={faHeartSolid} style={{ color: "red" }} />
+                    <FontAwesomeIcon
+                      icon={faHeartSolid}
+                      style={{ color: "red" }}
+                    />
                   ) : (
                     <FontAwesomeIcon icon={faHeart} />
                   )}
@@ -180,7 +190,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
                   className="d-block"
                   style={{ color: "var(--product-text-color" }}
                 >
-                  {product.city.city_name_ar}
+                  {gov} / {city}
                 </span>
               </div>
             </div>
