@@ -26,14 +26,16 @@ const FavoriteCard = (props) => {
     e.stopPropagation();
     setLoading(true);
     try {
-      const res = await fetch(`${backend}/favorites/${product.id}`, {
+      const res = await fetch(`${backend}/favorites/${product.product_id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${authToken}`,
+          Accept: "application/json",
         },
       });
-      if (!res.ok) throw new Error("Could not remove from favorites");
-      dispatch(removeFromFavorites(product));
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Something went wrong");
+      dispatch(removeFromFavorites(product.product_id));
     } catch (error) {
       console.error("Error deleting favorite: ", error.message);
     }
@@ -43,7 +45,7 @@ const FavoriteCard = (props) => {
 
   return (
     <div
-      onClick={() => navigate(`/product/${product.id}`)}
+      onClick={() => navigate(`/product/${product.product_id}`)}
       className={`${favoriteCard.product} my-4 d-md-flex rounded-3`}
     >
       <div
@@ -108,8 +110,9 @@ const FavoriteCard = (props) => {
           >
             {
               <p
-                className={`${favoriteCard.title} ${animate ? `${favoriteCard.visible}` : ""
-                  }`}
+                className={`${favoriteCard.title} ${
+                  animate ? `${favoriteCard.visible}` : ""
+                }`}
               >
                 إزاله من المفضلة
               </p>
