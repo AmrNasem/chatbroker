@@ -86,6 +86,11 @@ const ProductDetails = ({ className, details, error, loading }) => {
         details?.reviews.length,
       [details]
     ) || 0;
+
+  const {
+    city_name_ar: city,
+    governorate: { governorate_name_ar: gov },
+  } = details?.city;
   return (
     <div className={className}>
       {loading ? (
@@ -127,7 +132,7 @@ const ProductDetails = ({ className, details, error, loading }) => {
                   className="d-block"
                   style={{ color: "var(--product-text-color" }}
                 >
-                  {details.city}
+                  {gov} / {city}
                 </span>
               </div>
             </div>
