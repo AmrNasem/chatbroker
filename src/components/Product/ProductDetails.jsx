@@ -5,10 +5,18 @@ import {
   faStar,
   faLocationDot,
   faStarHalf,
+  faHeart as faHeartSolid,
 } from "@fortawesome/free-solid-svg-icons";
 import { memo, useMemo, useState } from "react";
 import SingleReview from "./SingleReview";
 import Spinner from "../../UI/Spinner";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToFavorites,
+  removeFromFavorites,
+} from "../../store/favoritesSlice";
+import { backend } from "../../App";
 
 const getStar = (index, rate) =>
   rate < index + 1 && index < rate ? (
@@ -77,21 +85,61 @@ const itemsPerPage = 2;
 //   },
 // ];
 
-const ProductDetails = ({ className, details, error, loading }) => {
+const ProductDetails = ({ className, product, error, loading }) => {
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.favorites.list);
+  const isFav = favorites?.find((item) => item.id === product?.id);
+
+  const authToken = useSelector((state) => state.auth.token);
+
+  const handleToggleFav = async (e) => {
+    e.stopPropagation();
+
+    if (!authToken) return navigate("?auth=login");
+
+    try {
+      dispatch(isFav ? removeFromFavorites(product) : addToFavorites(product));
+      const formData = new FormData();
+      formData.append("product_id", product.id);
+
+      const res = await fetch(
+        `${backend}/favorites/${isFav ? product.id : "store"}`,
+        {
+          method: isFav ? "DELETE" : "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            Accept: "application/json",
+          },
+          body: isFav ? undefined : formData,
+        }
+      );
+      if (!res.ok)
+        throw new Error(
+          `Could not ${isFav ? "remove from" : "add to"} favorites`
+        );
+      console.log(await res.json());
+    } catch (error) {
+      console.log(error.message);
+      dispatch(isFav ? addToFavorites(product) : removeFromFavorites(product));
+    }
+  };
+
   const [page, setPage] = useState(1);
   const averageRate =
     useMemo(
       () =>
-        details?.reviews.reduce((prev, cur) => prev + cur.rate, 0) /
-        details?.reviews.length,
-      [details]
+        product?.reviews.reduce((prev, cur) => prev + cur.rate, 0) /
+        product?.reviews.length,
+      [product]
     ) || 0;
   return (
     <div className={className}>
       {loading ? (
         <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />
       ) : (
-        details && (
+        product && (
           <>
             <div
               className={`d-flex gap-3 my-3 align-items-center justify-content-between`}
@@ -102,21 +150,26 @@ const ProductDetails = ({ className, details, error, loading }) => {
                   التفاصيل
                 </span>
                 <button
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={handleToggleFav}
                   className={`border-0 rounded-circle ${classes["add-to-fav"]}`}
                   title="أضف إلى المفضلة"
+                  style={{ color: "#707070", backgroundColor: "var(--card-color)" }}
                 >
-                  <FontAwesomeIcon icon={faHeart} />
+                  {isFav ? (
+                    <FontAwesomeIcon icon={faHeartSolid} style={{ color: "red" }} />
+                  ) : (
+                    <FontAwesomeIcon icon={faHeart} />
+                  )}
                 </button>
               </div>
               <button className="border-0 bg-sec text-white rounded-pill py-1 px-4">
-                {details.available ? "متاح" : "غير متاح"}
+                {product.available ? "متاح" : "غير متاح"}
               </button>
             </div>
             <h6 className="my-2" style={{ color: "var(--product-text-color)" }}>
-              {details.title}
+              {product.title}
             </h6>
-            <h5 className="text-main mb-4">{details.desc}</h5>
+            <h5 className="text-main mb-4">{product.desc}</h5>
             <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
               <h6 style={{ color: "#424750" }} className="fw-semibold">
                 المكان
@@ -127,7 +180,7 @@ const ProductDetails = ({ className, details, error, loading }) => {
                   className="d-block"
                   style={{ color: "var(--product-text-color" }}
                 >
-                  {details.city}
+                  {product.city.city_name_ar}
                 </span>
               </div>
             </div>
@@ -136,9 +189,9 @@ const ProductDetails = ({ className, details, error, loading }) => {
                 السعر
               </h6>
               <div className="d-flex gap-2 align-items-center">
-                <h6 className="text-main mb-0">{details.price} جنيه</h6>
+                <h6 className="text-main mb-0">{product.price} جنيه</h6>
                 <p className="text-sec mb-0">
-                  لمدة {details.duration} {details.enum_durations}
+                  لمدة {product.duration} {product.enum_durations}
                 </p>
               </div>
             </div>
@@ -148,7 +201,7 @@ const ProductDetails = ({ className, details, error, loading }) => {
                 style={{ maxHeight: "350px" }}
                 className=" overflow-auto scrollbar-none p-2 border my-3 rounded-3"
               >
-                {details.conditions.split("\n").map((text, i) => (
+                {product.conditions.split("\n").map((text, i) => (
                   <p
                     key={i}
                     className="my-3"
@@ -182,18 +235,18 @@ const ProductDetails = ({ className, details, error, loading }) => {
                 </span>
               </div>
               <div>
-                {details.reviews
+                {product.reviews
                   .slice(0, page * itemsPerPage)
                   .map((review, i) => (
                     <SingleReview key={i} review={review} />
                   ))}
-                {!details?.reviews.length && (
+                {!product?.reviews.length && (
                   <p className="text-center text-danger my-3 fw-semibold">
                     لا توجد مراجعات!
                   </p>
                 )}
               </div>
-              {page < Math.ceil(details.reviews.length / itemsPerPage) && (
+              {page < Math.ceil(product.reviews.length / itemsPerPage) && (
                 <button
                   onClick={() => setPage((prev) => prev + 1)}
                   className={`btn text-main d-block border-0 mx-auto my-5 fw-semibold`}

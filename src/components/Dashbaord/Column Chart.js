@@ -8,13 +8,13 @@ const data = [
 	{ name: 'Jan', value: 246 },
 	{ name: 'Feb', value: 230 },
 	{ name: 'Mar', value: 300 },
-	{ name: 'Mar', value: 200 },
+	{ name: 'Mar', value: 240 },
 	{ name: 'Mar', value: 200 },
 	{ name: 'Jan', value: 246 },
 	{ name: 'Feb', value: 230 },
 	{ name: 'Mar', value: 200 },
-	{ name: 'Mar', value: 200 },
-	{ name: 'Mar', value: 200 },
+	{ name: 'Mar', value: 180 },
+	{ name: 'Mar', value: 230 },
 ];
 
 function TotalExchangeChart({ color }) {

@@ -108,9 +108,8 @@ const FavoriteCard = (props) => {
           >
             {
               <p
-                className={`${favoriteCard.title} ${
-                  animate ? `${favoriteCard.visible}` : ""
-                }`}
+                className={`${favoriteCard.title} ${animate ? `${favoriteCard.visible}` : ""
+                  }`}
               >
                 إزاله من المفضلة
               </p>

@@ -33,7 +33,6 @@ const SingleProduct = () => {
   }, [productId]);
 
   const images = product ? product.images.map(image => image) : [];
-
   const videos = [
     { image: "https://img.youtube.com/vi/CH50zuS8DD0/0.jpg", video: "https://www.youtube.com/embed/CH50zuS8DD0" },
     ...(product?.videos?.map(video => ({ image: video })) || [])
@@ -55,7 +54,7 @@ const SingleProduct = () => {
         ) : error ? (
           <p>No Details</p>
         ) : (
-          <ProductDetails details={product} loading={loading} error={error} className="flex-grow-1" />
+          <ProductDetails product={product} loading={loading} error={error} className="flex-grow-1" />
         )}
       </div>
       <div className="flex-grow-1">

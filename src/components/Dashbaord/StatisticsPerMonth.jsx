@@ -8,7 +8,7 @@ const data = [
   { name: 'Feb', productsSolde: 10000, totalViews: 13980 },
   { name: 'Mar', productsSolde: 15000, totalViews: 14800 },
   { name: 'Apr', productsSolde: 27800, totalViews: 39080 },
-  { name: 'May', productsSolde: 18900, totalViews: 48000 },
+  { name: 'May', productsSolde: 33333, totalViews: 48000 },
   { name: 'Jun', productsSolde: 23900, totalViews: 38000 },
   // Add more data points as needed
 ];
