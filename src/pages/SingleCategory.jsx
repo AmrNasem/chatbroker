@@ -1,51 +1,60 @@
+import { useEffect, useState } from "react";
 import MostRented from "../components/Home/MostRented";
 import ProductItem from "../components/Home/ProductItem";
-import SCategory from "./SingleCategory.module.css";
-import React, { useEffect, useState } from 'react';
+import { backend } from "../App";
+import { useParams } from "react-router-dom";
+import CardSkeleton from "../components/Skeleton/CardSkeleton";
+import { Container } from "react-bootstrap";
 
-const SingleCategory = ({ id }) => {
-  const [category, setCategory] = useState(null);
+const SingleCategory = () => {
+  const { categoryId } = useParams();
+  const [products, setProducts] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchCategory = async () => {
+    const fetchProducts = async () => {
       try {
-        const response = await fetch(`https://chat-broker-api.azurewebsites.net/api/v1/categories/${13}`);
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-        const data = await response.json();
-        if (data.data && data.data.length > 0) {
-          setCategory(data.data);
-        } else {
-          throw new Error('No category data found');
-        }
+        setLoading(true);
+        setError(null);
+        const res = await fetch(`${backend}/categories/${categoryId}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "حدث خطأ ما");
+        setProducts(data.data);
+        console.log(data);
       } catch (error) {
+        console.log(error.message);
         setError(error.message);
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     };
-
-    fetchCategory();
-  }, [id]);
-  console.log(category)
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+    fetchProducts();
+  }, [categoryId]);
 
   return (
-    <>
-      <p className={SCategory.title}>{category.title}</p>
-      <div className={SCategory.offersContainer}>
-        {category.map((product, index) => (
-          <div className={SCategory.card} key={index}>
-            <ProductItem product={category.data} />
-          </div>
-        ))}
-      </div>
+    <main>
+      <Container className="my-5">
+        {!!products?.length && (
+          <h4 className="">{products[0].category_id.title}</h4>
+        )}
+        <div className="d-flex gap-4 py-3 px-2 overflow-auto scrollbar-none">
+          {loading ? (
+            [...Array(3).keys()].map((i) => (
+              <CardSkeleton delay={i} key={i} style={{ minWidth: "240px" }} />
+            ))
+          ) : error ? (
+            <h5 className="text-center text-danger flex-grow-1">{error}</h5>
+          ) : !products.length ? (
+            <h5 className="text-center flex-grow-1">لا توجد منتجات!</h5>
+          ) : (
+            products.map((product, index) => (
+              <ProductItem maxWidth="240px" key={index} product={product} />
+            ))
+          )}
+        </div>
+      </Container>
       <MostRented />
-    </>
+    </main>
   );
 };
 

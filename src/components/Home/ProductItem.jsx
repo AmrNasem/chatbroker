@@ -82,7 +82,7 @@ const ProductItem = ({ minWidth, maxWidth, width, product }) => {
 
   return (
     <div
-      style={{ minWidth, maxWidth, width }}
+      style={{ minWidth: "230px", maxWidth, width }}
       onClick={() => navigate(`/product/${product.id}`)}
       className={`${classes.product} d-flex flex-column rounded-3`}
     >
@@ -114,8 +114,8 @@ const ProductItem = ({ minWidth, maxWidth, width, product }) => {
         />
       </div>
       <div className={`${classes.body} flex-grow-1 d-flex flex-column p-2`}>
-        <h5>{product.title}</h5>
-        <p className="fw-semibold overflow-hidden text-ellipsis mt-2 mb-1">
+        <h5 className={classes.ellipsis}>{product.title}</h5>
+        <p className={`fw-semibold mt-2 mb-1 ${classes.ellipsis}`}>
           {product.desc}
         </p>
         <div className={classes.location}>

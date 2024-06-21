@@ -26,8 +26,8 @@ const Badge = (props) => {
       ) : (
         <FontAwesomeIcon icon={faTag} />
       )}
-      <span className="fw-semibold">
-        {props.swap ? "متاح للاستبدال" : "متاح للبيع"}
+      <span style={{ fontSize: "0.78rem" }} className="fw-semibold">
+        متاح {props.swap ? "للاستبدال" : "للبيع"}
       </span>
     </div>
   );
