@@ -143,9 +143,10 @@ const ProductDetails = ({ className, product, error, loading }) => {
     ) || 0;
 
   const {
-    city_name_ar: city,
+    city: { city_name_ar: city },
     governorate: { governorate_name_ar: gov },
-  } = product?.city;
+  } = product;
+
   return (
     <div className={className}>
       {loading ? (
