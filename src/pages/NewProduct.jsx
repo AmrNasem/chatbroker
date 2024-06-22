@@ -26,9 +26,8 @@ const GetSelect = memo(
     return pre.error ? (
       <p
         style={{ fontSize: "0.9rem", flex: 1 }}
-        className={`text-center rounded-2 py-1 text-danger fw-semibold mt-3 ${
-          valid ? "" : "border border-danger invalid"
-        } ${className}`}
+        className={`text-center rounded-2 py-1 text-danger fw-semibold mt-3 ${valid ? "" : "border border-danger invalid"
+          } ${className}`}
       >
         {pre.error}،{" "}
         <button
@@ -242,7 +241,7 @@ const NewProduct = () => {
       <div className="container d-flex gap-5 my-4 flex-wrap flex-lg-nowrap">
         <ProductPreview
           setImages={setImages}
-          images={images.value}
+          media={images.value}
           invalid={images.invalid}
         />
         <form className="flex-grow-1" onSubmit={handleSubmit}>

@@ -1,31 +1,35 @@
 import React, { memo, useEffect, useState } from "react";
 import classes from "./ProductPreview.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClose,
+  faExclamationCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { validateImages } from "../../utils/general";
+import ReactPlayer from "react-player/lazy";
 
-const ProductPreview = ({ className, images, setImages, invalid }) => {
+const ProductPreview = ({ className, media, setImages, invalid }) => {
   const [active, setActive] = useState(null);
   const [dragging, setDragging] = useState(false);
-
   useEffect(() => {
-    setActive((prev) => images.find((img) => prev?.id === img.id) || images[0]);
-  }, [images]);
-
+    // Ensure active is set to the first item in media array if available
+    setActive(media.length > 0 ? media[0] : null);
+  }, [media]);
   const viewImage = (files) => {
     files.forEach((file) => {
       if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-          const newImage = {
+          const newMedia = {
             id: Math.random().toString(),
-            image: e.target.result,
+            type: file.type,
             file,
+            preview: e.target.result,
           };
           setImages((prev) => ({
             ...prev,
-            value: [...prev.value, newImage],
-            invalid: validateImages([...prev.value, newImage]),
+            value: [...prev.value, newMedia],
+            invalid: validateImages([...prev.value, newMedia]),
           }));
         };
         reader.readAsDataURL(file);
@@ -33,7 +37,7 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
     });
   };
 
-  const handleImageSelection = (e) => {
+  const handleFileSelection = (e) => {
     const files = e.target.files;
     viewImage([...files]);
   };
@@ -49,6 +53,7 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
     e.preventDefault();
     setDragging(true);
   };
+
   const handleDragOver = (e) => {
     e.preventDefault();
     setDragging(true);
@@ -71,29 +76,27 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
         )}
         {setImages ? (
           <label
-            htmlFor="add-photo"
+            htmlFor="add-media"
             onDragEnter={handleDragEnter}
             onDragLeave={() => setDragging(false)}
             onDragOver={handleDragOver}
             onDrop={handleDragDropImage}
             style={{ height: "400px", cursor: "pointer" }}
-            className={`${images.length ? "" : "bg-white p-3"} rounded-2 d-flex flex-column position-relative gap-3 justify-content-between`}
+            className={`${media.length ? "" : "bg-white p-3"} rounded-2  d-flex flex-column position-relative gap-3 justify-content-between`}
           >
             {active ? (
               <>
-                {active.video ? (
-                  <iframe
-                    className="w-100 h-100 object-fit-cover d-block"
-                    src={active.video}
-                    title="Video"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
+                {active.type && active.type.startsWith("video/") ? (
+                  <ReactPlayer
+                    url={active.preview}
+                    width="100%"
+                    height="100%"
+                    controls
+                  />
                 ) : (
                   <img
                     className="w-100 h-100 object-fit-cover d-block"
-                    src={active.image}
+                    src={active.preview}
                     alt=""
                   />
                 )}
@@ -110,7 +113,7 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
                     src={require("../../assets/add_photo_alternate.png")}
                     alt=""
                   />
-                  أفلت هنا
+                  Drop Here
                 </h4>
               </>
             ) : (
@@ -127,30 +130,31 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
                     src={require("../../assets/add_photo_alternate.png")}
                     alt=""
                   />
-                  <h5 className="mb-0">اضغط أو قم بالسحب والإفلات هنا</h5>
+                  <h5 className="mb-0">Click or drag and drop here</h5>
                 </div>
               </>
             )}
             <input
               type="file"
               accept="image/jpeg, image/jpg, image/png, image/bmp, video/mp4, video/avi, video/mov, video/mkv, video/webm, video/ogg"
-              onChange={handleImageSelection}
-              id="add-photo"
+              onChange={handleFileSelection}
+              id="add-media"
               hidden
               multiple
             />
           </label>
         ) : (
-          <div style={{ height: "400px" }} className="rounded-2 overflow-hidden">
-            {active?.video ? (
-              <iframe
-                className="w-100 h-100 object-fit-cover d-block"
-                src={active.video}
-                title="Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+          <div
+            style={{ height: "400px" }}
+            className="rounded-2 overflow-hidden"
+          >
+            {active && active.type && active.type.startsWith("video/") ? (
+              <ReactPlayer
+                url={active.video}
+                width="100%"
+                height="100%"
+                controls
+              />
             ) : (
               <img
                 className="w-100 h-100 object-fit-cover d-block"
@@ -160,29 +164,25 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
             )}
           </div>
         )}
-        {!!images.length && (
+        {!!media.length && (
           <div
             className={`d-flex gap-2 ${setImages ? "px-2" : ""} pt-2 overflow-auto scrollbar-none flex-grow-1`}
           >
-            {images.map((img, i) => (
+            {media.map((item, index) => (
               <button
-                value={i}
-                key={i}
-                onClick={() => setActive(img)}
-                className={`${active?.id === img.id ? classes.active : "border"} bg-transparent position-relative transition-main rounded-2 ${classes.image}`}
+                key={item.id}
+                onClick={() => setActive(item)}
+                className={`${active?.id === item.id ? classes.active : "border"} bg-transparent position-relative transition-main rounded-2 ${classes.image}`}
               >
                 {setImages && (
                   <span
                     onClick={(e) => {
                       e.stopPropagation();
-                      setImages((prev) => {
-                        const newImages = prev.value.filter((item) => item.id !== img.id);
-                        return {
-                          ...prev,
-                          value: newImages,
-                          invalid: validateImages(newImages),
-                        };
-                      });
+                      setImages((prev) => ({
+                        ...prev,
+                        value: prev.value.filter((img) => img.id !== item.id),
+                        invalid: validateImages(prev.value.filter((img) => img.id !== item.id)),
+                      }));
                     }}
                     style={{
                       width: "18px",
@@ -194,16 +194,17 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
                     <FontAwesomeIcon className="d-block" icon={faClose} />
                   </span>
                 )}
-                {img.video ? (
-                  <img
-                    className="w-100 h-100 object-fit-cover d-block rounded-1"
-                    src={img.image}
-                    alt="Video thumbnail"
+                {item && item.type && item.type.startsWith("video/") ? (
+                  <ReactPlayer
+                    url={item.video ? item.video : item.preview}
+
+                    width="100%"
+                    height="100%"
                   />
                 ) : (
                   <img
                     className="w-100 h-100 object-fit-cover d-block rounded-1"
-                    src={img.image}
+                    src={item.image ? item.image : item.preview}
                     alt=""
                   />
                 )}

@@ -34,11 +34,11 @@ const SingleProduct = () => {
 
   const images = product ? product.images.map(image => image) : [];
   const videos = [
-    { image: "https://img.youtube.com/vi/CH50zuS8DD0/0.jpg", video: "https://www.youtube.com/embed/CH50zuS8DD0" },
+    { type: "video/", video: require("../assets/vid1.mp4") },
     ...(product?.videos?.map(video => ({ image: video })) || [])
   ];
   const media = [...images, ...videos];
-
+  console.log(media)
   return (
     <main className="container my-4 d-flex gap-4 flex-wrap flex-xl-nowrap">
       <div className={`d-flex gap-4 flex-wrap w-100 flex-lg-nowrap ${classes.details}`}>
@@ -47,7 +47,7 @@ const SingleProduct = () => {
         ) : error ? (
           <p>No Images</p>
         ) : (
-          <ProductPreview images={media} loading={loading} error={error} className="flex-grow-1" />
+          <ProductPreview media={media} loading={loading} error={error} className="flex-grow-1" />
         )}
         {loading ? (
           <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />

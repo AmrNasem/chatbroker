@@ -17,19 +17,44 @@ export const getCookie = (name) => {
 };
 
 export const validateImages = (images) => {
-  const availableExtensions = ["png", "jpg", "jpeg", "bmp", "mp4", "avi", "mov", "mkv", "webm", "ogg"];
-  const violatedImage = images.find(
-    (img) => !availableExtensions.includes(img.file.type.split("/")[1])
-  );
+  const allowedImageExtensions = ["png", "jpg", "jpeg", "bmp"];
+  const allowedVideoExtensions = ["mp4", "avi", "mov", "mkv", "webm", "ogg"];
 
-  if (!images.length) return "برجاء أرفق صور المنتج.";
-  else if (violatedImage)
-    return `يجب أن تكون الصورة بإحدى الصيغ (${availableExtensions.join(
-      ", "
-    )}).`;
-  else if (images.length > 2) return "يمكنك رفع صورتين فقط بحد أقصى";
-  return null;
+  // Check if no images are uploaded
+  if (!images.length) {
+    return "Please upload product images.";
+  }
+
+  // Check maximum image upload limit
+  if (images.length > 2) {
+    return "You can upload a maximum of two images.";
+  }
+
+  // Check each image in the array
+  for (let i = 0; i < images.length; i++) {
+    const image = images[i];
+
+    // Check if the image object or its file property exists
+    if (!image || !image.file) {
+      return "Invalid image format.";
+    }
+
+    const fileExtension = image.file.type.split("/")[1];
+
+    // Check if it's a valid image extension
+    if (image.file.type.startsWith("image/") && !allowedImageExtensions.includes(fileExtension)) {
+      return `Image must be in one of the following formats: ${allowedImageExtensions.join(", ")}.`;
+    }
+
+    // Check if it's a valid video extension
+    if (image.file.type.startsWith("video/") && !allowedVideoExtensions.includes(fileExtension)) {
+      return `Video must be in one of the following formats: ${allowedVideoExtensions.join(", ")}.`;
+    }
+  }
+
+  return null; // Return null if all validations pass
 };
+
 
 export const contacts = [
   {

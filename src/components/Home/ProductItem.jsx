@@ -72,7 +72,6 @@ const ProductItem = ({ minWidth, maxWidth, width, product }) => {
       dispatch(
         isFav ? removeFromFavorites(product.id) : addToFavorites(data.data)
       );
-      console.log(data);
     } catch (error) {
       console.log(error.message);
       setIsFav((prev) => !prev);
