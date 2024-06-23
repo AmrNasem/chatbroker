@@ -1,10 +1,11 @@
 .badge {
-  font-size: 0.8rem;
-  flex-basis: calc(100% / 3);
+  font-size: 0.5rem;
+  flex-basis: calc(100% /3 );
+  max-width: calc(100% /3);
 }
 .arrow {
   right: 100%;
-  top: 0.5px;
-  border: 11.7px solid transparent;
+  top: 0.21px;
+  border: 8.1px solid transparent;
   border-right-width: 13px !important;
 }

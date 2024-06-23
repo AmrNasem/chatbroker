@@ -78,7 +78,7 @@ const ProductItem = ({ minWidth, maxWidth, width, product }) => {
       removeFromFavorites(product.id);
     }
   };
-
+  console.log(product.image)
   return (
     <div
       style={{ minWidth: "230px", maxWidth, width }}
@@ -123,14 +123,15 @@ const ProductItem = ({ minWidth, maxWidth, width, product }) => {
         </div>
         <div className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}>
           <FontAwesomeIcon icon={faTag} />
-          <span className="fw-semibold">{product.amount} جنيه</span>
+          <span className="fw-semibold">{(product.rent ? product.rent : product.sell ? product.sell : product.swap).amount} جنيه</span>
           <span className={classes.duration}>
-            لمدة {product.duration} {product.enum_durations}
+            لمدة {(product.rent ? product.rent : product.sell ? product.sell : product.swap).duration} {(product.rent ? product.rent : product.sell ? product.sell : product.swap).enum_durations}
           </span>
         </div>
         <div className="flex-grow-1 d-flex align-items-end">
-          <Badge className="" swap />
-          <Badge className="" />
+          {product.swap && <Badge className="" swap />}
+          {product.sell && <Badge className="" sell />}
+          {product.rent && <Badge className="" rent />}
         </div>
       </div>
     </div>

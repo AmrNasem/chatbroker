@@ -9,10 +9,11 @@ import {
 import { faChartSimple, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Categories from "./Categories";
 import { useSelector } from "react-redux";
 import Notifications from "./Notifications";
+import FavoriteCard from "../../components/FavoriteCard";
 
 const Header = () => {
   const [, setParams] = useSearchParams();
@@ -20,6 +21,10 @@ const Header = () => {
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const [notificationsVanishing, setNotificationsVanishing] = useState(false);
   const favorites = useSelector((state) => state.favorites.list);
+
+  const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   const handleNotificationsClosure = () => {
     setNotificationsVanishing(true);
@@ -46,6 +51,33 @@ const Header = () => {
       });
   };
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('{{url}}/products');
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+  };
+
+  const filteredProducts = products.filter(product =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <header className="bg-white z-1 position-relative">
       <div
@@ -65,9 +97,8 @@ const Header = () => {
           >
             <div className="position-relative">
               <span
-                className={`position-absolute top-0 end-0 rounded-circle ${
-                  notificationsVisible ? "bg-sec" : "bg-main"
-                } ${classes.bullet}`}
+                className={`position-absolute top-0 end-0 rounded-circle ${notificationsVisible ? "bg-sec" : "bg-main"
+                  } ${classes.bullet}`}
               ></span>
 
               <FontAwesomeIcon icon={faBell} className="fs-5" />
@@ -76,14 +107,16 @@ const Header = () => {
           </button>
           {notificationsVisible && (
             <Notifications
-              className={`${classes.notifications} ${
-                notificationsVanishing ? classes.vanishing : ""
-              } position-absolute end-0 shadow rounded-2`}
+              className={`${classes.notifications} ${notificationsVanishing ? classes.vanishing : ""
+                } position-absolute end-0 shadow rounded-2`}
             />
           )}
         </div>
         <form
           className={`d-flex flex-grow-1 border rounded-2 overflow-hidden ${classes.search}`}
+          onSubmit={handleSearchSubmit}
+        // onClick={() => navigate(`/search`)}
+
         >
           <button className="px-2 py-1 border-0 bg-transparent text-black-50">
             <FontAwesomeIcon icon={faSearch} />
@@ -92,6 +125,8 @@ const Header = () => {
             type="text"
             className="flex-grow-1 border-0 p-2"
             placeholder="إنت بتدور على إيه؟"
+            value={searchTerm}
+            onChange={handleSearchChange}
           />
         </form>
         <Link
@@ -159,6 +194,17 @@ const Header = () => {
         </Link> */}
       </div>
       <Categories className="d-flex align-items-center overflow-auto gap-3" />
+
+      {/* Display filtered products */}
+      <div className="container mt-3">
+        <div className="row">
+          {filteredProducts.map(product => (
+            <div key={product.id} className="col-md-4">
+              <FavoriteCard product={product} />
+            </div>
+          ))}
+        </div>
+      </div>
     </header>
   );
 };

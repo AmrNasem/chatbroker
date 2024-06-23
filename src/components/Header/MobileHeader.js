@@ -3,12 +3,13 @@ import { } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Aside from "./Aside";
 
 const MobileHeader = () => {
   const [dispalyAside, setDisplayAside] = useState(false);
   const [closingAside, setClosingAside] = useState(false);
+  const navigate = useNavigate();
 
   const closeAsideHandler = useCallback(() => {
     setClosingAside(true);
@@ -31,6 +32,7 @@ const MobileHeader = () => {
       </Link>
       <form
         className={`d-flex flex-grow-1 border rounded-2 overflow-hidden ${classes.search}`}
+        onClick={() => navigate(`/search`)}
       >
         <button className="px-2 py-1 border-0 bg-transparent text-black-50">
           <FontAwesomeIcon icon={faSearch} />

@@ -99,7 +99,8 @@ const ProductDetails = ({ className, product, error, loading }) => {
       );
     }
   }, [favorites, product]);
-
+  // console.log(favorites)
+  // console.log(product)
   const handleToggleFav = async (e) => {
     e.stopPropagation();
 
@@ -141,10 +142,10 @@ const ProductDetails = ({ className, product, error, loading }) => {
       [product]
     ) || 0;
 
-  const {
-    city: { city_name_ar: city },
-    governorate: { governorate_name_ar: gov },
-  } = product;
+  // const {
+  //   city: { city_name_ar: city },
+  //   governorate: { governorate_name_ar: gov },
+  // } = product;
 
   return (
     <div className={className}>
@@ -187,7 +188,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
             <h6 className="my-2" style={{ color: "var(--product-text-color)" }}>
               {product.title}
             </h6>
-            <h5 className="text-main mb-4">{product.desc}</h5>
+            <h5 className="text-main mb-4">{(product.rent ? product.rent : product.sell ? product.sell : product.swap).descount}</h5>
             <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
               <h6 style={{ color: "#424750" }} className="fw-semibold">
                 المكان
@@ -198,7 +199,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
                   className="d-block"
                   style={{ color: "var(--product-text-color" }}
                 >
-                  {gov} / {city}
+                  {product.city.city_name_ar}
                 </span>
               </div>
             </div>
@@ -207,19 +208,20 @@ const ProductDetails = ({ className, product, error, loading }) => {
                 السعر
               </h6>
               <div className="d-flex gap-2 align-items-center">
-                <h6 className="text-main mb-0">{product.price} جنيه</h6>
+                <h6 className="text-main mb-0">{(product.rent ? product.rent : product.sell ? product.sell : product.swap).amount} جنيه</h6>
                 <p className="text-sec mb-0">
-                  لمدة {product.duration} {product.enum_durations}
+                  لمدة {(product.rent ? product.rent : product.sell ? product.sell : product.swap).duration} {(product.rent ? product.rent : product.sell ? product.sell : product.swap).enum_durations}
                 </p>
               </div>
             </div>
-            <div className="my-3">
+            {product.rent && <div className="my-3">
               <h6 className="text-main">شروط الحجز</h6>
               <div
                 style={{ maxHeight: "350px" }}
                 className=" overflow-auto scrollbar-none p-2 border my-3 rounded-3"
               >
-                {product.conditions.split("\n").map((text, i) => (
+                {/* remove the condition beleow */}
+                {product.rent ? product.rent.conditions.split("\n").map((text, i) => (
                   <p
                     key={i}
                     className="my-3"
@@ -230,9 +232,9 @@ const ProductDetails = ({ className, product, error, loading }) => {
                   >
                     {text}
                   </p>
-                ))}
+                )) : null}
               </div>
-            </div>
+            </div>}
             <div className="my-5">
               <h5 className="text-center">مراجعة المستخدمين</h5>
               <div className="d-flex gap-2 align-items-center justify-content-center">

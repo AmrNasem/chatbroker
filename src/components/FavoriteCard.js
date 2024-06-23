@@ -40,7 +40,6 @@ const FavoriteCard = (props) => {
       console.error("Error deleting favorite: ", error.message);
     }
     setLoading(false);
-    // dispatch(deleteFavorite({ authToken, favoriteId: product.id }));
   };
 
   return (
@@ -98,9 +97,10 @@ const FavoriteCard = (props) => {
           </div>
         </div>
         <div className="flex-grow-1 flex-wrap-reverse  d-flex align-items-start justify-content-between">
-          <div className="d-flex">
-            <Badge className={favoriteCard.badge} swap />
-            <Badge className={favoriteCard.badge} />
+          <div className="flex-grow-1 d-flex align-items-end" style={{ maxWidth: "30%" }}>
+            {product.swap && <Badge className="" swap />}
+            {product.sell && <Badge className="" sell />}
+            {product.rent && <Badge className="" rent />}
           </div>
           <div
             onMouseOver={() => setAnimate(true)}
@@ -110,9 +110,8 @@ const FavoriteCard = (props) => {
           >
             {
               <p
-                className={`${favoriteCard.title} ${
-                  animate ? `${favoriteCard.visible}` : ""
-                }`}
+                className={`${favoriteCard.title} ${animate ? `${favoriteCard.visible}` : ""
+                  }`}
               >
                 إزاله من المفضلة
               </p>
