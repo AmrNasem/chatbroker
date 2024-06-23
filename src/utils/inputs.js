@@ -5,7 +5,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
-export const newProduct = [
+export const newProductBefore = [
   {
     id: "category_id",
     label: "نوع المنتج",
@@ -27,11 +27,15 @@ export const newProduct = [
       return !(text.length > 70 || text.length < 5);
     },
   },
+];
+
+export const newProductAfter = [
   {
     flex: true,
     value: [
       {
         id: "duration",
+        model: "for_renting",
         label: "مدة الحجز",
         type: "number",
         message: "برجاء أدخل مدة الحجز.",
@@ -39,6 +43,7 @@ export const newProduct = [
       },
       {
         id: "enum_durations",
+        model: "for_renting",
         getOptions: (data) => data.durationOptions,
         validate: (value) => value,
       },
@@ -48,7 +53,8 @@ export const newProduct = [
     flex: true,
     value: [
       {
-        id: "amount",
+        id: "rent_amount",
+        model: "for_renting",
         label: "سعر الحجز",
         subLabel: "بالجنيه المصري",
         type: "number",
@@ -56,7 +62,8 @@ export const newProduct = [
         validate: (value = "") => value.length && +value > 0,
       },
       {
-        id: "discount",
+        id: "rent_discount",
+        model: "for_renting",
         label: "خصم",
         subLabel: "اختياري",
         type: "number",
@@ -64,6 +71,59 @@ export const newProduct = [
         validate: (value = "") => (value.length ? +value >= 0 : true),
       },
     ],
+  },
+  {
+    flex: true,
+    value: [
+      {
+        id: "sell_amount",
+        model: "for_selling",
+        label: "سعر البيع",
+        subLabel: "بالجنيه المصري",
+        type: "number",
+        message: "برجاء أدخل سعر البيع.",
+        validate: (value = "") => value.length && +value > 0,
+      },
+      {
+        id: "sell_discount",
+        model: "for_selling",
+        label: "خصم",
+        subLabel: "اختياري",
+        type: "number",
+        message: "قيمة الخصم غير صحيحة.",
+        validate: (value = "") => (value.length ? +value >= 0 : true),
+      },
+    ],
+  },
+  {
+    flex: true,
+    value: [
+      {
+        id: "swap_amount",
+        model: "for_swapping",
+        label: "سعر التبديل",
+        subLabel: "بالجنيه المصري",
+        type: "number",
+        message: "برجاء أدخل سعر التبديل.",
+        validate: (value = "") => value.length && +value > 0,
+      },
+      {
+        id: "swap_discount",
+        model: "for_swapping",
+        label: "خصم",
+        subLabel: "اختياري",
+        type: "number",
+        message: "قيمة الخصم غير صحيحة.",
+        validate: (value = "") => (value.length ? +value >= 0 : true),
+      },
+    ],
+  },
+  {
+    id: "swap_with",
+    model: "for_swapping",
+    label: "تبديل مع",
+    message: "أدخل منتجًا تريده في المقابل.",
+    validate: (value = "") => value.length && value.length <= 80,
   },
   {
     flex: true,
@@ -97,6 +157,7 @@ export const newProduct = [
   },
   {
     id: "conditions",
+    model: "for_renting",
     message: "برجاء أدخل شروط المنتج (لايقل عن 30 كلمة ولا يزيد عن 700 كلمة).",
     label: "شروط المنتج",
     type: "textarea",
