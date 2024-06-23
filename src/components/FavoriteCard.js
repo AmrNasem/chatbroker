@@ -75,7 +75,7 @@ const FavoriteCard = (props) => {
           <div>
             <h5>{product.title}</h5>
             <p className="fw-semibold overflow-hidden text-ellipsis mt-2 mb-1">
-              {product.desc}
+              {(product.rent ? product.rent : product.sell ? product.sell : product.swap).descount}
             </p>
             <div className={favoriteCard.location}>
               <FontAwesomeIcon className="ms-1" icon={faLocationDot} />
@@ -88,11 +88,11 @@ const FavoriteCard = (props) => {
             <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
               <FontAwesomeIcon icon={faTag} />
               <span className="fw-semibold text-nowrap">
-                {product.amount} جنيه
+                {(product.rent ? product.rent : product.sell ? product.sell : product.swap).amount} جنيه
               </span>
             </div>
             <span className={`text-nowrap ${favoriteCard.duration}`}>
-              لمدة {product.duration} {product.enum_durations}
+              لمدة {(product.rent ? product.rent : product.sell ? product.sell : product.swap).duration} {product.enum_durations}
             </span>
           </div>
         </div>

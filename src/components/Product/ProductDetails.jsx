@@ -46,44 +46,6 @@ const getStar = (index, rate) =>
   );
 
 const itemsPerPage = 2;
-// const reviews = [
-//   {
-//     authorName: "دينا أحمد",
-//     rate: 3,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
-//   },
-//   {
-//     authorName: "محمد حجي",
-//     rate: 4,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
-//   },
-//   {
-//     authorName: "كريم إسماعيل",
-//     rate: 1,
-//     title: "عنوان للتعليق",
-//     description: "سيء للغاية ولن أشتريه مرة أخرى",
-//   },
-//   {
-//     authorName: "دينا أحمد",
-//     rate: 3,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
-//   },
-//   {
-//     authorName: "محمد حجي",
-//     rate: 4,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
-//   },
-//   {
-//     authorName: "كريم إسماعيل",
-//     rate: 1,
-//     title: "عنوان للتعليق",
-//     description: "سيء للغاية ولن أشتريه مرة أخرى",
-//   },
-// ];
 
 const ProductDetails = ({ className, product, error, loading }) => {
   const navigate = useNavigate();
@@ -95,12 +57,12 @@ const ProductDetails = ({ className, product, error, loading }) => {
   useEffect(() => {
     if (favorites && product) {
       setIsFav(
-        favorites.find((item) => item.product_id === product.id) ? true : false
+        favorites.find((item) => item.product_id === (product.rent ? product.rent : product.sell ? product.sell : product.swap).id) ? true : false
       );
     }
   }, [favorites, product]);
-  // console.log(favorites)
-  // console.log(product)
+
+  console.log(product)
   const handleToggleFav = async (e) => {
     e.stopPropagation();
 
@@ -109,10 +71,10 @@ const ProductDetails = ({ className, product, error, loading }) => {
     try {
       setIsFav((prev) => !prev);
       const formData = new FormData();
-      formData.append("product_id", product.id);
+      formData.append("product_id", (product.rent ? product.rent : product.sell ? product.sell : product.swap).id);
 
       const res = await fetch(
-        `${backend}/favorites/${isFav ? product.id : "store"}`,
+        `${backend}/favorites/${isFav ? (product.rent ? product.rent : product.sell ? product.sell : product.swap).id : "store"}`,
         {
           method: isFav ? "DELETE" : "POST",
           headers: {
@@ -125,10 +87,10 @@ const ProductDetails = ({ className, product, error, loading }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Something went wrong!");
       dispatch(
-        isFav ? removeFromFavorites(product.id) : addToFavorites(data.data)
+        isFav ? removeFromFavorites((product.rent ? product.rent : product.sell ? product.sell : product.swap).id) : addToFavorites(data.data)
       );
     } catch (error) {
-      console.log(error.message);
+      console.error("Error toggling favorite status:", error.message);
       setIsFav((prev) => !prev);
     }
   };
@@ -141,11 +103,6 @@ const ProductDetails = ({ className, product, error, loading }) => {
         product?.reviews.length,
       [product]
     ) || 0;
-
-  // const {
-  //   city: { city_name_ar: city },
-  //   governorate: { governorate_name_ar: gov },
-  // } = product;
 
   return (
     <div className={className}>
@@ -220,7 +177,6 @@ const ProductDetails = ({ className, product, error, loading }) => {
                 style={{ maxHeight: "350px" }}
                 className=" overflow-auto scrollbar-none p-2 border my-3 rounded-3"
               >
-                {/* remove the condition beleow */}
                 {product.rent ? product.rent.conditions.split("\n").map((text, i) => (
                   <p
                     key={i}
