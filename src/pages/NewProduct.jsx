@@ -8,7 +8,10 @@ import Spinner from "../UI/Spinner";
 import { validateImages } from "../utils/general";
 import NewProductInput from "../components/Product/NewProductInput";
 import { useNavigate } from "react-router-dom";
-import { newProduct as inputs } from "../utils/inputs";
+import {
+  newProductBefore as beforeInputs,
+  newProductAfter as afterInputs,
+} from "../utils/inputs";
 import Alert from "../UI/Alert";
 
 const GetSelect = memo(
@@ -59,6 +62,21 @@ const GetSelect = memo(
   }
 );
 
+const modelsBtns = [
+  {
+    id: "for_selling",
+    text: "للبيع",
+  },
+  {
+    id: "for_swapping",
+    text: "للتبديل",
+  },
+  {
+    id: "for_renting",
+    text: "للإيجار",
+  },
+];
+
 const NewProduct = () => {
   const {
     categories,
@@ -72,7 +90,11 @@ const NewProduct = () => {
   const [pre, setPre] = useState({ data: null, loading: true, error: "" });
 
   const [images, setImages] = useState({ value: [], invalid: "" });
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    for_renting: 1,
+    for_swapping: 0,
+    for_selling: 0,
+  });
   const [inputsTouched, setInputsTouched] = useState({});
 
   const [loading, setLoading] = useState(false);
@@ -125,14 +147,21 @@ const NewProduct = () => {
     const areImagesInvalid = validateImages(images.value);
     setImages((prev) => ({ ...prev, invalid: areImagesInvalid }));
 
+    const validate = (input) => {
+      if (!input.model || !!formData[input.model])
+        return input.validate(formData[input.id]);
+      return true;
+    };
+
     const isFormValid =
-      inputs.every((input) => {
-        if (input.flex)
-          return input.value.every((input2) =>
-            input2.validate(formData[input2.id])
-          );
-        else return input.validate(formData[input.id]);
+      [...beforeInputs, ...afterInputs].every((input) => {
+        if (input.flex) return input.value.every(validate);
+        else {
+          return validate(input);
+        }
       }) && !areImagesInvalid;
+
+    console.log(formData, images);
 
     if (isFormValid) {
       const formdata = new FormData();
@@ -141,7 +170,6 @@ const NewProduct = () => {
       });
       formdata.append("available", 1); // Static
       formdata.append("location", "123"); // Static
-      formdata.append("model", "product"); // Static
 
       for (const key in formData) {
         switch (key) {
@@ -168,17 +196,24 @@ const NewProduct = () => {
         });
         if (!res.ok) throw new Error("لم تتم إضافة المنتج!");
         const newProduct = await res.json();
-        navigate(`/product/${newProduct.data.id}`);
+        console.log(newProduct);
+        navigate(`/product/${newProduct.product.id}`);
       } catch (err) {
         setError(err.message);
       }
       setLoading(false);
     } else {
       const allTouched = {};
-      inputs.forEach((input) => {
+      [...beforeInputs, ...afterInputs].forEach((input) => {
         if (input.flex)
-          input.value.forEach((input2) => (allTouched[input2.id] = true));
-        else allTouched[input.id] = true;
+          input.value.forEach(
+            (input2) =>
+              (!input2.model || !!formData[input2.model]) &&
+              (allTouched[input2.id] = true)
+          );
+        else
+          (!input.model || !!formData[input.model]) &&
+            (allTouched[input.id] = true);
       });
       setInputsTouched(allTouched);
     }
@@ -204,6 +239,17 @@ const NewProduct = () => {
       setError(null);
       setClosing(false);
     }, 300);
+  };
+
+  const handleModelSwitch = (e) => {
+    const currentModels = modelsBtns.filter((btn) => formData[btn.id]);
+    if (currentModels.length === 1 && currentModels[0].id === e.target.id)
+      return;
+
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.id]: prev[e.target.id] ? 0 : 1,
+    }));
   };
 
   const getContent = (input, className) => {
@@ -245,18 +291,67 @@ const NewProduct = () => {
           invalid={images.invalid}
         />
         <form className="flex-grow-1" onSubmit={handleSubmit}>
-          {inputs.map((input, i) => {
-            if (input.flex)
+          {beforeInputs.map((input, i) => {
+            if (input.flex && input.value.find((inp) => formData[inp.model]))
               return (
                 <div
                   key={i}
-                  className="d-flex flex-wrap my-4 gap-2 align-items-center"
+                  className="d-flex flex-wrap my-2 gap-2 align-items-center"
                 >
-                  {input.value.map((childInput) => getContent(childInput))}
+                  {input.value.map(
+                    (childInput) =>
+                      (!childInput.model || !!formData[childInput.model]) &&
+                      getContent(childInput)
+                  )}
                 </div>
               );
 
-            return getContent(input, "my-4");
+            return (
+              (!input.model || !!formData[input.model]) &&
+              getContent(input, "my-4")
+            );
+          })}
+          <div className="my-4">
+            <label>النموذج</label>
+            <div className="d-flex gap-3 my-2 align-items-center">
+              {modelsBtns.map((btn) => (
+                <button
+                  key={btn.id}
+                  id={btn.id}
+                  type="button"
+                  onClick={handleModelSwitch}
+                  className={`flex-grow-1 border p-2 ${
+                    formData[btn.id] ? "text-sec border-sec" : "text-main"
+                  } rounded-2 bg-transparent`}
+                >
+                  {btn.text}
+                </button>
+              ))}
+            </div>
+          </div>
+          {afterInputs.map((input, i) => {
+            if (input.flex) {
+              if (input.value.some((inp) => formData[inp.model]))
+                return (
+                  <div
+                    key={i}
+                    className="d-flex flex-wrap my-4 gap-2 align-items-center"
+                  >
+                    {input.value.map(
+                      (childInput) =>
+                        (!childInput.model || !!formData[childInput.model]) &&
+                        getContent(childInput)
+                    )}
+                  </div>
+                );
+
+              return null;
+            }
+
+            return (
+              (!input.model || !!formData[input.model]) &&
+              getContent(input, "my-4")
+            );
           })}
           {loading ? (
             <Spinner color="var(--secondary-color)" className="mx-auto" />

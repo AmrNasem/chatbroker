@@ -22,6 +22,9 @@
 .bg-main {
   background-color: var(--main-color);
 }
+.border-main {
+  border-color: var(--main-color) !important;
+}
 .border-sec {
   border-color: var(--secondary-color) !important;
 }

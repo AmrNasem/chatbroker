@@ -89,15 +89,26 @@ const ProductItem = ({ minWidth, product, setProfile }) => {
             <FontAwesomeIcon className="ms-1" icon={faLocationDot} />
             {product.city}{" "}
           </div>
-          <div
-            className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
-          >
-            <FontAwesomeIcon icon={faTag} />
-            <span className="fw-semibold">{product.amount} جنيه</span>
-            <span className={classes.duration}>
-              لمدة {product.duration} {product.enum_durations}
-            </span>
-          </div>
+          {product.sell && (
+            <div
+              className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
+            >
+              <FontAwesomeIcon icon={faTag} />
+              السعر:
+              <span className="fw-semibold">{product.sell.amount} جنيه</span>
+            </div>
+          )}
+          {product.rent && (
+            <div
+              className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
+            >
+              <FontAwesomeIcon icon={faTag} />
+              <span className="fw-semibold">{product.rent.amount} جنيه</span>
+              <span className={classes.duration}>
+                لمدة {product.rent.duration} {product.rent.enum_durations}
+              </span>
+            </div>
+          )}
           <div className="d-flex gap-1 align-items-center my-2">
             <button
               style={{ color: "var(--address-color)" }}
