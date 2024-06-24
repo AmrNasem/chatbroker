@@ -5,6 +5,7 @@ import productsSlice from "./products-slice";
 import authSlice from "./auth-slice";
 import favoritesReducer from "./favoritesSlice";
 import sharedReducer from "./shredSlice";
+import chatSlice from "./chat-slice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     auth: authSlice,
     favorites: favoritesReducer,
     shared: sharedReducer,
+    chats: chatSlice,
   },
 });
 
