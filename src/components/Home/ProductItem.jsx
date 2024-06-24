@@ -4,13 +4,41 @@ import {
   faLocationDot,
   faStar,
   faTag,
+  faRepeat,
 } from "@fortawesome/free-solid-svg-icons";
 import { memo } from "react";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Badge";
 
-const ProductItem = ({ minWidth, maxWidth, width, product }) => {
+const badges = [
+  {
+    id: "swap",
+    className: "text-main z-2",
+    style: { backgroundColor: "#FFF1E1", paddingRight: "6px" },
+    icon: faRepeat,
+    text: "للاستبدال",
+    borderRightColor: "#FFF1E1",
+  },
+  {
+    id: "sell",
+    className: "text-white bg-main z-1",
+    style: { paddingRight: "18px" },
+    icon: faTag,
+    text: "للبيع",
+    borderRightColor: "var(--main-color)",
+  },
+  {
+    id: "rent",
+    className: "text-white bg-sec z-0",
+    style: { paddingRight: "18px" },
+    icon: faTag,
+    text: "للإيجار",
+    borderRightColor: "var(--secondary-color)",
+  },
+];
+
+const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
   const navigate = useNavigate();
   if (!product)
     product = {
@@ -63,16 +91,47 @@ const ProductItem = ({ minWidth, maxWidth, width, product }) => {
           <FontAwesomeIcon className="ms-1" icon={faLocationDot} />
           {product.city}{" "}
         </div>
-        <div className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}>
-          <FontAwesomeIcon icon={faTag} />
-          <span className="fw-semibold">{product.amount} جنيه</span>
-          <span className={classes.duration}>
-            لمدة {product.duration} {product.enum_durations}
-          </span>
-        </div>
+        {product.sell && (
+          <div
+            className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
+          >
+            <FontAwesomeIcon icon={faTag} />
+            السعر:
+            <span className="fw-semibold">{product.sell.amount} جنيه</span>
+          </div>
+        )}
+        {product.rent && (
+          <div
+            className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
+          >
+            <FontAwesomeIcon icon={faTag} />
+            <span className="fw-semibold">{product.rent.amount} جنيه</span>
+            <span className={classes.duration}>
+              لمدة {product.rent.duration} {product.rent.enum_durations}
+            </span>
+          </div>
+        )}
+        {/* {product.swap && (
+          <div
+            className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
+          >
+            <FontAwesomeIcon icon={faRepeat} />
+            تبديل:
+            <span className="fw-semibold">{product.swap.amount} جنيه</span>
+          </div>
+        )} */}
         <div className="flex-grow-1 d-flex align-items-end">
-          <Badge className="" swap />
-          <Badge className="" />
+          {badges
+            .filter((badge) => product[badge.id])
+            .map((badge, i) => (
+              <Badge
+                key={badge.id}
+                {...badge}
+                style={{ ...badge.style, paddingRight: i ? "18px" : "6px" }}
+              >
+                {badge.text}
+              </Badge>
+            ))}
         </div>
       </div>
     </div>

@@ -136,37 +136,57 @@ const ProductDetails = ({ className, details, error, loading }) => {
                 </span>
               </div>
             </div>
-            <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
-              <h6 style={{ color: "#424750" }} className="fw-semibold">
-                السعر
-              </h6>
-              <div className="d-flex gap-2 align-items-center">
-                <h6 className="text-main mb-0">{details.price} جنيه</h6>
-                <p className="text-sec mb-0">
-                  لمدة {details.duration} {details.enum_durations}
-                </p>
+            {details.sell && (
+              <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
+                <h6 style={{ color: "#424750" }} className="fw-semibold">
+                  السعر
+                </h6>
+                <h6 className="text-main mb-0">{details.sell.amount} جنيه</h6>
               </div>
-            </div>
-            <div className="my-3">
-              <h6 className="text-main">شروط الحجز</h6>
-              <div
-                style={{ maxHeight: "350px" }}
-                className=" overflow-auto scrollbar-none p-2 border my-3 rounded-3"
-              >
-                {details.conditions.split("\n").map((text, i) => (
-                  <p
-                    key={i}
-                    className="my-3"
-                    style={{
-                      color: "var(--product-text-color)",
-                      fontSize: "0.95rem",
-                    }}
-                  >
-                    {text}
+            )}
+            {details.rent && (
+              <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
+                <h6 style={{ color: "#424750" }} className="fw-semibold">
+                  للإيجار
+                </h6>
+                <div className="d-flex gap-2 align-items-center">
+                  <h6 className="text-main mb-0">{details.rent.amount} جنيه</h6>
+                  <p className="text-sec mb-0">
+                    لمدة {details.rent.duration} {details.rent.enum_durations}
                   </p>
-                ))}
+                </div>
               </div>
-            </div>
+            )}
+            {details.swap && (
+              <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
+                <h6 style={{ color: "#424750" }} className="fw-semibold">
+                  تبديل مع
+                </h6>
+                <h6 className="text-main mb-0">{details.swap.swap_with}</h6>
+              </div>
+            )}
+            {details.rent && (
+              <div className="my-3">
+                <h6 className="text-main">شروط الحجز</h6>
+                <div
+                  style={{ maxHeight: "350px" }}
+                  className=" overflow-auto scrollbar-none p-2 border my-3 rounded-3"
+                >
+                  {details.rent.conditions.split("\n").map((text, i) => (
+                    <p
+                      key={i}
+                      className="my-3"
+                      style={{
+                        color: "var(--product-text-color)",
+                        fontSize: "0.95rem",
+                      }}
+                    >
+                      {text}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="my-5">
               <h5 className="text-center">مراجعة المستخدمين</h5>
               <div className="d-flex gap-2 align-items-center justify-content-center">

@@ -1,6 +1,6 @@
 .badge {
-  font-size: 0.8rem;
-  flex-basis: calc(100% / 3);
+  font-size: 0.76rem;
+  flex-basis: calc(100% / 4);
 }
 .arrow {
   right: 100%;
