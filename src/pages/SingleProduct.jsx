@@ -44,9 +44,7 @@ const SingleProduct = () => {
         if (!res.ok) throw new Error();
         const data = await res.json();
         setProduct(data.data);
-        console.log(data);
       } catch (err) {
-        console.log(err.message);
         setError(err.message);
       }
       setLoading(false);
@@ -70,10 +68,11 @@ const SingleProduct = () => {
         },
       });
       const data = await res.json();
-      console.log(data);
       if (!res.ok) throw new Error(data.message || "حدثت مشكلة ما!");
+      const { conversation, ...rest } = data.payload;
+      console.log({ ...conversation, ...rest });
       setNewChat((prev) => ({ ...prev, loading: false }));
-      dispatch(openChat(data.payload.conversation));
+      dispatch(openChat({ chat: { ...conversation, ...rest } }));
       navigate("/chat");
     } catch (error) {
       setNewChat((prev) => ({ ...prev, error: error.message, loading: false }));

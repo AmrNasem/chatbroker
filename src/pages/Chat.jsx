@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { closeChat, fetchMessages } from "../store/chat-slice";
 import PersonSkeleton from "../components/Skeleton/PersonSkeleton";
 import { chatURL } from "../utils/constants";
+import useEscape from "../hooks/use-escape";
 
 const chatAreaStyle = { flexBasis: "66%" };
 
@@ -19,7 +20,9 @@ const Chat = () => {
     loading: true,
     error: null,
   });
-  const currentChat = useSelector((state) => state.chats.currentChat);
+  const { currentChat, onlineUsers, unreadMessages } = useSelector(
+    (state) => state.chats
+  );
   const dispatch = useDispatch();
 
   const handleToggleAside = useCallback(
@@ -37,8 +40,7 @@ const Chat = () => {
       });
       const data = await res.json();
       console.log(data);
-      if (!res.ok)
-        throw new Error(data.error ? data.message : "خطأ في تحميل الدردشات!");
+      if (!res.ok) throw new Error(data.message || "خطأ في تحميل الدردشات!");
       setChats((prev) => ({
         ...prev,
         value: data.payload.conversations,
@@ -60,13 +62,9 @@ const Chat = () => {
       );
   }, [currentChat, dispatch, token]);
 
-  useEffect(() => {
-    const deactivate = (e) => {
-      if (e.key === "Escape") dispatch(closeChat());
-    };
-    window.addEventListener("keydown", deactivate);
-    return () => window.removeEventListener("keydown", deactivate);
-  }, [dispatch]);
+  useEffect(() => () => dispatch(closeChat()), [dispatch]);
+
+  useEscape(() => dispatch(closeChat()));
 
   return (
     <main className={`container d-flex mb-4 ${classes.page}`}>
@@ -93,10 +91,29 @@ const Chat = () => {
             <p className="text-center text-danger fw-semibold my-2">
               {chats.error}
             </p>
+          ) : chats.value.length ? (
+            chats.value.map((chat, i) => {
+              const online = onlineUsers?.find(
+                (u) => user.id !== +u && chat.members.includes(+u)
+              )
+                ? true
+                : false;
+              return (
+                <Person
+                  key={i}
+                  chat={chat}
+                  online={online}
+                  unread={unreadMessages.filter((m) =>
+                    chat.members.includes(m.senderId)
+                  )}
+                  onToggleAside={handleToggleAside}
+                />
+              );
+            })
           ) : (
-            chats.value.map((chat, i) => (
-              <Person key={i} chat={chat} onToggleAside={handleToggleAside} />
-            ))
+            <p className="text-center fw-semibold my-2">
+              ليست لديك دردشات بعد!
+            </p>
           )}
         </div>
       </aside>

@@ -17,6 +17,7 @@ import Modal from "../../UI/Modal";
 
 const Aside = ({ onClick, closing }) => {
   const authedUser = useSelector((state) => state.auth.user);
+  const unreadMessages = useSelector((state) => state.chats.unreadMessages);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -72,11 +73,13 @@ const Aside = ({ onClick, closing }) => {
             to={authedUser ? "/chat" : "?auth=login"}
           >
             <div className="position-relative">
-              <span
-                className={`position-absolute top-0 end-0 rounded-circle text-white d-flex justify-content-center align-items-center ${classes.amount}`}
-              >
-                0
-              </span>
+              {!!unreadMessages.length && (
+                <span
+                  className={`position-absolute top-0 end-0 rounded-circle text-white d-flex justify-content-center align-items-center ${classes.amount}`}
+                >
+                  {unreadMessages.length}
+                </span>
+              )}
               <FontAwesomeIcon icon={faMessage} className="fs-5" />
             </div>
             <span>الدردشة</span>

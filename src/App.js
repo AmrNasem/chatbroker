@@ -15,6 +15,13 @@ import Profile from "./pages/Profile";
 import { getCookie } from "./utils/general";
 import { authenticateUser } from "./store/auth-slice";
 import Chat from "./pages/Chat";
+import io from "socket.io-client";
+import {
+  connectSocket,
+  disconnectSocket,
+  receiveMessage,
+  setOnlineUsers,
+} from "./store/chat-slice";
 
 export const backend = "https://chat-broker-api.azurewebsites.net/api/v1";
 
@@ -24,6 +31,36 @@ function App() {
   const [params, setParams] = useSearchParams();
   const dispatch = useDispatch();
   const [authClosing, setAuthClosing] = useState(false);
+  const [messageSound, setMessageSound] = useState(false);
+
+  const handlePlaySound = () => {
+    setMessageSound(true);
+    setTimeout(() => {
+      setMessageSound(false);
+    }, 2000);
+  };
+
+  useEffect(() => {
+    if (!authedUser) return;
+    const soc = io(
+      `https://chat-server-dgx4.onrender.com?userId=${authedUser.id}`,
+      {
+        transports: ["websocket"],
+        autoConnect: false,
+      }
+    );
+    soc.on("users", (data) => dispatch(setOnlineUsers(data)));
+    soc.on("getMessage", (data) => {
+      dispatch(receiveMessage(data));
+      handlePlaySound();
+    });
+    dispatch(connectSocket(soc));
+    return () => {
+      soc.off("users");
+      soc.off("getMessage");
+      dispatch(disconnectSocket());
+    };
+  }, [authedUser, dispatch]);
 
   const closeAuthHandler = useCallback(() => {
     setAuthClosing(true);
@@ -105,6 +142,13 @@ function App() {
         />
       </Routes>
       <Footer />
+      {messageSound && (
+        <audio
+          hidden
+          autoPlay
+          src={require("./assets/message-notification.mp3")}
+        ></audio>
+      )}
     </div>
   );
 }
