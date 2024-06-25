@@ -6,9 +6,11 @@ import {
   faLocationDot,
   faStarHalf,
 } from "@fortawesome/free-solid-svg-icons";
-import { memo, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import SingleReview from "./SingleReview";
 import Spinner from "../../UI/Spinner";
+import AddReview from "../Reviews/AddReview";
+import { useSelector } from "react-redux";
 
 const getStar = (index, rate) =>
   rate < index + 1 && index < rate ? (
@@ -37,54 +39,60 @@ const getStar = (index, rate) =>
     />
   );
 
-const itemsPerPage = 2;
-// const reviews = [
+const itemsPerPage = 10;
+// const initialReviews = [
 //   {
-//     authorName: "دينا أحمد",
+//     user: { name: "دينا أحمد" },
 //     rate: 3,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
+//     comment: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
 //   },
 //   {
-//     authorName: "محمد حجي",
+//     user: { name: "محمد حجي" },
 //     rate: 4,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
+//     comment: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
 //   },
 //   {
-//     authorName: "كريم إسماعيل",
+//     user: { name: "كريم إسماعيل" },
 //     rate: 1,
-//     title: "عنوان للتعليق",
-//     description: "سيء للغاية ولن أشتريه مرة أخرى",
+//     comment: "سيء للغاية ولن أشتريه مرة أخرى",
 //   },
 //   {
-//     authorName: "دينا أحمد",
+//     user: { name: "دينا أحمد" },
 //     rate: 3,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
+//     comment: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
 //   },
 //   {
-//     authorName: "محمد حجي",
+//     user: { name: "محمد حجي" },
 //     rate: 4,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
+//     comment: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
 //   },
 //   {
-//     authorName: "كريم إسماعيل",
+//     user: { name: "كريم إسماعيل" },
 //     rate: 1,
-//     title: "عنوان للتعليق",
-//     description: "سيء للغاية ولن أشتريه مرة أخرى",
+//     comment: "سيء للغاية ولن أشتريه مرة أخرى",
 //   },
 // ];
 
 const ProductDetails = ({ className, details, error, loading }) => {
+  const [newReviewClosing, setNewReviewClosing] = useState(false);
+  const [newReview, setNewReview] = useState(false);
+  const [reviews, setReviews] = useState(details.reviews);
+  const user = useSelector((state) => state.auth.user);
+
+  const handleNewReviewClosure = useCallback(() => {
+    setNewReviewClosing(true);
+    setTimeout(() => {
+      setNewReview(false);
+      setNewReviewClosing(false);
+    }, 300);
+  }, []);
+
   const [page, setPage] = useState(1);
   const averageRate =
     useMemo(
       () =>
-        details?.reviews.reduce((prev, cur) => prev + cur.rate, 0) /
-        details?.reviews.length,
-      [details]
+        reviews?.reduce((prev, cur) => prev + cur.rate, 0) / reviews?.length,
+      [reviews]
     ) || 0;
 
   const {
@@ -206,19 +214,29 @@ const ProductDetails = ({ className, details, error, loading }) => {
                   من 5
                 </span>
               </div>
+              {!reviews?.find((review) => review.user.id === user.id) && (
+                <button
+                  onClick={() => setNewReview(true)}
+                  className="btn border-0 text-white bg-sec d-block border-0 mx-auto mb-5 mt-3"
+                >
+                  أضف مراجعتك
+                </button>
+              )}
               <div>
-                {details.reviews
-                  .slice(0, page * itemsPerPage)
-                  .map((review, i) => (
-                    <SingleReview key={i} review={review} />
-                  ))}
-                {!details?.reviews.length && (
+                {reviews.slice(0, page * itemsPerPage).map((review, i) => (
+                  <SingleReview
+                    key={i}
+                    review={review}
+                    setReviews={setReviews}
+                  />
+                ))}
+                {!reviews?.length && (
                   <p className="text-center text-danger my-3 fw-semibold">
                     لا توجد مراجعات!
                   </p>
                 )}
               </div>
-              {page < Math.ceil(details.reviews.length / itemsPerPage) && (
+              {page < Math.ceil(reviews.length / itemsPerPage) && (
                 <button
                   onClick={() => setPage((prev) => prev + 1)}
                   className={`btn text-main d-block border-0 mx-auto my-5 fw-semibold`}
@@ -232,6 +250,14 @@ const ProductDetails = ({ className, details, error, loading }) => {
             </div>
           </>
         )
+      )}
+      {newReview && (
+        <AddReview
+          onClick={handleNewReviewClosure}
+          closing={newReviewClosing}
+          // productId={details.id}
+          setReviews={setReviews}
+        />
       )}
     </div>
   );
