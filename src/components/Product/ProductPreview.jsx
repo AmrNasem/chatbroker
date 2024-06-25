@@ -1,20 +1,21 @@
 import React, { memo, useEffect, useState } from "react";
 import classes from "./ProductPreview.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClose,
-  faExclamationCircle,
-} from "@fortawesome/free-solid-svg-icons";
-import { validateImages } from "../../utils/general";
+import { faClose, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import ReactPlayer from "react-player/lazy";
+import { useParams } from "react-router-dom";
+import { validateImages } from "../../utils/general";
 
-const ProductPreview = ({ className, media, setImages, invalid }) => {
+const ProductPreview = ({ className, media, setImages, invalid, product }) => {
   const [active, setActive] = useState(null);
   const [dragging, setDragging] = useState(false);
+  const { productId } = useParams();
+
   useEffect(() => {
     // Ensure active is set to the first item in media array if available
     setActive(media.length > 0 ? media[0] : null);
   }, [media]);
+
   const viewImage = (files) => {
     files.forEach((file) => {
       if (file) {
@@ -59,6 +60,9 @@ const ProductPreview = ({ className, media, setImages, invalid }) => {
     setDragging(true);
   };
 
+  console.log("Active Media: ", active);
+  console.log("Media Array: ", media);
+
   return (
     <div className={`${classes.navigator} w-100 ${className}`}>
       <div
@@ -82,13 +86,13 @@ const ProductPreview = ({ className, media, setImages, invalid }) => {
             onDragOver={handleDragOver}
             onDrop={handleDragDropImage}
             style={{ height: "400px", cursor: "pointer" }}
-            className={`${media.length ? "" : "bg-white p-3"} rounded-2  d-flex flex-column position-relative gap-3 justify-content-between`}
+            className={`${media.length ? "" : "bg-white p-3"} rounded-2 d-flex flex-column position-relative gap-3 justify-content-between`}
           >
             {active ? (
               <>
-                {active.type && active.type.startsWith("video/") ? (
+                {active.video ? (
                   <ReactPlayer
-                    url={active.preview}
+                    url={active.video}
                     width="100%"
                     height="100%"
                     controls
@@ -96,7 +100,7 @@ const ProductPreview = ({ className, media, setImages, invalid }) => {
                 ) : (
                   <img
                     className="w-100 h-100 object-fit-cover d-block"
-                    src={active.preview}
+                    src={active.image}
                     alt=""
                   />
                 )}
@@ -148,7 +152,7 @@ const ProductPreview = ({ className, media, setImages, invalid }) => {
             style={{ height: "400px" }}
             className="rounded-2 overflow-hidden"
           >
-            {active && active.type && active.type.startsWith("video/") ? (
+            {active && active.video ? (
               <ReactPlayer
                 url={active.video}
                 width="100%"
@@ -156,11 +160,13 @@ const ProductPreview = ({ className, media, setImages, invalid }) => {
                 controls
               />
             ) : (
-              <img
-                className="w-100 h-100 object-fit-cover d-block"
-                src={active?.image}
-                alt=""
-              />
+              <a href={product.images360.length !== 0 ? `https://chat-broker-api.azurewebsites.net/product/${productId}/360-image` : null}>
+                <img
+                  className="w-100 h-100 object-fit-cover d-block"
+                  src={active?.image}
+                  alt=""
+                />
+              </a>
             )}
           </div>
         )}
@@ -168,7 +174,7 @@ const ProductPreview = ({ className, media, setImages, invalid }) => {
           <div
             className={`d-flex gap-2 ${setImages ? "px-2" : ""} pt-2 overflow-auto scrollbar-none flex-grow-1`}
           >
-            {media.map((item, index) => (
+            {media.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActive(item)}
@@ -194,17 +200,16 @@ const ProductPreview = ({ className, media, setImages, invalid }) => {
                     <FontAwesomeIcon className="d-block" icon={faClose} />
                   </span>
                 )}
-                {item && item.type && item.type.startsWith("video/") ? (
+                {item.video ? (
                   <ReactPlayer
-                    url={item.video ? item.video : item.preview}
-
+                    url={item.video}
                     width="100%"
                     height="100%"
                   />
                 ) : (
                   <img
                     className="w-100 h-100 object-fit-cover d-block rounded-1"
-                    src={item.image ? item.image : item.preview}
+                    src={item.image}
                     alt=""
                   />
                 )}

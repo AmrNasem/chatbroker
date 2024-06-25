@@ -54,10 +54,8 @@ const SingleProduct = () => {
 
   console.log(product)
   const images = product ? product.images.map(image => image) : [];
-  const videos = [
-    { type: "video/", video: require("../assets/vid1.mp4") },
-    ...(product?.videos?.map(video => ({ image: video })) || [])
-  ];
+
+  const videos = product ? product?.videos?.map(video => video) : [];
   const media = [...images, ...videos];
   console.log(media)
 
@@ -96,7 +94,7 @@ const SingleProduct = () => {
         ) : error ? (
           <p>No Images</p>
         ) : (
-          <ProductPreview media={media} loading={loading} error={error} className="flex-grow-1" />
+          <ProductPreview product={product} media={media} loading={loading} error={error} className="flex-grow-1" />
         )}
         {loading ? (
           <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />

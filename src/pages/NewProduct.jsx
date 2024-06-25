@@ -320,9 +320,8 @@ const NewProduct = () => {
                   id={btn.id}
                   type="button"
                   onClick={handleModelSwitch}
-                  className={`flex-grow-1 border p-2 ${
-                    formData[btn.id] ? "text-sec border-sec" : "text-main"
-                  } rounded-2 bg-transparent`}
+                  className={`flex-grow-1 border p-2 ${formData[btn.id] ? "text-sec border-sec" : "text-main"
+                    } rounded-2 bg-transparent`}
                 >
                   {btn.text}
                 </button>
