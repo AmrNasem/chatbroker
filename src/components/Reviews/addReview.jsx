@@ -86,9 +86,8 @@ const AddReview = ({ onClick, closing, setReviews }) => {
     <Modal
       onClick={onClick}
       closing={closing}
-      className={`${classes.auth} ${
-        closing ? classes.closing : ""
-      } bg-white position-fixed top-50 start-50 overflow-auto scrollbar-none p-4 rounded-3`}
+      className={`${classes.auth} ${closing ? classes.closing : ""
+        } bg-white position-fixed top-50 start-50 overflow-auto scrollbar-none p-4 rounded-3`}
     >
       <div className=" text-start fw-semibold text-nowrap text-decoration-none">
         <span className="text-sec">Chat </span>
@@ -101,19 +100,17 @@ const AddReview = ({ onClick, closing, setReviews }) => {
       <div>
         <div
           style={{ width: "fit-content" }}
-          className={`${
-            invalidRate ? "invalid border border-danger" : "border-0"
-          } p-2 rounded-2 mx-auto`}
+          className={`${invalidRate ? "invalid border border-danger" : "border-0"
+            } p-2 rounded-2 mx-auto`}
         >
           {rates.map((r) => (
             <button
               onClick={() => setFormData((prev) => ({ ...prev, rate: r }))}
               key={r.rate}
-              className={`bg-transparent d-inline-block mx-1 border-0 ${
-                !formData.rate || r.rate > formData.rate.rate
+              className={`bg-transparent d-inline-block mx-1 border-0 ${!formData.rate || r.rate > formData.rate.rate
                   ? "opacity-50"
                   : ""
-              }`}
+                }`}
             >
               <FontAwesomeIcon className={`text-sec`} icon={faStar} />
             </button>
@@ -132,9 +129,8 @@ const AddReview = ({ onClick, closing, setReviews }) => {
       <form onSubmit={handleAddReview} className="w-100">
         <div className="my-4">
           <textarea
-            className={`${
-              invalidComment ? "invalid border border-danger" : "border-0"
-            } outline-none w-100 d-block rounded-2 p-2`}
+            className={`${invalidComment ? "invalid border border-danger" : "border-0"
+              } outline-none w-100 d-block rounded-2 p-2`}
             style={{
               backgroundColor: "#efefef",
               height: "150px",
