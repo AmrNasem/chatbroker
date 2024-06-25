@@ -6,6 +6,7 @@ import {
   faTag,
   faRepeat,
   faHeart as faHeartSolid,
+  faBagShopping,
 } from "@fortawesome/free-solid-svg-icons";
 import { memo, useEffect, useState } from "react";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
@@ -22,7 +23,7 @@ const badges = [
   {
     id: "swap",
     className: "text-main z-2",
-    style: { backgroundColor: "#FFF1E1", paddingRight: "6px" },
+    style: { backgroundColor: "#FFF1E1" },
     icon: faRepeat,
     text: "للاستبدال",
     borderRightColor: "#FFF1E1",
@@ -30,15 +31,13 @@ const badges = [
   {
     id: "sell",
     className: "text-white bg-main z-1",
-    style: { paddingRight: "18px" },
-    icon: faTag,
+    icon: faBagShopping,
     text: "للبيع",
     borderRightColor: "var(--main-color)",
   },
   {
     id: "rent",
     className: "text-white bg-sec z-0",
-    style: { paddingRight: "18px" },
     icon: faTag,
     text: "للإيجار",
     borderRightColor: "var(--secondary-color)",
@@ -153,7 +152,7 @@ const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
           <div
             className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
           >
-            <FontAwesomeIcon icon={faTag} />
+            <FontAwesomeIcon className="text-sec" icon={faBagShopping} />
             السعر:
             <span className="fw-semibold">{product.sell.amount} جنيه</span>
           </div>
@@ -162,7 +161,7 @@ const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
           <div
             className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
           >
-            <FontAwesomeIcon icon={faTag} />
+            <FontAwesomeIcon style={{ color: "red" }} icon={faTag} />
             <span className="fw-semibold">{product.rent.amount} جنيه</span>
             <span className={classes.duration}>
               لمدة {product.rent.duration} {product.rent.enum_durations}
@@ -185,7 +184,7 @@ const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
               <Badge
                 key={badge.id}
                 {...badge}
-                style={{ ...badge.style, paddingRight: i ? "18px" : "6px" }}
+                style={{ ...badge.style, paddingRight: i ? "18px" : "8px" }}
               >
                 {badge.text}
               </Badge>

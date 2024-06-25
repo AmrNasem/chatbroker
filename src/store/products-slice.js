@@ -16,6 +16,7 @@ export const fetchProducts = createAsyncThunk(
       const res = await fetch(`${backend}/products?page=${page}`);
       if (!res.ok) throw new Error("Network error");
       const data = await res.json();
+      console.log(data);
       return data;
     } catch (err) {
       throw err;
