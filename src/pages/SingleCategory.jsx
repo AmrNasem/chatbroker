@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import MostRented from "../components/Home/MostRented";
+import MostPopular from "../components/Home/MostPopular";
 import ProductItem from "../components/Home/ProductItem";
 import { backend } from "../App";
 import { useParams } from "react-router-dom";
@@ -53,7 +53,7 @@ const SingleCategory = () => {
           )}
         </div>
       </Container>
-      <MostRented />
+      <MostPopular />
     </main>
   );
 };
