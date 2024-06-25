@@ -64,6 +64,7 @@ const NewProductInput = ({
           id={id}
           onBlur={onBlur}
           onChange={onChange}
+          onWheel={(e) => e.target.blur()}
           value={value || ""}
           placeholder={placeholder || "اكتب هنا.."}
           className={`d-block p-2 w-100 ${inputClassName} 
