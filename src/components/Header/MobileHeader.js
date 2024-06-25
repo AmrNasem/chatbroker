@@ -4,7 +4,6 @@ import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Link, useNavigate } from "react-router-dom";
 import Aside from "./Aside";
 
 const MobileHeader = () => {
@@ -13,13 +12,11 @@ const MobileHeader = () => {
   const [searchInput, setSearchInput] = useState('');
 
   const navigate = useNavigate();
-  const navigate = useNavigate();
 
   const closeAsideHandler = useCallback(() => {
     setClosingAside(true);
     setTimeout(() => {
       setDisplayAside(false);
-      setClosingAside(false);
     }, 200);
   }, []);
 

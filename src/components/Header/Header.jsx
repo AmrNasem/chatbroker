@@ -100,8 +100,6 @@ const Header = () => {
               <span
                 className={`position-absolute top-0 end-0 rounded-circle ${notificationsVisible ? "bg-sec" : "bg-main"
                   } ${classes.bullet}`}
-                className={`position-absolute top-0 end-0 rounded-circle ${notificationsVisible ? "bg-sec" : "bg-main"
-                  } ${classes.bullet}`}
               ></span>
 
               <FontAwesomeIcon icon={faBell} className="fs-5" />
@@ -112,15 +110,12 @@ const Header = () => {
             <Notifications
               className={`${classes.notifications} ${notificationsVanishing ? classes.vanishing : ""
                 } position-absolute end-0 shadow rounded-2`}
-              className={`${classes.notifications} ${notificationsVanishing ? classes.vanishing : ""
-                } position-absolute end-0 shadow rounded-2`}
             />
           )}
         </div>
         <form
           onSubmit={handleSearchSubmit}
           className={`d-flex flex-grow-1 border rounded-2 overflow-hidden ${classes.search}`}
-          onSubmit={handleSearchSubmit}
         // onClick={() => navigate(`/search`)}
 
         >
@@ -131,10 +126,8 @@ const Header = () => {
             type="text"
             className="flex-grow-1 border-0 p-2"
             placeholder="إنت بتدور على إيه؟"
-            value={searchInput}
             onChange={handleSearchChange}
             value={searchTerm}
-            onChange={handleSearchChange}
           />
         </form>
         <Link

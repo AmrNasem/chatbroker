@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import ReactPlayer from "react-player/lazy";
 import { useParams } from "react-router-dom";
-import { validateImages } from "../../utils/general";
+import { validateMedia } from "../../utils/general";
 
 const ProductPreview = ({ className, media, setImages, invalid, product }) => {
   const [active, setActive] = useState(null);
@@ -30,7 +30,7 @@ const ProductPreview = ({ className, media, setImages, invalid, product }) => {
           setImages((prev) => ({
             ...prev,
             value: [...prev.value, newMedia],
-            invalid: validateImages([...prev.value, newMedia]),
+            invalid: validateMedia([...prev.value, newMedia]),
           }));
         };
         reader.readAsDataURL(file);
@@ -187,7 +187,7 @@ const ProductPreview = ({ className, media, setImages, invalid, product }) => {
                       setImages((prev) => ({
                         ...prev,
                         value: prev.value.filter((img) => img.id !== item.id),
-                        invalid: validateImages(prev.value.filter((img) => img.id !== item.id)),
+                        invalid: validateMedia(prev.value.filter((img) => img.id !== item.id)),
                       }));
                     }}
                     style={{

@@ -5,7 +5,7 @@ import Skeleton from "../components/Skeleton/Skeleton";
 import { fetchCategories } from "../store/categories-slice";
 import { backend } from "../App";
 import Spinner from "../UI/Spinner";
-import { validateImages } from "../utils/general";
+import { validateMedia } from "../utils/general";
 import NewProductInput from "../components/Product/NewProductInput";
 import { useNavigate } from "react-router-dom";
 import {
@@ -149,7 +149,7 @@ const NewProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const areImagesInvalid = validateImages(images.value);
+    const areImagesInvalid = validateMedia(images.value);
     setImages((prev) => ({ ...prev, invalid: areImagesInvalid }));
 
     const validate = (input) => {
