@@ -46,9 +46,6 @@
 .deal {
   font-size: 0.9rem;
 }
-.deal svg {
-  color: red;
-}
-.deal .duration {
+.duration {
   color: var(--secondary-color);
 }
