@@ -1,15 +1,15 @@
 import { Container } from "react-bootstrap";
 import ProductItem from "./ProductItem";
-import { memo, useEffect, useMemo } from "react";
+import { memo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CardSkeleton from "../Skeleton/CardSkeleton";
 import { fetchProducts } from "../../store/products-slice";
 
-const MostRented = () => {
+const MostPopular = () => {
   const { products, error, loading } = useSelector((state) => state.products);
   const dispatch = useDispatch();
 
-  const mostRentedProducts = useMemo(() => products?.slice(0, 6), [products]);
+  console.log(products, error, loading);
 
   useEffect(() => {
     if (!products) dispatch(fetchProducts());
@@ -19,15 +19,9 @@ const MostRented = () => {
 
   return (
     <Container className="my-5">
-      <h4 className="mb-4">الأكثر إيجارًا</h4>
+      <h4 className="mb-4">الأكثر رواجًا</h4>
       <div className="d-flex gap-4 py-3 px-2 overflow-auto scrollbar-none">
-        {error ? (
-          <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
-        ) : mostRentedProducts && mostRentedProducts.length ? (
-          mostRentedProducts.map((product, index) => (
-            <ProductItem width="230px" key={index} product={product} />
-          ))
-        ) : (
+        {loading ? (
           <div className="d-flex gap-4 my-4 overflow-auto scrollbar-none">
             {[...Array(3).keys()].map((key) => (
               <CardSkeleton
@@ -37,10 +31,16 @@ const MostRented = () => {
               />
             ))}
           </div>
+        ) : error ? (
+          <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
+        ) : (
+          products.map((product, index) => (
+            <ProductItem width="230px" key={index} product={product} />
+          ))
         )}
       </div>
     </Container>
   );
 };
 
-export default memo(MostRented);
+export default memo(MostPopular);

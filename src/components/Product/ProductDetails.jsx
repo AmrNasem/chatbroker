@@ -19,7 +19,6 @@ import {
   removeFromFavorites,
 } from "../../store/favoritesSlice";
 import { backend } from "../../App";
-import AddReview from "../Reviews/addReview";
 
 const getStar = (index, rate) =>
   rate < index + 1 && index < rate ? (
@@ -225,7 +224,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
                 </div>}
                 {product.rent &&
                   <span className={`text-nowrap ${classes.duration}`}>
-                    <span style={{ color: "red" }} className="fw-bold">
+                    <span style={{ color: "red" }} cl>
                       <FontAwesomeIcon icon={faClock} style={{ marginLeft: "5px" }} /></span>
                     لمدة {product.rent.duration} {product.rent.enum_durations}
                   </span>}

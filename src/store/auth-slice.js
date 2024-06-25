@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { getCookie, setCookie } from "../utils/general";
 
 const initialState = { user: null, token: null };
-const sessionDuration = 60 * 60 * 1000;
+const sessionDuration = 30 * 24 * 60 * 60 * 1000;
 
 const authSlice = createSlice({
   name: "auth",

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import classes from "./Modal.module.css";
+import useEscape from "../hooks/use-escape";
 
 const Modal = ({
   className,
@@ -14,6 +15,8 @@ const Modal = ({
     document.body.classList.add("overflow-hidden");
     return () => document.body.classList.remove("overflow-hidden");
   }, []);
+
+  useEscape(onClick);
 
   return ReactDOM.createPortal(
     <>
