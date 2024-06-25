@@ -8,7 +8,7 @@ import Alert from "../../UI/Alert";
 const SingleReview = ({ review, setReviews }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const token = useSelector((state) => state.auth.token);
+  const { token, user } = useSelector((state) => state.auth);
   const [closing, setClosing] = useState(false);
 
   const handleClosure = useCallback(() => {
@@ -55,16 +55,18 @@ const SingleReview = ({ review, setReviews }) => {
           </div>
           <h6 className="text-main">{review.user.name}</h6>
         </div>
-        <button
-          disabled={loading}
-          onClick={handleDeleteReview}
-          style={{ fontSize: "0.8rem" }}
-          className={`btn border border-danger bg-transparent text-danger py-1 fw-semibold ${
-            loading ? "opacity-50" : ""
-          }`}
-        >
-          حذف مراجعتك
-        </button>
+        {review.user.id === user?.id && (
+          <button
+            disabled={loading}
+            onClick={handleDeleteReview}
+            style={{ fontSize: "0.8rem" }}
+            className={`btn border border-danger bg-transparent text-danger py-1 fw-semibold ${
+              loading ? "opacity-50" : ""
+            }`}
+          >
+            حذف مراجعتك
+          </button>
+        )}
       </div>
       <div className="d-flex gap-2 align-items-center">
         <div

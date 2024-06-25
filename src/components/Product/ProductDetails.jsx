@@ -266,14 +266,16 @@ const ProductDetails = ({ className, product, error, loading }) => {
                   من 5
                 </span>
               </div>
-              {!reviews?.find((review) => review.user.id === user.id) && (
-                <button
-                  onClick={() => setNewReview(true)}
-                  className="btn border-0 text-white bg-sec d-block border-0 mx-auto mb-5 mt-3"
-                >
-                  أضف مراجعتك
-                </button>
-              )}
+              {user &&
+                details.user.id !== user.id &&
+                !reviews?.find((review) => review.user.id === user.id) && (
+                  <button
+                    onClick={() => setNewReview(true)}
+                    className="btn border-0 text-white bg-sec d-block border-0 mx-auto mb-5 mt-3"
+                  >
+                    أضف مراجعتك
+                  </button>
+                )}
               <div>
                 {reviews.slice(0, page * itemsPerPage).map((review, i) => (
                   <SingleReview
