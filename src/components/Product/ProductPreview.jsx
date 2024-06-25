@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { validateImages } from "../../utils/general";
 
-const ProductPreview = ({ className, images, setImages, invalid }) => {
+const ProductPreview = ({ className, style, images, setImages, invalid }) => {
   const [active, setActive] = useState(null);
   const [dragging, setDragging] = useState(false);
 
@@ -58,148 +58,143 @@ const ProductPreview = ({ className, images, setImages, invalid }) => {
   };
 
   return (
-    <div className={`${classes.navigator} w-100 ${className}`}>
-      <div
-        className={`p-2 rounded-2 position-sticky ${
-          invalid ? "border invalid" : ""
-        }`}
-        style={{ backgroundColor: "var(--card-color)", top: "1rem" }}
-      >
-        {invalid && (
-          <p
-            style={{ fontSize: "0.9rem" }}
-            className="d-flex gap-1 align-items-center justify-content-center fw-semibold text-danger"
-          >
-            <FontAwesomeIcon icon={faExclamationCircle} />
-            <span className="d-block">{invalid}</span>
-          </p>
-        )}
-        {setImages ? (
-          <label
-            htmlFor="add-photo"
-            onDragEnter={handleDragEnter}
-            onDragLeave={() => setDragging(false)}
-            onDragOver={handleDragOver}
-            onDrop={handleDragDropImage}
-            style={{ height: "400px", cursor: "pointer" }}
-            className={`${
-              images.length ? "" : "bg-white p-3"
-            } rounded-2  d-flex flex-column position-relative gap-3 justify-content-between`}
-          >
-            {active ? (
-              <>
-                <img
-                  className="w-100 h-100 object-fit-cover d-block"
-                  src={active.image}
-                  alt=""
-                />
-                <h4
-                  style={{
-                    backgroundColor: "#f0f0f0",
-                    opacity: dragging ? 0.8 : 0,
-                  }}
-                  className="user-select-none d-block transition-main position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                >
-                  <img
-                    style={{ width: "2.5rem" }}
-                    className="d-block ms-3"
-                    src={require("../../assets/add_photo_alternate.png")}
-                    alt=""
-                  />
-                  أفلت هنا
-                </h4>
-              </>
-            ) : (
-              <>
-                <img
-                  className="d-block w-50 mx-auto"
-                  src={require("../../assets/Uploading-bro.png")}
-                  alt=""
-                />
-                <div className="d-flex gap-3 align-items-center justify-content-center">
-                  <img
-                    style={{ width: "2.75rem" }}
-                    className="d-block"
-                    src={require("../../assets/add_photo_alternate.png")}
-                    alt=""
-                  />
-                  <h5 className="mb-0">اضغط أو قم بالسحب والإفلات هنا</h5>
-                </div>
-              </>
-            )}
-            <input
-              type="file"
-              accept="image/jpeg, image/jpg, image/png, image/bmp"
-              onChange={handleImageSelction}
-              id="add-photo"
-              hidden
-              multiple
-            />
-          </label>
-        ) : (
-          <div
-            style={{ height: "400px" }}
-            className="rounded-2 overflow-hidden"
-          >
-            <img
-              className="w-100 h-100 object-fit-cover d-block"
-              src={active?.image}
-              alt=""
-            />
-          </div>
-        )}
-        {!!images.length && (
-          <div
-            className={`d-flex gap-2 ${
-              setImages ? "px-2" : ""
-            } pt-2 overflow-auto scrollbar-none flex-grow-1`}
-          >
-            {images.map((img, i) => (
-              <button
-                value={i}
-                key={i}
-                onClick={() => setActive(img)}
-                className={`${
-                  active?.id === img.id ? classes.active : "border"
-                } bg-transparent position-relative transition-main rounded-2 ${
-                  classes.image
-                }`}
+    <div
+      className={`p-2 rounded-2 ${
+        invalid ? "border invalid" : ""
+      } ${className}`}
+      style={{ backgroundColor: "var(--card-color)", ...style }}
+    >
+      {invalid && (
+        <p
+          style={{ fontSize: "0.9rem" }}
+          className="d-flex gap-1 align-items-center justify-content-center fw-semibold text-danger"
+        >
+          <FontAwesomeIcon icon={faExclamationCircle} />
+          <span className="d-block">{invalid}</span>
+        </p>
+      )}
+      {setImages ? (
+        <label
+          htmlFor="add-photo"
+          onDragEnter={handleDragEnter}
+          onDragLeave={() => setDragging(false)}
+          onDragOver={handleDragOver}
+          onDrop={handleDragDropImage}
+          style={{ height: "400px", cursor: "pointer" }}
+          className={`${
+            images.length ? "" : "bg-white p-3"
+          } rounded-2  d-flex flex-column position-relative gap-3 justify-content-between`}
+        >
+          {active ? (
+            <>
+              <img
+                className="w-100 h-100 object-fit-cover d-block"
+                src={active.image}
+                alt=""
+              />
+              <h4
+                style={{
+                  backgroundColor: "#f0f0f0",
+                  opacity: dragging ? 0.8 : 0,
+                }}
+                className="user-select-none d-block transition-main position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
               >
-                {setImages && (
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setImages((prev) => {
-                        const newImages = prev.value.filter(
-                          (item) => item.id !== img.id
-                        );
-                        return {
-                          ...prev,
-                          value: newImages,
-                          invalid: validateImages(newImages),
-                        };
-                      });
-                    }}
-                    style={{
-                      width: "18px",
-                      height: "18px",
-                      fontSize: "0.7rem",
-                    }}
-                    className="bg-white rounded-circle justify-content-center align-items-center d-flex border-secondary border position-absolute top-0 start-100 translate-middle"
-                  >
-                    <FontAwesomeIcon className="d-block" icon={faClose} />
-                  </span>
-                )}
                 <img
-                  className="w-100 h-100 object-fit-cover d-block rounded-1"
-                  src={img.image}
+                  style={{ width: "2.5rem" }}
+                  className="d-block ms-3"
+                  src={require("../../assets/add_photo_alternate.png")}
                   alt=""
                 />
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+                أفلت هنا
+              </h4>
+            </>
+          ) : (
+            <>
+              <img
+                className="d-block w-50 mx-auto"
+                src={require("../../assets/Uploading-bro.png")}
+                alt=""
+              />
+              <div className="d-flex gap-3 align-items-center justify-content-center">
+                <img
+                  style={{ width: "2.75rem" }}
+                  className="d-block"
+                  src={require("../../assets/add_photo_alternate.png")}
+                  alt=""
+                />
+                <h5 className="mb-0">اضغط أو قم بالسحب والإفلات هنا</h5>
+              </div>
+            </>
+          )}
+          <input
+            type="file"
+            accept="image/jpeg, image/jpg, image/png, image/bmp"
+            onChange={handleImageSelction}
+            id="add-photo"
+            hidden
+            multiple
+          />
+        </label>
+      ) : (
+        <div style={{ height: "400px" }} className="rounded-2 overflow-hidden">
+          <img
+            className="w-100 h-100 object-fit-cover d-block"
+            src={active?.image}
+            alt=""
+          />
+        </div>
+      )}
+      {!!images.length && (
+        <div
+          className={`d-flex gap-2 ${
+            setImages ? "px-2" : ""
+          } pt-2 overflow-auto scrollbar-none flex-grow-1`}
+        >
+          {images.map((img, i) => (
+            <button
+              value={i}
+              key={i}
+              onClick={() => setActive(img)}
+              className={`${
+                active?.id === img.id ? classes.active : "border"
+              } bg-transparent position-relative transition-main rounded-2 ${
+                classes.image
+              }`}
+            >
+              {setImages && (
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setImages((prev) => {
+                      const newImages = prev.value.filter(
+                        (item) => item.id !== img.id
+                      );
+                      return {
+                        ...prev,
+                        value: newImages,
+                        invalid: validateImages(newImages),
+                      };
+                    });
+                  }}
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    fontSize: "0.7rem",
+                  }}
+                  className="bg-white rounded-circle justify-content-center align-items-center d-flex border-secondary border position-absolute top-0 start-100 translate-middle"
+                >
+                  <FontAwesomeIcon className="d-block" icon={faClose} />
+                </span>
+              )}
+              <img
+                className="w-100 h-100 object-fit-cover d-block rounded-1"
+                src={img.image}
+                alt=""
+              />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

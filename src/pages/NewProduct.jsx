@@ -13,6 +13,7 @@ import {
   newProductAfter as afterInputs,
 } from "../utils/inputs";
 import Alert from "../UI/Alert";
+import classes from "../components/Product/ProductPreview.module.css";
 
 const GetSelect = memo(
   ({ className, action, pre, formData, input, valid, onBlur, onChange }) => {
@@ -286,11 +287,16 @@ const NewProduct = () => {
     <main>
       <h4 className="text-main container mt-4">إضافة منتج</h4>
       <div className="container d-flex gap-5 my-4 flex-wrap flex-lg-nowrap">
-        <ProductPreview
-          setImages={setImages}
-          images={images.value}
-          invalid={images.invalid}
-        />
+        <div className={`${classes.navigator} position-sticky w-100`}>
+          <ProductPreview
+            setImages={setImages}
+            images={images.value}
+            invalid={images.invalid}
+            className="position-sticky"
+            style={{ top: "1rem" }}
+          />
+        </div>
+
         <form className="flex-grow-1" onSubmit={handleSubmit}>
           {beforeInputs.map((input, i) => {
             if (input.flex && input.value.find((inp) => formData[inp.model]))

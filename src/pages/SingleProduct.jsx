@@ -4,6 +4,7 @@ import ProductPreview from "../components/Product/ProductPreview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
 import classes from "./SingleProduct.module.css";
+import styles from "../components/Product/ProductPreview.module.css";
 import { backend } from "../App";
 import { useParams } from "react-router";
 import Spinner from "../UI/Spinner";
@@ -24,6 +25,7 @@ const SingleProduct = () => {
   const [error, setError] = useState(null);
   const [newChat, setNewChat] = useState({ loading: false, error: null });
   const [closing, setClosing] = useState(false);
+  const [purchase, setPurchase] = useState({ loading: false, error: null });
 
   console.log(product);
 
@@ -79,6 +81,44 @@ const SingleProduct = () => {
     }
   };
 
+  const handlePayment = async (e) => {
+    if (!token) return navigate("?auth=login");
+
+    try {
+      setPurchase((prev) => ({ ...prev, error: null, loading: true }));
+      const res = await fetch(`${backend}/stripe/checkout`, {
+        method: "POST",
+        body: JSON.stringify({
+          email: user.email,
+          products: [
+            {
+              product_id: productId,
+              price: product[e.target.id].amount,
+              model: e.target.id,
+            },
+          ],
+        }),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      if (!res.ok) throw new Error(data.message || "حدثت مشكلة ما!");
+      setPurchase((prev) => ({ ...prev, loading: false }));
+      window.open(data.url);
+    } catch (error) {
+      setPurchase((prev) => ({
+        ...prev,
+        error: error.message,
+        loading: false,
+      }));
+      console.log(error.messagey);
+    }
+  };
+
   return (
     <main className="container my-4 d-flex gap-4 flex-wrap flex-xl-nowrap">
       <div
@@ -93,12 +133,39 @@ const SingleProduct = () => {
         ) : error ? (
           <p>No Images</p>
         ) : (
-          <ProductPreview
-            images={product.images}
-            loading={loading}
-            error={error}
-            className="flex-grow-1"
-          />
+          <div className={`${styles.navigator} w-100`}>
+            <div className="position-sticky" style={{ top: "1rem" }}>
+              <ProductPreview
+                images={product.images}
+                loading={loading}
+                error={error}
+              />
+              {product.sell && !(product.user.id === user?.id) && (
+                <button
+                  disabled={purchase.loading}
+                  onClick={handlePayment}
+                  id="sell"
+                  className={`d-block w-100 ${
+                    purchase.loading ? "opacity-50" : ""
+                  } text-white bg-main my-3 p-3 rounded-1 border-0`}
+                >
+                  اشتري الآن
+                </button>
+              )}
+              {product.rent && !(product.user.id === user?.id) && (
+                <button
+                  disabled={purchase.loading}
+                  onClick={handlePayment}
+                  id="rent"
+                  className={`d-block w-100 ${
+                    purchase.loading ? "opacity-50" : ""
+                  } text-white bg-sec my-3 p-3 rounded-1 border-0`}
+                >
+                  استأجر الآن
+                </button>
+              )}
+            </div>
+          </div>
         )}
         {loading ? (
           <Spinner
