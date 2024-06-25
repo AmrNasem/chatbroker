@@ -8,7 +8,7 @@ import {
   faHeart as faHeartSolid,
 } from "@fortawesome/free-solid-svg-icons";
 import { memo, useEffect, useState } from "react";
-import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import { faClock, faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
@@ -106,10 +106,10 @@ const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
       removeFromFavorites(product.id);
     }
   };
-
+  console.log(product)
   return (
     <div
-      style={{ minWidth: "230px", maxWidth, width }}
+      style={{ minWidth: "230px", maxWidth: "278px", width }}
       onClick={() => navigate(`/product/${product.id}`)}
       className={`${classes.product} d-flex flex-column rounded-3`}
     >
@@ -149,26 +149,31 @@ const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
           <FontAwesomeIcon className="ms-1" icon={faLocationDot} />
           {product.city}{" "}
         </div>
-        {product.sell && (
-          <div
-            className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
-          >
-            <FontAwesomeIcon icon={faTag} />
-            السعر:
-            <span className="fw-semibold">{product.sell.amount} جنيه</span>
+        <div
+          className={`d-flex my-1 align-items-start flex-column gap-3 ms-5 ${classes.deal}`}
+        >
+          <div className="d-flex flex-column gap-0">
+            {product.rent && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+              <FontAwesomeIcon icon={faTag} />
+              <span className="fw-semibold text-nowrap">
+                <span style={{ fontSize: "13px", color: "#", fontWeight: "lighter" }}>الإيجار: </span>
+                {product.rent.amount} جنيه
+              </span>
+            </div>}
+            {product.rent &&
+              <span className={`text-nowrap ${classes.duration}`}>
+                <FontAwesomeIcon icon={faClock} style={{ marginLeft: "5px" }} />
+                لمدة {product.rent.duration} {product.rent.enum_durations}
+              </span>}
           </div>
-        )}
-        {product.rent && (
-          <div
-            className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
-          >
+          {product.sell && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
             <FontAwesomeIcon icon={faTag} />
-            <span className="fw-semibold">{product.rent.amount} جنيه</span>
-            <span className={classes.duration}>
-              لمدة {product.rent.duration} {product.rent.enum_durations}
+            <span className="fw-semibold text-nowrap">
+              <span style={{ fontSize: "13px", color: "#", fontWeight: "lighter" }}>البيع: </span>
+              {product.sell.amount} جنيه
             </span>
-          </div>
-        )}
+          </div>}
+        </div>
         {/* {product.swap && (
           <div
             className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}

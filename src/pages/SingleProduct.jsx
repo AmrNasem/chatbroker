@@ -32,6 +32,7 @@ const SingleProduct = () => {
     getSingleProduct();
   }, [productId]);
 
+  console.log(product)
   const images = product ? product.images.map(image => image) : [];
   const videos = [
     { type: "video/", video: require("../assets/vid1.mp4") },

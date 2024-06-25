@@ -18,14 +18,14 @@ const Favorites = () => {
     if (!favoriteProducts) dispatch(fetchFavorites(authToken));
   }, [dispatch, authToken, favoriteProducts]);
 
-  const [visibleItems = 5, setVisibleItems] = useState();
+  const [visibleItems, setVisibleItems] = useState(5);
 
   const handleShowMore = () => {
     setVisibleItems((prev) => prev + 5);
   };
 
   const visibleData = favoriteProducts?.slice(0, visibleItems);
-  console.log(visibleData);
+
   return (
     <main className={`px-4 py-5 ${favorites.page}`}>
       {status === "loading" ? (
@@ -40,12 +40,12 @@ const Favorites = () => {
               {visibleData.map((product) => (
                 <FavoriteCard product={product} key={product.id} />
               ))}
-              {visibleItems < favoriteProducts.length && (
-                <button onClick={handleShowMore} className={favorites.showMore}>
-                  Show More
-                </button>
-              )}
             </div>
+            {visibleItems < favoriteProducts.length && (
+              <button onClick={handleShowMore} className={favorites.showMore}>
+                Show More
+              </button>
+            )}
           </>
         ) : (
           <h5 className="text-center">المفضلة فارغة!</h5>

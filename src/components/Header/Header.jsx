@@ -9,7 +9,7 @@ import {
 import { faChartSimple, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import Categories from "./Categories";
 import { useSelector } from "react-redux";
 import Notifications from "./Notifications";
@@ -20,6 +20,8 @@ const Header = () => {
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const [notificationsVanishing, setNotificationsVanishing] = useState(false);
   const favorites = useSelector((state) => state.favorites.list);
+  const [searchInput, setSearchInput] = useState('');
+  const navigate = useNavigate();
 
   const handleNotificationsClosure = () => {
     setNotificationsVanishing(true);
@@ -46,6 +48,15 @@ const Header = () => {
       });
   };
 
+  const handleSearchChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/search/?q=${searchInput}`);
+  };
+
   return (
     <header className="bg-white z-1 position-relative">
       <div
@@ -65,9 +76,8 @@ const Header = () => {
           >
             <div className="position-relative">
               <span
-                className={`position-absolute top-0 end-0 rounded-circle ${
-                  notificationsVisible ? "bg-sec" : "bg-main"
-                } ${classes.bullet}`}
+                className={`position-absolute top-0 end-0 rounded-circle ${notificationsVisible ? "bg-sec" : "bg-main"
+                  } ${classes.bullet}`}
               ></span>
 
               <FontAwesomeIcon icon={faBell} className="fs-5" />
@@ -76,13 +86,13 @@ const Header = () => {
           </button>
           {notificationsVisible && (
             <Notifications
-              className={`${classes.notifications} ${
-                notificationsVanishing ? classes.vanishing : ""
-              } position-absolute end-0 shadow rounded-2`}
+              className={`${classes.notifications} ${notificationsVanishing ? classes.vanishing : ""
+                } position-absolute end-0 shadow rounded-2`}
             />
           )}
         </div>
         <form
+          onSubmit={handleSearchSubmit}
           className={`d-flex flex-grow-1 border rounded-2 overflow-hidden ${classes.search}`}
         >
           <button className="px-2 py-1 border-0 bg-transparent text-black-50">
@@ -92,6 +102,8 @@ const Header = () => {
             type="text"
             className="flex-grow-1 border-0 p-2"
             placeholder="إنت بتدور على إيه؟"
+            value={searchInput}
+            onChange={handleSearchChange}
           />
         </form>
         <Link
@@ -143,20 +155,6 @@ const Header = () => {
             <FontAwesomeIcon icon={faHeart} className="fs-5" />
           </div>
         </Link>
-        {/* <Link
-          to={authedUser ? "/cart" : "?auth=login"}
-          className={`px-xl-2 py-1 text-decoration-none d-flex align-items-center gap-2 text-nowrap ${classes.button}`}
-        >
-          <span className="d-none d-xl-inline-block">عربة التسوق</span>
-          <div className="position-relative">
-            <span
-              className={`position-absolute top-0 end-0 rounded-circle text-white d-flex justify-content-center align-items-center ${classes.amount}`}
-            >
-              0
-            </span>
-            <FontAwesomeIcon icon={faShoppingCart} className="fs-5" />
-          </div>
-        </Link> */}
       </div>
       <Categories className="d-flex align-items-center overflow-auto gap-3" />
     </header>

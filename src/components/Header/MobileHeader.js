@@ -3,12 +3,15 @@ import { } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { memo, useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Aside from "./Aside";
 
 const MobileHeader = () => {
-  const [dispalyAside, setDisplayAside] = useState(false);
+  const [displayAside, setDisplayAside] = useState(false);
   const [closingAside, setClosingAside] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
+
+  const navigate = useNavigate();
 
   const closeAsideHandler = useCallback(() => {
     setClosingAside(true);
@@ -17,6 +20,15 @@ const MobileHeader = () => {
       setClosingAside(false);
     }, 200);
   }, []);
+
+  const handleSearchChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/search/?q=${searchInput}`);
+  };
 
   return (
     <header
@@ -31,14 +43,17 @@ const MobileHeader = () => {
       </Link>
       <form
         className={`d-flex flex-grow-1 border rounded-2 overflow-hidden ${classes.search}`}
+        onSubmit={handleSearchSubmit}
       >
-        <button className="px-2 py-1 border-0 bg-transparent text-black-50">
+        <button type="submit" className="px-2 py-1 border-0 bg-transparent text-black-50">
           <FontAwesomeIcon icon={faSearch} />
         </button>
         <input
           type="text"
           className="flex-grow-1 border-0 p-2"
           placeholder="إنت بتدور على إيه؟"
+          value={searchInput}
+          onChange={handleSearchChange}
         />
       </form>
       <button
@@ -47,7 +62,7 @@ const MobileHeader = () => {
       >
         <FontAwesomeIcon icon={faBars} className="fs-5" />
       </button>
-      {dispalyAside && (
+      {displayAside && (
         <Aside closing={closingAside} onClick={closeAsideHandler} />
       )}
     </header>

@@ -7,17 +7,19 @@ import { Link } from "react-router-dom";
 import OfferSkeleton from "../Skeleton/OfferSkeleton";
 
 const Offers = () => {
-  const { offers, error, loading } = useSelector((state) => state.offers);
   const dispatch = useDispatch();
-
-  console.log(offers);
+  let { offers, loading, error } = useSelector((state) => state.offers);
 
   useEffect(() => {
-    if (!offers) dispatch(fetchOffers());
-  }, [dispatch, offers]);
+    dispatch(fetchOffers());
+  }, [dispatch]);
 
-  if (!(offers?.most_offers?.length || error || loading)) return;
+  if (!(offers?.length || error || loading)) return;
+  offers = offers.filter(offer => {
+    return offer.sell?.discount !== 0 || offer.rent?.discount !== 0;
+  });
 
+  console.log(offers)
   return (
     <Container className="my-5">
       <div className="my-4 gap-3 d-flex justify-content-between align-items-center">
@@ -37,13 +39,11 @@ const Offers = () => {
         <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
       ) : offers ? (
         <div className="d-flex gap-3 overflow-x-auto py-3 px-2 scrollbar-none">
-          {offers.most_offers.map((offer) => (
+          {offers.map((offer) => (
             <OfferItem
               key={offer.id}
               id={offer.id}
-              discount={offer.discount}
-              img={offer.image}
-              title={offer.title}
+              offer={offer}
             />
           ))}
         </div>

@@ -14,7 +14,7 @@ export const fetchFavorites = createAsyncThunk(
       if (!res.ok) throw new Error("حدث خطأ ما!");
       const data = await res.json();
       console.log(data);
-      return data.data;
+      return data;
     } catch (error) {
       console.error("Error fetching favorites:", error.message);
       throw error;

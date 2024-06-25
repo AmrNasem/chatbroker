@@ -1,4 +1,4 @@
-import { faHeart, faRectangleList } from "@fortawesome/free-regular-svg-icons";
+import { faClock, faHeart, faRectangleList } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classes from "./ProductDetails.module.css";
 import {
@@ -6,8 +6,10 @@ import {
   faLocationDot,
   faStarHalf,
   faHeart as faHeartSolid,
+  faTag,
+  faRepeat,
 } from "@fortawesome/free-solid-svg-icons";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useCallback, useMemo, useState } from "react";
 import SingleReview from "./SingleReview";
 import Spinner from "../../UI/Spinner";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +19,7 @@ import {
   removeFromFavorites,
 } from "../../store/favoritesSlice";
 import { backend } from "../../App";
+import AddReview from "../Reviews/addReview";
 
 const getStar = (index, rate) =>
   rate < index + 1 && index < rate ? (
@@ -45,43 +48,37 @@ const getStar = (index, rate) =>
     />
   );
 
-const itemsPerPage = 2;
-// const reviews = [
+const itemsPerPage = 10;
+// const initialReviews = [
 //   {
-//     authorName: "دينا أحمد",
+//     user: { name: "دينا أحمد" },
 //     rate: 3,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
+//     comment: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
 //   },
 //   {
-//     authorName: "محمد حجي",
+//     user: { name: "محمد حجي" },
 //     rate: 4,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
+//     comment: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
 //   },
 //   {
-//     authorName: "كريم إسماعيل",
+//     user: { name: "كريم إسماعيل" },
 //     rate: 1,
-//     title: "عنوان للتعليق",
-//     description: "سيء للغاية ولن أشتريه مرة أخرى",
+//     comment: "سيء للغاية ولن أشتريه مرة أخرى",
 //   },
 //   {
-//     authorName: "دينا أحمد",
+//     user: { name: "دينا أحمد" },
 //     rate: 3,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
+//     comment: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
 //   },
 //   {
-//     authorName: "محمد حجي",
+//     user: { name: "محمد حجي" },
 //     rate: 4,
-//     title: "عنوان للتعليق",
-//     description: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
+//     comment: "جيد وسعره مناسب ولكن ليس كما هو في الصورة.",
 //   },
 //   {
-//     authorName: "كريم إسماعيل",
+//     user: { name: "كريم إسماعيل" },
 //     rate: 1,
-//     title: "عنوان للتعليق",
-//     description: "سيء للغاية ولن أشتريه مرة أخرى",
+//     comment: "سيء للغاية ولن أشتريه مرة أخرى",
 //   },
 // ];
 
@@ -132,13 +129,25 @@ const ProductDetails = ({ className, product, error, loading }) => {
     }
   };
 
+  const [newReviewClosing, setNewReviewClosing] = useState(false);
+  const [newReview, setNewReview] = useState(false);
+  const [reviews, setReviews] = useState(product.reviews);
+  const user = useSelector((state) => state.auth.user);
+
+  const handleNewReviewClosure = useCallback(() => {
+    setNewReviewClosing(true);
+    setTimeout(() => {
+      setNewReview(false);
+      setNewReviewClosing(false);
+    }, 300);
+  }, []);
+
   const [page, setPage] = useState(1);
   const averageRate =
     useMemo(
       () =>
-        product?.reviews.reduce((prev, cur) => prev + cur.rate, 0) /
-        product?.reviews.length,
-      [product]
+        reviews?.reduce((prev, cur) => prev + cur.rate, 0) / reviews?.length,
+      [reviews]
     ) || 0;
 
   const {
@@ -202,57 +211,42 @@ const ProductDetails = ({ className, product, error, loading }) => {
                 </span>
               </div>
             </div>
-            {product.sell && (
-              <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
-                <h6 style={{ color: "#424750" }} className="fw-semibold">
-                  السعر
-                </h6>
-                <h6 className="text-main mb-0">{product.sell.amount} جنيه</h6>
-              </div>
-            )}
-            {product.rent && (
-              <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
-                <h6 style={{ color: "#424750" }} className="fw-semibold">
-                  للإيجار
-                </h6>
-                <div className="d-flex gap-2 align-items-center">
-                  <h6 className="text-main mb-0">{product.rent.amount} جنيه</h6>
-                  <p className="text-sec mb-0">
+            <div
+              className={`d-flex my-1 align-items-start flex-column gap-3 ms-5 ${classes.deal}`}
+            >
+              <div className="d-flex flex-row gap-5">
+                {product.rent && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+                  <span style={{ color: "red" }}>
+                    <FontAwesomeIcon icon={faTag} /></span>
+                  <span className="fw-semibold text-nowrap">
+                    <span style={{ color: "#", fontWeight: "lighter" }}>سعر الإيجار: </span>
+                    {product.rent.amount} جنيه
+                  </span>
+                </div>}
+                {product.rent &&
+                  <span className={`text-nowrap ${classes.duration}`}>
+                    <span style={{ color: "red" }} className="fw-bold">
+                      <FontAwesomeIcon icon={faClock} style={{ marginLeft: "5px" }} /></span>
                     لمدة {product.rent.duration} {product.rent.enum_durations}
-                  </p>
-                </div>
+                  </span>}
               </div>
-            )}
-            {product.swap && (
-              <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
-                <h6 style={{ color: "#424750" }} className="fw-semibold">
-                  تبديل مع
-                </h6>
-                <h6 className="text-main mb-0">{product.swap.swap_with}</h6>
-              </div>
-            )}
-            {product.rent && (
-              <div className="my-3">
-                <h6 className="text-main">شروط الحجز</h6>
-                <div
-                  style={{ maxHeight: "350px" }}
-                  className=" overflow-auto scrollbar-none p-2 border my-3 rounded-3"
-                >
-                  {product.rent.conditions.split("\n").map((text, i) => (
-                    <p
-                      key={i}
-                      className="my-3"
-                      style={{
-                        color: "var(--product-text-color)",
-                        fontSize: "0.95rem",
-                      }}
-                    >
-                      {text}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            )}
+              {product.sell && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+                <span style={{ color: "red" }}>
+                  <FontAwesomeIcon icon={faTag} /></span>
+                <span className="fw-semibold text-nowrap">
+                  <span style={{ color: "#", fontWeight: "lighter" }}>سعر البيع: </span>
+                  {product.sell.amount} جنيه
+                </span>
+              </div>}
+              {product.swap && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+                <span style={{ color: "red" }}>
+                  <FontAwesomeIcon icon={faRepeat} /></span>                <span className="fw-semibold text-nowrap">
+                  <span style={{ color: "#", fontWeight: "lighter" }}>الإستبدال مع: </span>
+                  {product.swap.swap_with}
+                </span>
+              </div>}
+            </div>
+
             <div className="my-5">
               <h5 className="text-center">مراجعة المستخدمين</h5>
               <div className="d-flex gap-2 align-items-center justify-content-center">
@@ -272,19 +266,29 @@ const ProductDetails = ({ className, product, error, loading }) => {
                   من 5
                 </span>
               </div>
+              {!reviews?.find((review) => review.user.id === user.id) && (
+                <button
+                  onClick={() => setNewReview(true)}
+                  className="btn border-0 text-white bg-sec d-block border-0 mx-auto mb-5 mt-3"
+                >
+                  أضف مراجعتك
+                </button>
+              )}
               <div>
-                {product.reviews
-                  .slice(0, page * itemsPerPage)
-                  .map((review, i) => (
-                    <SingleReview key={i} review={review} />
-                  ))}
-                {!product?.reviews.length && (
+                {reviews.slice(0, page * itemsPerPage).map((review, i) => (
+                  <SingleReview
+                    key={i}
+                    review={review}
+                    setReviews={setReviews}
+                  />
+                ))}
+                {!reviews?.length && (
                   <p className="text-center text-danger my-3 fw-semibold">
                     لا توجد مراجعات!
                   </p>
                 )}
               </div>
-              {page < Math.ceil(product.reviews.length / itemsPerPage) && (
+              {page < Math.ceil(reviews.length / itemsPerPage) && (
                 <button
                   onClick={() => setPage((prev) => prev + 1)}
                   className={`btn text-main d-block border-0 mx-auto my-5 fw-semibold`}
@@ -298,6 +302,14 @@ const ProductDetails = ({ className, product, error, loading }) => {
             </div>
           </>
         )
+      )}
+      {newReview && (
+        <AddReview
+          onClick={handleNewReviewClosure}
+          closing={newReviewClosing}
+          // productId={details.id}
+          setReviews={setReviews}
+        />
       )}
     </div>
   );

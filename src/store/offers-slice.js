@@ -1,24 +1,27 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { backend } from "../App";
 
-const initialState = { loading: true, offers: null, error: null };
+const initialState = { loading: true, offers: [], error: null };
 
-export const fetchOffers = createAsyncThunk("offers/fetchOffers", async () => {
-  try {
-    const res = await fetch(`${backend}/offers`);
-    if (!res.ok) throw new Error("Network error");
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    throw err;
+export const fetchOffers = createAsyncThunk(
+  "offers/fetchOffers",
+  async (pageNumber = 1, { rejectWithValue }) => {
+    try {
+      const res = await fetch(`${backend}/offers?page=${pageNumber}`);
+      if (!res.ok) throw new Error("Network error");
+      const data = await res.json();
+      return data.offers;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
   }
-});
+);
 
 const offersSlice = createSlice({
   name: "offers",
   initialState,
   reducers: {},
-  extraReducers(builder) {
+  extraReducers: (builder) => {
     builder
       .addCase(fetchOffers.pending, (state) => {
         state.loading = true;
@@ -29,12 +32,11 @@ const offersSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchOffers.rejected, (state, action) => {
-        state.error = action.error.message;
+        state.error = action.payload;
         state.loading = false;
       });
   },
 });
 
 export const offersActions = offersSlice.actions;
-
 export default offersSlice.reducer;
