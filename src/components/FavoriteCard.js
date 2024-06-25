@@ -104,7 +104,7 @@ const FavoriteCard = (props) => {
           <div>
             <h5>{product.title}</h5>
             <p className="fw-semibold overflow-hidden text-ellipsis mt-2 mb-1">
-              {product.desc}
+              {(product.rent ? product.rent : product.sell ? product.sell : product.swap).descount}
             </p>
             <div className={favoriteCard.location}>
               <FontAwesomeIcon className="ms-1" icon={faLocationDot} />
@@ -169,6 +169,8 @@ const FavoriteCard = (props) => {
           >
             {
               <p
+                className={`${favoriteCard.title} ${animate ? `${favoriteCard.visible}` : ""
+                  }`}
                 className={`${favoriteCard.title} ${animate ? `${favoriteCard.visible}` : ""
                   }`}
               >
