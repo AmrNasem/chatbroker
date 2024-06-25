@@ -54,10 +54,12 @@ const SingleProduct = () => {
 
   console.log(product)
   const images = product ? product.images.map(image => image) : [];
+  const images360 = product ? product.images360.map(image360 => image360) : [];
 
   const videos = product ? product?.videos?.map(video => video) : [];
   const media = [...images, ...videos];
-  console.log(media)
+  console.log(images360)
+  console.log(product)
 
   const handleNewConversation = async () => {
     if (!token) return navigate("?auth=login");

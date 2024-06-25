@@ -90,6 +90,9 @@ const NewProduct = () => {
   const [pre, setPre] = useState({ data: null, loading: true, error: "" });
 
   const [images, setImages] = useState({ value: [], invalid: "" });
+  const [images360, setImages360] = useState({ value: [], invalid: "" });
+  const [videos, setViddeos] = useState({ value: [], invalid: "" });
+
   const [formData, setFormData] = useState({
     for_renting: 1,
     for_swapping: 0,
@@ -100,6 +103,8 @@ const NewProduct = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [closing, setClosing] = useState(false);
+
+  console.log(images)
 
   const fetchGovs = useCallback(async () => {
     try {
@@ -168,6 +173,13 @@ const NewProduct = () => {
       images.value.forEach((img) => {
         formdata.append(`images[]`, img.file, img.file.name);
       });
+      images360.value.forEach((img360) => {
+        formdata.append(`images360[]`, img360.file, img360.file.name);
+      });
+      videos.value.forEach((video) => {
+        formdata.append(`videos[]`, video.file, video.file.name);
+      });
+
       formdata.append("available", 1); // Static
       formdata.append("location", "123"); // Static
 
