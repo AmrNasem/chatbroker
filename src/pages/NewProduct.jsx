@@ -13,6 +13,7 @@ import {
   newProductAfter as afterInputs,
 } from "../utils/inputs";
 import Alert from "../UI/Alert";
+import classes from "../components/Product/ProductPreview.module.css";
 
 const GetSelect = memo(
   ({ className, action, pre, formData, input, valid, onBlur, onChange }) => {
@@ -29,8 +30,9 @@ const GetSelect = memo(
     return pre.error ? (
       <p
         style={{ fontSize: "0.9rem", flex: 1 }}
-        className={`text-center rounded-2 py-1 text-danger fw-semibold mt-3 ${valid ? "" : "border border-danger invalid"
-          } ${className}`}
+        className={`text-center rounded-2 py-1 text-danger fw-semibold mt-3 ${
+          valid ? "" : "border border-danger invalid"
+        } ${className}`}
       >
         {pre.error}،{" "}
         <button
@@ -285,11 +287,16 @@ const NewProduct = () => {
     <main>
       <h4 className="text-main container mt-4">إضافة منتج</h4>
       <div className="container d-flex gap-5 my-4 flex-wrap flex-lg-nowrap">
-        <ProductPreview
-          setImages={setImages}
-          media={images.value}
-          invalid={images.invalid}
-        />
+        <div className={`${classes.navigator} position-sticky w-100`}>
+          <ProductPreview
+            setImages={setImages}
+            media={images.value}
+            invalid={images.invalid}
+            className="position-sticky"
+            style={{ top: "1rem" }}
+          />
+        </div>
+
         <form className="flex-grow-1" onSubmit={handleSubmit}>
           {beforeInputs.map((input, i) => {
             if (input.flex && input.value.find((inp) => formData[inp.model]))
@@ -320,8 +327,9 @@ const NewProduct = () => {
                   id={btn.id}
                   type="button"
                   onClick={handleModelSwitch}
-                  className={`flex-grow-1 border p-2 ${formData[btn.id] ? "text-sec border-sec" : "text-main"
-                    } rounded-2 bg-transparent`}
+                  className={`flex-grow-1 border p-2 ${
+                    formData[btn.id] ? "text-sec border-sec" : "text-main"
+                  } rounded-2 bg-transparent`}
                 >
                   {btn.text}
                 </button>

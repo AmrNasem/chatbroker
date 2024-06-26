@@ -295,7 +295,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
               </div>
               {user &&
                 product.user.id !== user.id &&
-                !reviews?.find((review) => review.user.id === user.id) && (
+                !reviews?.find((review) => review.user.id === user?.id) && (
                   <button
                     onClick={() => setNewReview(true)}
                     className="btn border-0 text-white bg-sec d-block border-0 mx-auto mb-5 mt-3"
