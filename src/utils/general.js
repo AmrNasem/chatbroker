@@ -14,10 +14,9 @@ export const getCookie = (name) => {
   return targettedCookie?.trim().split("=")[1];
 };
 
-export const validateMedia = (images, videos, images360) => {
+export const validateMedia = (images, videos) => {
   const allowedImageExtensions = ["png", "jpg", "jpeg", "bmp"];
   const allowedVideoExtensions = ["mp4", "avi", "mov", "mkv", "webm", "ogg"];
-  const allowed360ImageExtensions = ["png", "jpg", "jpeg"];
 
   // Check if no images are uploaded
   if (!images.length) {
@@ -46,18 +45,14 @@ export const validateMedia = (images, videos, images360) => {
     }
   }
 
-  // Check if no videos are uploaded
-  if (!videos.length) {
-    return "Please upload a product video.";
-  }
 
   // Check maximum video upload limit
-  if (videos.length > 1) {
+  if (videos?.length > 1) {
     return "You can upload a maximum of one video.";
   }
 
   // Check each video in the array
-  for (let i = 0; i < videos.length; i++) {
+  for (let i = 0; i < videos?.length; i++) {
     const video = videos[i];
 
     // Check if the video object or its file property exists
@@ -70,33 +65,6 @@ export const validateMedia = (images, videos, images360) => {
     // Check if it's a valid video extension
     if (video.file.type.startsWith("video/") && !allowedVideoExtensions.includes(fileExtension)) {
       return `Video must be in one of the following formats: ${allowedVideoExtensions.join(", ")}.`;
-    }
-  }
-
-  // Check if no 360 images are uploaded
-  if (!images360.length) {
-    return "Please upload 360-degree product images.";
-  }
-
-  // Check maximum 360 image upload limit
-  if (images360.length > 4) {
-    return "You can upload a maximum of four 360-degree images.";
-  }
-
-  // Check each 360 image in the array
-  for (let i = 0; i < images360.length; i++) {
-    const image360 = images360[i];
-
-    // Check if the 360 image object or its file property exists
-    if (!image360 || !image360.file) {
-      return "Invalid 360-degree image format.";
-    }
-
-    const fileExtension = image360.file.type.split("/")[1];
-
-    // Check if it's a valid 360 image extension
-    if (image360.file.type.startsWith("image/") && !allowed360ImageExtensions.includes(fileExtension)) {
-      return `360-degree image must be in one of the following formats: ${allowed360ImageExtensions.join(", ")}.`;
     }
   }
 

@@ -90,8 +90,7 @@ const NewProduct = () => {
   const [pre, setPre] = useState({ data: null, loading: true, error: "" });
 
   const [images, setImages] = useState({ value: [], invalid: "" });
-  const [images360, setImages360] = useState({ value: [], invalid: "" });
-  const [videos, setViddeos] = useState({ value: [], invalid: "" });
+  const [videos, setVideos] = useState({ value: [], invalid: "" });
 
   const [formData, setFormData] = useState({
     for_renting: 1,
@@ -146,11 +145,15 @@ const NewProduct = () => {
       setPre((prev) => ({ ...prev, data: { ...prev.data, categories } }));
     else dispatch(fetchCategories());
   }, [categories, dispatch]);
-
+  console.log(images)
+  console.log(videos)
   const handleSubmit = async (e) => {
     e.preventDefault();
     const areImagesInvalid = validateMedia(images.value);
     setImages((prev) => ({ ...prev, invalid: areImagesInvalid }));
+
+    const areVideoInvalid = validateMedia(videos.value);
+    setVideos((prev) => ({ ...prev, invalid: areVideoInvalid }));
 
     const validate = (input) => {
       if (!input.model || !!formData[input.model])
@@ -173,11 +176,8 @@ const NewProduct = () => {
       images.value.forEach((img) => {
         formdata.append(`images[]`, img.file, img.file.name);
       });
-      images360.value.forEach((img360) => {
-        formdata.append(`images360[]`, img360.file, img360.file.name);
-      });
-      videos.value.forEach((video) => {
-        formdata.append(`videos[]`, video.file, video.file.name);
+      videos.value.forEach((vid) => {
+        formdata.append(`videos[]`, vid.file, vid.file.name);
       });
 
       formdata.append("available", 1); // Static

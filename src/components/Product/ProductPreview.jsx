@@ -90,9 +90,9 @@ const ProductPreview = ({ className, media, setImages, invalid, product }) => {
           >
             {active ? (
               <>
-                {active.video ? (
+                {active.type.startsWith("video/") ? (
                   <ReactPlayer
-                    url={active.video}
+                    url={active.preview}
                     width="100%"
                     height="100%"
                     controls
@@ -100,7 +100,7 @@ const ProductPreview = ({ className, media, setImages, invalid, product }) => {
                 ) : (
                   <img
                     className="w-100 h-100 object-fit-cover d-block"
-                    src={active.image}
+                    src={active.preview}
                     alt=""
                   />
                 )}
@@ -200,16 +200,17 @@ const ProductPreview = ({ className, media, setImages, invalid, product }) => {
                     <FontAwesomeIcon className="d-block" icon={faClose} />
                   </span>
                 )}
-                {item.video ? (
+                {console.log("item Array: ", item)}
+                {item.type?.startsWith("video/") ? (
                   <ReactPlayer
-                    url={item.video}
+                    url={item.preview}
                     width="100%"
                     height="100%"
                   />
                 ) : (
                   <img
                     className="w-100 h-100 object-fit-cover d-block rounded-1"
-                    src={item.image}
+                    src={item.image || item.preview}
                     alt=""
                   />
                 )}
