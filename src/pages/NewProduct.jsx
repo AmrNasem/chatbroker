@@ -90,7 +90,6 @@ const NewProduct = () => {
   const [pre, setPre] = useState({ data: null, loading: true, error: "" });
 
   const [images, setImages] = useState({ value: [], invalid: "" });
-  const [videos, setVideos] = useState({ value: [], invalid: "" });
 
   const [formData, setFormData] = useState({
     for_renting: 1,
@@ -102,8 +101,6 @@ const NewProduct = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [closing, setClosing] = useState(false);
-
-  console.log(images)
 
   const fetchGovs = useCallback(async () => {
     try {
@@ -120,7 +117,7 @@ const NewProduct = () => {
         ...prev,
         gov: data.data[0],
         enum_durations: data.durationOptions[0],
-        city_id: data.data[0].cities[0],
+        city_id: data.data[0]?.cities[0],
       }));
     } catch (err) {
       setPre((prev) => ({
@@ -146,14 +143,11 @@ const NewProduct = () => {
     else dispatch(fetchCategories());
   }, [categories, dispatch]);
   console.log(images)
-  console.log(videos)
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const areImagesInvalid = validateMedia(images.value);
     setImages((prev) => ({ ...prev, invalid: areImagesInvalid }));
-
-    const areVideoInvalid = validateMedia(videos.value);
-    setVideos((prev) => ({ ...prev, invalid: areVideoInvalid }));
 
     const validate = (input) => {
       if (!input.model || !!formData[input.model])
@@ -171,13 +165,14 @@ const NewProduct = () => {
 
     console.log(formData, images);
 
+    images.value.forEach((img) => {
+      console.log(img.type.startsWith("image/") ? "it's an image " : img.type.startsWith("video/") ? "it's a video" : false);
+    });
+
     if (isFormValid) {
       const formdata = new FormData();
       images.value.forEach((img) => {
-        formdata.append(`images[]`, img.file, img.file.name);
-      });
-      videos.value.forEach((vid) => {
-        formdata.append(`videos[]`, vid.file, vid.file.name);
+        img.type.startsWith("image/") ? formdata.append(`images[]`, img.file, img.file.type) : formdata.append(`videos[]`, img.file, img.file.type);
       });
 
       formdata.append("available", 1); // Static
@@ -230,7 +225,7 @@ const NewProduct = () => {
       setInputsTouched(allTouched);
     }
   };
-
+  console.log(formData)
   const handleBlur = useCallback(
     (e) => setInputsTouched((prev) => ({ ...prev, [e.target.id]: true })),
     []

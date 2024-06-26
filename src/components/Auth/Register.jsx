@@ -29,6 +29,9 @@ const Register = () => {
         const res = await fetch(`${backend}/users/register`, {
           method: "POST",
           body: formdata,
+          headers: {
+            Accept: "application/json",
+          },
         });
         if (!res.ok) throw new Error("خطأ في إنشاء الحساب، حاول في وقت آخر");
         const data = await res.json();
