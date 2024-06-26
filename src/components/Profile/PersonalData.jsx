@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { backend } from "../../App";
 import Spinner from "../../UI/Spinner";
 import { updateUserData } from "../../store/auth-slice";
-import { logout } from '../../store/auth-slice'; // adjust the path as needed
-import { deleteCookie } from '../../utils/general'; // adjust the path as needed
+import { logout } from "../../store/auth-slice"; // adjust the path as needed
+import { deleteCookie } from "../../utils/general"; // adjust the path as needed
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,10 +32,9 @@ const PersonalData = ({ loading, data, error }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   const handleLogout = () => {
     dispatch(logout());
-    deleteCookie('userData');
+    deleteCookie("userData");
     let timerInterval;
 
     Swal.fire({
@@ -54,20 +53,20 @@ const PersonalData = ({ loading, data, error }) => {
       },
       willClose: () => {
         clearInterval(timerInterval);
-      }
+      },
     }).then((result) => {
       if (result.dismiss === Swal.DismissReason.timer) {
         console.log("I was closed by the timer");
       }
     });
     setTimeout(() => {
-      navigate('/');
+      navigate("/");
     }, 1500);
   };
 
   useEffect(() => {
     if (data) {
-      setImage(require("../../assets/person.jpeg"));
+      setImage(data.image || require("../../assets/person.jpeg"));
       setFirstName((prev) => ({ ...prev, value: data.name }));
       setPhone((prev) => ({ ...prev, value: data.phone_number }));
       setEmail((prev) => ({ ...prev, value: data.email }));
@@ -111,7 +110,7 @@ const PersonalData = ({ loading, data, error }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (
-      fNameConstraint(firstName.valid) &&
+      fNameConstraint(firstName.value) &&
       emailConstraint(email.value) &&
       phoneConstraint(phone.value)
     ) {
@@ -177,8 +176,9 @@ const PersonalData = ({ loading, data, error }) => {
                 </div>
               )}
               <img
-                className={`rounded-circle ${uploadingImage ? "opacity-50" : ""
-                  } d-block w-100 h-100 object-fit-cover`}
+                className={`rounded-circle ${
+                  uploadingImage ? "opacity-50" : ""
+                } d-block w-100 h-100 object-fit-cover`}
                 src={image}
                 alt=""
               />
@@ -224,8 +224,9 @@ const PersonalData = ({ loading, data, error }) => {
                   }
                   type="text"
                   id="first"
-                  className={`border transition-main ${firstName.valid ? "input-focus" : "invalid"
-                    } py-1 px-2 d-block w-100 rounded-2 outline-none`}
+                  className={`border transition-main ${
+                    firstName.valid ? "input-focus" : "invalid"
+                  } py-1 px-2 d-block w-100 rounded-2 outline-none`}
                 />
               </div>
               <div className="flex-grow-1">
@@ -276,8 +277,9 @@ const PersonalData = ({ loading, data, error }) => {
                 }
                 type="text"
                 id="phone"
-                className={`border transition-main ${phone.valid ? "input-focus" : "invalid"
-                  } py-1 px-2 d-block w-100 rounded-2 outline-none`}
+                className={`border transition-main ${
+                  phone.valid ? "input-focus" : "invalid"
+                } py-1 px-2 d-block w-100 rounded-2 outline-none`}
               />
             </div>
             <div className="my-3">
@@ -304,13 +306,24 @@ const PersonalData = ({ loading, data, error }) => {
                 }
                 type="text"
                 id="email"
-                className={`border transition-main ${email.valid ? "input-focus" : "invalid"
-                  } py-1 px-2 d-block w-100 rounded-2 outline-none`}
+                className={`border transition-main ${
+                  email.valid ? "input-focus" : "invalid"
+                } py-1 px-2 d-block w-100 rounded-2 outline-none`}
               />
             </div>
-            <div className="d-flex justify-content-end mt-5" style={{ width: "100%" }}>
+            <div
+              className="d-flex justify-content-end mt-5"
+              style={{ width: "100%" }}
+            >
               {/* Your existing personal data content */}
-              <button onClick={handleLogout} className="p-2 rounded" style={{ color: "#bb0000", border: "1px solid #bb0000" }}><FontAwesomeIcon icon={faRightFromBracket} /> Logout</button>
+              <button
+                onClick={handleLogout}
+                type="button"
+                className="p-2 rounded"
+                style={{ color: "#bb0000", border: "1px solid #bb0000" }}
+              >
+                <FontAwesomeIcon icon={faRightFromBracket} /> Logout
+              </button>
             </div>
           </div>
         )}

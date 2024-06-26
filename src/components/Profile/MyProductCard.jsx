@@ -2,8 +2,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classes from "../Home/ProductItem.module.css";
 import styles from "./MyProductCard.module.css";
 import {
+  faBagShopping,
   faLocationDot,
   faPen,
+  faRepeat,
   faTag,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
@@ -82,30 +84,47 @@ const ProductItem = ({ minWidth, product, setProfile }) => {
         </div>
         <div className={`${classes.body} flex-grow-1 d-flex flex-column p-2`}>
           <h5>{product.title}</h5>
-          <p className="fw-semibold overflow-hidden text-ellipsis mt-2 mb-1">
+          <p className={`fw-semibold ${classes.ellipsis} mt-2 mb-1`}>
             {product.desc}
           </p>
-          <div className={classes.location}>
+          <div className={`my-2 ${classes.location}`}>
             <FontAwesomeIcon className="ms-1" icon={faLocationDot} />
             {product.city}{" "}
           </div>
-          {product.sell && (
-            <div
-              className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
-            >
-              <FontAwesomeIcon icon={faTag} />
-              السعر:
-              <span className="fw-semibold">{product.sell.amount} جنيه</span>
-            </div>
-          )}
           {product.rent && (
             <div
               className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
             >
               <FontAwesomeIcon icon={faTag} />
-              <span className="fw-semibold">{product.rent.amount} جنيه</span>
-              <span className={classes.duration}>
-                لمدة {product.rent.duration} {product.rent.enum_durations}
+              <span className={`fw-semibold`}>الإيجار:</span>
+              <span className="fw-semibold text-sec">
+                {product.rent.amount} جنيه
+              </span>
+              <span className={`fw-semibold`}>لمدة:</span>
+              <span className="text-sec fw-semibold">
+                {product.rent.duration} {product.rent.enum_durations}
+              </span>
+            </div>
+          )}
+          {product.sell && (
+            <div
+              className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
+            >
+              <FontAwesomeIcon style={{ color: "red" }} icon={faBagShopping} />
+              <span className="fw-semibold">السعر:</span>
+              <span className="text-sec fw-semibold">
+                {product.sell.amount} جنيه
+              </span>
+            </div>
+          )}
+          {product.swap && (
+            <div
+              className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
+            >
+              <FontAwesomeIcon icon={faRepeat} />
+              <span className="fw-semibold">تبديل مع: </span>
+              <span className="fw-semibold text-sec">
+                {product.swap.swap_with}{" "}
               </span>
             </div>
           )}

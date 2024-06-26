@@ -52,12 +52,12 @@ const SingleProduct = () => {
     getSingleProduct();
   }, [productId]);
 
-  console.log(product)
-  const images = product ? product.images.map(image => image) : [];
+  console.log(product);
+  const images = product ? product.images.map((image) => image) : [];
 
-  const videos = product ? product?.videos?.map(video => video) : [];
+  const videos = product ? product?.videos?.map((video) => video) : [];
   const media = [...images, ...videos];
-  console.log(media)
+  console.log(media);
 
   const handleNewConversation = async () => {
     if (!token) return navigate("?auth=login");
@@ -76,6 +76,7 @@ const SingleProduct = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "حدثت مشكلة ما!");
+      console.log(data);
       const { conversation, ...rest } = data.payload;
       console.log({ ...conversation, ...rest });
       setNewChat((prev) => ({ ...prev, loading: false }));
@@ -88,20 +89,41 @@ const SingleProduct = () => {
 
   return (
     <main className="container my-4 d-flex gap-4 flex-wrap flex-xl-nowrap">
-      <div className={`d-flex gap-4 flex-wrap w-100 flex-lg-nowrap ${classes.details}`}>
+      <div
+        className={`d-flex gap-4 flex-wrap w-100 flex-lg-nowrap ${classes.details}`}
+      >
         {loading ? (
-          <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />
+          <Spinner
+            side={50}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
         ) : error ? (
           <p>No Images</p>
         ) : (
-          <ProductPreview product={product} media={media} loading={loading} error={error} className="flex-grow-1" />
+          <ProductPreview
+            product={product}
+            media={media}
+            loading={loading}
+            error={error}
+            className="flex-grow-1"
+          />
         )}
         {loading ? (
-          <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />
+          <Spinner
+            side={50}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
         ) : error ? (
           <p>No Details</p>
         ) : (
-          <ProductDetails product={product} loading={loading} error={error} className="flex-grow-1" />
+          <ProductDetails
+            product={product}
+            loading={loading}
+            error={error}
+            className="flex-grow-1"
+          />
         )}
       </div>
       {user?.id !== product?.user.id && (
