@@ -1,7 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { backend } from "../App";
 
-const initialState = { loading: true, categories: null, error: null };
+const initialState = {
+  loading: true,
+  categories: null,
+  error: null,
+  currentCategory: null,
+};
 
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
@@ -20,7 +25,11 @@ export const fetchCategories = createAsyncThunk(
 const categories = createSlice({
   name: "categories",
   initialState,
-  reducers: {},
+  reducers: {
+    setCategory(state, action) {
+      state.currentCategory = action.payload;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchCategories.pending, (state) => {
@@ -38,5 +47,5 @@ const categories = createSlice({
   },
 });
 
-export const categoriesActions = categories.actions;
+export const {setCategory} = categories.actions;
 export default categories.reducer;

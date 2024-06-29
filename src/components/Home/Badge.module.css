@@ -6,6 +6,7 @@
 .arrow {
   right: 100%;
   top: 0.15px;
-  border: 11.9px solid transparent;
+  border-radius: 1px;
+  border: 11.5px solid transparent;
   border-right-width: 13px !important;
 }

@@ -9,7 +9,7 @@ import {
   faBagShopping,
 } from "@fortawesome/free-solid-svg-icons";
 import { memo, useEffect, useState } from "react";
-import { faClock, faHeart } from "@fortawesome/free-regular-svg-icons";
+import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
 import Badge from "./Badge";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,7 +44,13 @@ const badges = [
   },
 ];
 
-const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
+const ProductItem = ({
+  minWidth = "250px",
+  maxWidth,
+  className,
+  width,
+  product,
+}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites.list);
@@ -71,12 +77,12 @@ const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
       enum_durations: "يوم",
     };
 
-  const authToken = useSelector((state) => state.auth.token);
+  const { token, user } = useSelector((state) => state.auth);
 
   const handleToggleFav = async (e) => {
     e.stopPropagation();
 
-    if (!authToken) return navigate("?auth=login");
+    if (!token) return navigate("?auth=login");
 
     try {
       setIsFav((prev) => !prev);
@@ -88,7 +94,7 @@ const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
         {
           method: isFav ? "DELETE" : "POST",
           headers: {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${token}`,
             Accept: "application/json",
           },
           body: isFav ? undefined : formData,
@@ -105,10 +111,10 @@ const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
       removeFromFavorites(product.id);
     }
   };
-  console.log(product)
+
   return (
     <div
-      style={{ minWidth: "230px", maxWidth: "278px", width }}
+      style={{ minWidth, maxWidth, width }}
       onClick={() => navigate(`/product/${product.id}`)}
       className={`${classes.product} d-flex flex-column rounded-3`}
     >
@@ -120,18 +126,20 @@ const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
             </span>{" "}
             <span className=" align-text-bottom">(495)</span>
           </div>
-          <button
-            onClick={handleToggleFav}
-            className={`border-0 rounded-circle ${classes["add-to-fav"]}`}
-            title="أضف إلى المفضلة"
-            style={{ color: "#707070", backgroundColor: "var(--card-color)" }}
-          >
-            {isFav ? (
-              <FontAwesomeIcon icon={faHeartSolid} style={{ color: "red" }} />
-            ) : (
-              <FontAwesomeIcon icon={faHeart} />
-            )}
-          </button>
+          {user?.id !== product.user_id && (
+            <button
+              onClick={handleToggleFav}
+              className={`border-0 rounded-circle ${classes["add-to-fav"]}`}
+              title="أضف إلى المفضلة"
+              style={{ color: "#707070", backgroundColor: "var(--card-color)" }}
+            >
+              {isFav ? (
+                <FontAwesomeIcon icon={faHeartSolid} style={{ color: "red" }} />
+              ) : (
+                <FontAwesomeIcon icon={faHeart} />
+              )}
+            </button>
+          )}
         </div>
         <img
           className={`w-100 h-100 object-fit-cover ${classes.image}`}
@@ -144,44 +152,68 @@ const ProductItem = ({ minWidth = "240px", maxWidth, width, product }) => {
         <p className={`fw-semibold mt-2 mb-1 ${classes.ellipsis}`}>
           {product.desc}
         </p>
-        <div className={classes.location}>
+        <div className={`my-2 ${classes.location}`}>
           <FontAwesomeIcon className="ms-1" icon={faLocationDot} />
           {product.city}{" "}
         </div>
-        <div
-          className={`d-flex my-1 align-items-start flex-column gap-3 ms-5 ${classes.deal}`}
-        >
-          <div className="d-flex flex-column gap-0">
-            {product.rent && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
-              <FontAwesomeIcon icon={faTag} />
-              <span className="fw-semibold text-nowrap">
-                <span style={{ fontSize: "13px", color: "#", fontWeight: "lighter" }}>الإيجار: </span>
-                {product.rent.amount} جنيه
-              </span>
-            </div>}
-            {product.rent &&
-              <span className={`text-nowrap ${classes.duration}`}>
-                <FontAwesomeIcon icon={faClock} style={{ marginLeft: "5px" }} />
-                لمدة {product.rent.duration} {product.rent.enum_durations}
-              </span>}
-          </div>
-          {product.sell && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+        {product.rent && (
+          <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
             <FontAwesomeIcon icon={faTag} />
             <span className="fw-semibold text-nowrap">
-              <span style={{ fontSize: "13px", color: "#", fontWeight: "lighter" }}>البيع: </span>
-              {product.sell.amount} جنيه
+              <span
+                className="text-semibold"
+                style={{
+                  fontSize: "13px",
+                  color: "#",
+                }}
+              >
+                الإيجار:{" "}
+              </span>
+              <span className="text-sec">{product.rent.amount} جنيه</span>
             </span>
-          </div>}
-        </div>
-        {/* {product.swap && (
+            <span className={`text-nowrap me-1`}>
+              <span className="fw-semibold" style={{ fontSize: "13px" }}>
+                لمدة:{" "}
+              </span>{" "}
+              <span className="text-sec fw-semibold">
+                {product.rent.duration} {product.rent.enum_durations}
+              </span>
+            </span>
+          </div>
+        )}
+        {product.sell && (
+          <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+            <FontAwesomeIcon style={{ color: "red" }} icon={faBagShopping} />
+            <span className="fw-semibold text-nowrap">
+              <span
+                className="text-semibold"
+                style={{
+                  fontSize: "13px",
+                  color: "#",
+                }}
+              >
+                البيع:{" "}
+              </span>
+              <span className="text-sec">{product.sell.amount} جنيه</span>
+            </span>
+          </div>
+        )}
+        {product.swap && (
           <div
             className={`d-flex gap-2 my-1 align-items-center ${classes.deal}`}
           >
             <FontAwesomeIcon icon={faRepeat} />
-            تبديل:
-            <span className="fw-semibold">{product.swap.amount} جنيه</span>
+            <span
+              style={{ fontSize: "13px" }}
+              className="fw-semibold text-nowrap"
+            >
+              تبديل مع:{" "}
+            </span>
+            <span className="fw-semibold text-sec text-truncate">
+              {product.swap.swap_with}{" "}
+            </span>
           </div>
-        )} */}
+        )}
         <div className="flex-grow-1 d-flex align-items-end">
           {badges
             .filter((badge) => product[badge.id])

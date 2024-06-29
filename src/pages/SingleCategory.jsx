@@ -5,12 +5,23 @@ import { backend } from "../App";
 import { useParams } from "react-router-dom";
 import CardSkeleton from "../components/Skeleton/CardSkeleton";
 import { Container } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { setCategory } from "../store/categories-slice";
 
 const SingleCategory = () => {
   const { categoryId } = useParams();
   const [products, setProducts] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { currentCategory, categories } = useSelector(
+    (state) => state.categories
+  );
+
+  useEffect(() => {
+    if (!currentCategory && categories)
+      dispatch(setCategory(categories.find((cat) => cat.id === +categoryId)));
+  }, [currentCategory, categories, categoryId, dispatch]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -34,9 +45,7 @@ const SingleCategory = () => {
   return (
     <main>
       <Container className="my-5">
-        {!!products?.length && (
-          <h4 className="">{products[0].category_id.title}</h4>
-        )}
+        {currentCategory && <h4 className="">{currentCategory.title}</h4>}
         <div className="d-flex gap-4 py-3 px-2 overflow-auto scrollbar-none">
           {loading ? (
             [...Array(3).keys()].map((i) => (

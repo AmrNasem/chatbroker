@@ -1,4 +1,8 @@
-import { faClock, faHeart, faRectangleList } from "@fortawesome/free-regular-svg-icons";
+import {
+  faClock,
+  faHeart,
+  faRectangleList,
+} from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classes from "./ProductDetails.module.css";
 import {
@@ -8,8 +12,9 @@ import {
   faHeart as faHeartSolid,
   faTag,
   faRepeat,
+  faBagShopping,
 } from "@fortawesome/free-solid-svg-icons";
-import { memo, useEffect, useCallback, useMemo, useState } from "react";
+import { memo, useEffect, useCallback, useState } from "react";
 import SingleReview from "./SingleReview";
 import Spinner from "../../UI/Spinner";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +24,7 @@ import {
   removeFromFavorites,
 } from "../../store/favoritesSlice";
 import { backend } from "../../App";
-import AddReview from "../Reviews/addReview";
+import AddReview from "../Reviews/AddReview";
 
 const getStar = (index, rate) =>
   rate < index + 1 && index < rate ? (
@@ -86,8 +91,17 @@ const ProductDetails = ({ className, product, error, loading }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites.list);
-  const authToken = useSelector((state) => state.auth.token);
+  const { token: authToken, user } = useSelector((state) => state.auth);
+  const [newReviewClosing, setNewReviewClosing] = useState(false);
+  const [newReview, setNewReview] = useState(false);
+  const [reviews, setReviews] = useState(product.reviews);
+  const [page, setPage] = useState(1);
   const [isFav, setIsFav] = useState(false);
+
+  const averageRate =
+    reviews?.reduce((prev, cur) => +prev + cur.rate, 0) / reviews?.length || 0;
+
+  console.log(reviews, averageRate);
 
   useEffect(() => {
     if (favorites && product) {
@@ -130,11 +144,6 @@ const ProductDetails = ({ className, product, error, loading }) => {
     }
   };
 
-  const [newReviewClosing, setNewReviewClosing] = useState(false);
-  const [newReview, setNewReview] = useState(false);
-  const [reviews, setReviews] = useState(product.reviews);
-  const user = useSelector((state) => state.auth.user);
-
   const handleNewReviewClosure = useCallback(() => {
     setNewReviewClosing(true);
     setTimeout(() => {
@@ -143,13 +152,10 @@ const ProductDetails = ({ className, product, error, loading }) => {
     }, 300);
   }, []);
 
-  const [page, setPage] = useState(1);
-  const averageRate =
-    useMemo(
-      () =>
-        reviews?.reduce((prev, cur) => prev + cur.rate, 0) / reviews?.length,
-      [reviews]
-    ) || 0;
+  const {
+    city: { city_name_ar: city },
+    governorate: { governorate_name_ar: gov },
+  } = product;
 
   return (
     <div className={className}>
@@ -211,36 +217,62 @@ const ProductDetails = ({ className, product, error, loading }) => {
               className={`d-flex my-1 align-items-start flex-column gap-3 ms-5 ${classes.deal}`}
             >
               <div className="d-flex flex-row gap-5">
-                {product.rent && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
-                  <span style={{ color: "red" }}>
-                    <FontAwesomeIcon icon={faTag} /></span>
-                  <span className="fw-semibold text-nowrap">
-                    <span style={{ color: "#", fontWeight: "lighter" }}>سعر الإيجار: </span>
-                    {product.rent.amount} جنيه
-                  </span>
-                </div>}
-                {product.rent &&
+                {product.rent && (
+                  <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+                    <span style={{ color: "red" }}>
+                      <FontAwesomeIcon icon={faTag} />
+                    </span>
+                    <span className="fw-semibold text-nowrap">
+                      <span style={{ color: "#", fontWeight: "lighter" }}>
+                        سعر الإيجار:{" "}
+                      </span>
+                      <span className="text-sec">
+                        {product.rent.amount} جنيه
+                      </span>
+                    </span>
+                  </div>
+                )}
+                {product.rent && (
                   <span className={`text-nowrap ${classes.duration}`}>
                     <span style={{ color: "red" }} cl>
-                      <FontAwesomeIcon icon={faClock} style={{ marginLeft: "5px" }} /></span>
-                    لمدة {product.rent.duration} {product.rent.enum_durations}
-                  </span>}
+                      <FontAwesomeIcon
+                        icon={faClock}
+                        style={{ marginLeft: "5px" }}
+                      />
+                    </span>
+                    لمدة:{" "}
+                    <span className="text-sec">
+                      {product.rent.duration} {product.rent.enum_durations}
+                    </span>
+                  </span>
+                )}
               </div>
-              {product.sell && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
-                <span style={{ color: "red" }}>
-                  <FontAwesomeIcon icon={faTag} /></span>
-                <span className="fw-semibold text-nowrap">
-                  <span style={{ color: "#", fontWeight: "lighter" }}>سعر البيع: </span>
-                  {product.sell.amount} جنيه
-                </span>
-              </div>}
-              {product.swap && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
-                <span style={{ color: "red" }}>
-                  <FontAwesomeIcon icon={faRepeat} /></span>                <span className="fw-semibold text-nowrap">
-                  <span style={{ color: "#", fontWeight: "lighter" }}>الإستبدال مع: </span>
-                  {product.swap.swap_with}
-                </span>
-              </div>}
+              {product.sell && (
+                <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+                  <span style={{ color: "red" }}>
+                    <FontAwesomeIcon icon={faBagShopping} />
+                  </span>
+                  <span className="fw-semibold text-nowrap">
+                    <span style={{ color: "#", fontWeight: "lighter" }}>
+                      سعر البيع:{" "}
+                    </span>
+                    <span className="text-sec">{product.sell.amount} جنيه</span>
+                  </span>
+                </div>
+              )}
+              {product.swap && (
+                <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+                  <span style={{ color: "red" }}>
+                    <FontAwesomeIcon icon={faRepeat} />
+                  </span>{" "}
+                  <span className="fw-semibold text-nowrap">
+                    <span style={{ color: "#", fontWeight: "lighter" }}>
+                      الاستبدال مع:{" "}
+                    </span>
+                    <span className="text-sec">{product.swap.swap_with}</span>
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="my-5">
@@ -262,14 +294,16 @@ const ProductDetails = ({ className, product, error, loading }) => {
                   من 5
                 </span>
               </div>
-              {!reviews?.find((review) => review.user.id === user.id) && (
-                <button
-                  onClick={() => setNewReview(true)}
-                  className="btn border-0 text-white bg-sec d-block border-0 mx-auto mb-5 mt-3"
-                >
-                  أضف مراجعتك
-                </button>
-              )}
+              {user &&
+                product.user.id !== user.id &&
+                !reviews?.find((review) => review.user.id === user?.id) && (
+                  <button
+                    onClick={() => setNewReview(true)}
+                    className="btn border-0 text-white bg-sec d-block border-0 mx-auto mb-5 mt-3"
+                  >
+                    أضف مراجعتك
+                  </button>
+                )}
               <div>
                 {reviews.slice(0, page * itemsPerPage).map((review, i) => (
                   <SingleReview

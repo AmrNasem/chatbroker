@@ -1,13 +1,14 @@
 import { memo, useEffect } from "react";
 import classes from "./Categories.module.css";
-import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCategories } from "../../store/categories-slice";
+import { fetchCategories, setCategory } from "../../store/categories-slice";
 import Skeleton from "../Skeleton/Skeleton";
+import { useNavigate } from "react-router-dom";
 
 const Categories = (props) => {
   const { categories, error } = useSelector((state) => state.categories);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!categories) {
@@ -23,14 +24,17 @@ const Categories = (props) => {
         <p className="flex-grow-1 text-center fw-semibold my-2">{error}</p>
       ) : categories ? (
         categories.map((cat) => (
-          <Link
+          <button
             key={cat.id}
-            className="text-decoration-none d-block text-nowrap p-2 d-inline-block"
-            to={`/category/${cat.id}`}
-            onClick={props.onClick}
+            className="border-0 bg-transparent d-block text-nowrap p-2 d-inline-block"
+            onClick={(e) => {
+              dispatch(setCategory(cat));
+              navigate(`/category/${cat.id}`);
+              if (props.onClick) props.onClick(e);
+            }}
           >
             {cat.title}
-          </Link>
+          </button>
         ))
       ) : (
         [...Array(10).keys()].map((item) => (

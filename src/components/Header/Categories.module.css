@@ -2,10 +2,10 @@
   padding-left: 4%;
   padding-right: 4%;
 }
-.categories a {
+.categories button {
   color: var(--gray-color);
   transition: 0.2s;
 }
-.categories a:hover {
+.categories button:hover {
   color: var(--secondary-color);
 }

@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import ProductItem from "../components/Home/ProductItem";
 import offersStyles from "./Offers.module.css";
-import { fetchOffers } from '../store/offers-slice';
+import { fetchOffers } from "../store/offers-slice";
 
 const Offers = () => {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ const Offers = () => {
       <p className={offersStyles.title}>العروض</p>
       <div className={offersStyles.offersContainer}>
         {offers.map((product) => (
-          <ProductItem product={product} key={product.id} />
+          <ProductItem product={product} key={product.id} maxWidth="178px" />
         ))}
       </div>
     </>

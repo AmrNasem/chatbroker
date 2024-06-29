@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
 import classes from "./SingleProduct.module.css";
 import styles from "../components/Product/ProductPreview.module.css";
+import styles from "../components/Product/ProductPreview.module.css";
 import { backend } from "../App";
 import { useParams } from "react-router";
 import Spinner from "../UI/Spinner";
@@ -25,6 +26,7 @@ const SingleProduct = () => {
   const [error, setError] = useState(null);
   const [newChat, setNewChat] = useState({ loading: false, error: null });
   const [closing, setClosing] = useState(false);
+  const [purchase, setPurchase] = useState({ loading: false, error: null });
 
   console.log(product);
 
@@ -79,6 +81,7 @@ const SingleProduct = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "حدثت مشكلة ما!");
+      console.log(data);
       const { conversation, ...rest } = data.payload;
       console.log({ ...conversation, ...rest });
       setNewChat((prev) => ({ ...prev, loading: false }));
@@ -89,11 +92,55 @@ const SingleProduct = () => {
     }
   };
 
+  const handlePayment = async (e) => {
+    if (!token) return navigate("?auth=login");
+
+    try {
+      setPurchase((prev) => ({ ...prev, error: null, loading: true }));
+      const res = await fetch(`${backend}/stripe/checkout`, {
+        method: "POST",
+        body: JSON.stringify({
+          email: user.email,
+          products: [
+            {
+              product_id: productId,
+              price: product[e.target.id].amount,
+              model: e.target.id,
+            },
+          ],
+        }),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      if (!res.ok) throw new Error(data.message || "حدثت مشكلة ما!");
+      setPurchase((prev) => ({ ...prev, loading: false }));
+      window.open(data.url);
+    } catch (error) {
+      setPurchase((prev) => ({
+        ...prev,
+        error: error.message,
+        loading: false,
+      }));
+      console.log(error.messagey);
+    }
+  };
+
   return (
     <main className="container my-4 d-flex gap-4 flex-wrap flex-xl-nowrap">
-      <div className={`d-flex gap-4 flex-wrap w-100 flex-lg-nowrap ${classes.details}`}>
+      <div
+        className={`d-flex gap-4 flex-wrap w-100 flex-lg-nowrap ${classes.details}`}
+      >
         {loading ? (
-          <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />
+          <Spinner
+            side={50}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
         ) : error ? (
           <p>No Images</p>
         ) : (
@@ -107,11 +154,20 @@ const SingleProduct = () => {
           </div>
         )}
         {loading ? (
-          <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />
+          <Spinner
+            side={50}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
         ) : error ? (
           <p>No Details</p>
         ) : (
-          <ProductDetails product={product} loading={loading} error={error} className="flex-grow-1" />
+          <ProductDetails
+            product={product}
+            loading={loading}
+            error={error}
+            className="flex-grow-1"
+          />
         )}
       </div>
       {user?.id !== product?.user.id && (
