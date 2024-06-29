@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { closeChat, fetchMessages } from "../store/chat-slice";
 import PersonSkeleton from "../components/Skeleton/PersonSkeleton";
 import { chatURL } from "../utils/constants";
-import useEscape from "../hooks/use-escape";
+import useKey from "../hooks/use-key";
 
 const chatAreaStyle = { flexBasis: "66%" };
 
@@ -64,7 +64,7 @@ const Chat = () => {
 
   useEffect(() => () => dispatch(closeChat()), [dispatch]);
 
-  useEscape(() => dispatch(closeChat()));
+  useKey("Escape", () => dispatch(closeChat()));
 
   return (
     <main className={`container d-flex mb-4 ${classes.page}`}>
