@@ -6,14 +6,14 @@ import ReactPlayer from "react-player/lazy";
 import { useParams } from "react-router-dom";
 import { validateMedia } from "../../utils/general";
 
-const ProductPreview = ({ className, media, setImages, invalid, product }) => {
+const ProductPreview = ({ className, media, setImages, style, invalid, product, imgId, setImages360, isImage360 }) => {
   const [active, setActive] = useState(null);
   const [dragging, setDragging] = useState(false);
   const { productId } = useParams();
 
   useEffect(() => {
     // Ensure active is set to the first item in media array if available
-    setActive(media.length > 0 ? media[0] : null);
+    setActive(media?.length > 0 ? media[0] : null);
   }, [media]);
 
   const viewImage = (files) => {
@@ -27,7 +27,11 @@ const ProductPreview = ({ className, media, setImages, invalid, product }) => {
             file,
             preview: e.target.result,
           };
-          setImages((prev) => ({
+          !isImage360 ? setImages((prev) => ({
+            ...prev,
+            value: [...prev.value, newMedia],
+            invalid: validateMedia([...prev.value, newMedia]),
+          })) : setImages360((prev) => ({
             ...prev,
             value: [...prev.value, newMedia],
             invalid: validateMedia([...prev.value, newMedia]),
@@ -64,161 +68,166 @@ const ProductPreview = ({ className, media, setImages, invalid, product }) => {
   console.log("Media Array: ", media);
 
   return (
-    <div className={`${classes.navigator} w-100 ${className}`}>
-      <div
-        className={`p-2 rounded-2 position-sticky ${invalid ? "border invalid" : ""}`}
-        style={{ backgroundColor: "var(--card-color)", top: "1rem" }}
-      >
-        {invalid && (
-          <p
-            style={{ fontSize: "0.9rem" }}
-            className="d-flex gap-1 align-items-center justify-content-center fw-semibold text-danger"
-          >
-            <FontAwesomeIcon icon={faExclamationCircle} />
-            <span className="d-block">{invalid}</span>
-          </p>
-        )}
-        {setImages ? (
-          <label
-            htmlFor="add-media"
-            onDragEnter={handleDragEnter}
-            onDragLeave={() => setDragging(false)}
-            onDragOver={handleDragOver}
-            onDrop={handleDragDropImage}
-            style={{ height: "400px", cursor: "pointer" }}
-            className={`${media.length ? "" : "bg-white p-3"} rounded-2 d-flex flex-column position-relative gap-3 justify-content-between`}
-          >
-            {active ? (
-              <>
-                {active.type.startsWith("video/") ? (
-                  <ReactPlayer
-                    url={active.preview}
-                    width="100%"
-                    height="100%"
-                    controls
-                  />
-                ) : (
-                  <img
-                    className="w-100 h-100 object-fit-cover d-block"
-                    src={active.preview}
-                    alt=""
-                  />
-                )}
-                <h4
-                  style={{
-                    backgroundColor: "#f0f0f0",
-                    opacity: dragging ? 0.8 : 0,
-                  }}
-                  className="user-select-none d-block transition-main position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-                >
-                  <img
-                    style={{ width: "2.5rem" }}
-                    className="d-block ms-3"
-                    src={require("../../assets/add_photo_alternate.png")}
-                    alt=""
-                  />
-                  Drop Here
-                </h4>
-              </>
-            ) : (
-              <>
-                <img
-                  className="d-block w-50 mx-auto"
-                  src={require("../../assets/Uploading-bro.png")}
-                  alt=""
+    <div
+      className={`p-2 rounded-2 ${className} ${invalid ? "border invalid" : ""}`}
+      style={{ backgroundColor: "var(--card-color)", ...style }}
+    >
+      {invalid && (
+        <p
+          style={{ fontSize: "0.9rem" }}
+          className="d-flex gap-1 align-items-center justify-content-center fw-semibold text-danger"
+        >
+          <FontAwesomeIcon icon={faExclamationCircle} />
+          <span className="d-block">{invalid}</span>
+        </p>
+      )}
+      {setImages ? (
+        <label
+          htmlFor="add-media"
+          onDragEnter={handleDragEnter}
+          onDragLeave={() => setDragging(false)}
+          onDragOver={handleDragOver}
+          onDrop={handleDragDropImage}
+          style={{ height: "400px", cursor: "pointer" }}
+          className={`${media?.length ? "" : "bg-white p-3"} rounded-2 d-flex flex-column position-relative gap-3 justify-content-between`}
+        >
+          {active ? (
+            <>
+              {active.type.startsWith("video/") ? (
+                <ReactPlayer
+                  url={active.preview}
+                  width="100%"
+                  height="100%"
+                  controls
                 />
-                <div className="d-flex gap-3 align-items-center justify-content-center">
-                  <img
-                    style={{ width: "2.75rem" }}
-                    className="d-block"
-                    src={require("../../assets/add_photo_alternate.png")}
-                    alt=""
-                  />
-                  <h5 className="mb-0">Click or drag and drop here</h5>
-                </div>
-              </>
-            )}
-            <input
-              type="file"
-              accept="image/jpeg, image/jpg, image/png, image/bmp, video/mp4, video/avi, video/mov, video/mkv, video/webm, video/ogg"
-              onChange={handleFileSelection}
-              id="add-media"
-              hidden
-              multiple
-            />
-          </label>
-        ) : (
-          <div
-            style={{ height: "400px" }}
-            className="rounded-2 overflow-hidden"
-          >
-            {active && active.video ? (
-              <ReactPlayer
-                url={active.video}
-                width="100%"
-                height="100%"
-                controls
-              />
-            ) : (
-              <a href={product.images360.length !== 0 ? `https://chat-broker-api.azurewebsites.net/product/${productId}/360-image` : null}>
+              ) : (
                 <img
                   className="w-100 h-100 object-fit-cover d-block"
-                  src={active?.image}
+                  src={active.preview}
                   alt=""
                 />
-              </a>
-            )}
-          </div>
-        )}
-        {!!media.length && (
-          <div
-            className={`d-flex gap-2 ${setImages ? "px-2" : ""} pt-2 overflow-auto scrollbar-none flex-grow-1`}
-          >
-            {media.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActive(item)}
-                className={`${active?.id === item.id ? classes.active : "border"} bg-transparent position-relative transition-main rounded-2 ${classes.image}`}
+              )}
+              <h4
+                style={{
+                  backgroundColor: "#f0f0f0",
+                  opacity: dragging ? 0.8 : 0,
+                }}
+                className="user-select-none d-block transition-main position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
               >
-                {setImages && (
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setImages((prev) => ({
-                        ...prev,
-                        value: prev.value.filter((img) => img.id !== item.id),
-                        invalid: validateMedia(prev.value.filter((img) => img.id !== item.id)),
-                      }));
-                    }}
-                    style={{
-                      width: "18px",
-                      height: "18px",
-                      fontSize: "0.7rem",
-                    }}
-                    className="bg-white rounded-circle justify-content-center align-items-center d-flex border-secondary border position-absolute top-0 start-100 translate-middle"
-                  >
-                    <FontAwesomeIcon className="d-block" icon={faClose} />
-                  </span>
-                )}
-                {console.log("item Array: ", item)}
-                {item.type?.startsWith("video/") ? (
-                  <ReactPlayer
-                    url={item.preview}
-                    width="100%"
-                    height="100%"
-                  />
-                ) : (
-                  <img
-                    className="w-100 h-100 object-fit-cover d-block rounded-1"
-                    src={item.image || item.preview}
-                    alt=""
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+                <img
+                  style={{ width: "2.5rem" }}
+                  className="d-block ms-3"
+                  src={require("../../assets/add_photo_alternate.png")}
+                  alt=""
+                />
+                Drop Here
+              </h4>
+            </>
+          ) : (
+            <>
+              <img
+                className="d-block w-50 mx-auto"
+                src={require("../../assets/Uploading-bro.png")}
+                alt=""
+                id="image"
+              />
+              <div className="d-flex gap-3 align-items-center justify-content-center">
+                <img
+                  style={{ width: "2.75rem" }}
+                  className="d-block"
+                  src={require("../../assets/add_photo_alternate.png")}
+                  alt=""
+                />
+                <h5 className="mb-0">Click or drag and drop here</h5>
+              </div>
+            </>
+          )}
+          <input
+            type="file"
+            accept="image/jpeg, image/jpg, image/png, image/bmp, video/mp4, video/avi, video/mov, video/mkv, video/webm, video/ogg"
+            onChange={handleFileSelection}
+            id="add-media"
+            hidden
+            multiple
+          />
+        </label>
+      ) : (
+        <div
+          style={{ height: "400px" }}
+          className="rounded-2 overflow-hidden"
+        >
+          {active && active.video ? (
+            <ReactPlayer
+              url={active.video}
+              width="100%"
+              height="100%"
+              controls
+            />
+          ) : (
+            <a href={product?.images360.length !== 0 && active?.images360 ? `https://chat-broker-api.azurewebsites.net/product/${productId}/360-image` : null}>
+              <img
+                id={imgId}
+                className={`w-100 h-100 object-fit-cover d-block ${active?.images360 ? classes.overlay : null}`}
+                src={active?.image || active?.images360}
+                alt=""
+              />
+            </a>
+          )}
+        </div>
+      )}
+      {!!media?.length && (
+        <div
+          className={`d-flex gap-2 ${setImages ? "px-2" : ""} pt-2 overflow-auto scrollbar-none flex-grow-1`}
+        >
+          {media.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActive(item)}
+              className={`${active?.id === item.id ? classes.active : "border"} bg-transparent position-relative transition-main rounded-2 ${classes.image}`}
+            >
+              {setImages && (
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setImages((prev) => ({
+                      ...prev,
+                      value: prev.value.filter((img) => img.id !== item.id),
+                      invalid: validateMedia(prev.value.filter((img) => img.id !== item.id)),
+                    }));
+                    setImages360((prev) => ({
+                      ...prev,
+                      value: prev.value.filter((img) => img.id !== item.id),
+                      invalid: validateMedia(prev.value.filter((img) => img.id !== item.id)),
+                    }));
+                  }}
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    fontSize: "0.7rem",
+                  }}
+                  className="bg-white rounded-circle justify-content-center align-items-center d-flex border-secondary border position-absolute top-0 start-100 translate-middle"
+                >
+                  <FontAwesomeIcon className="d-block" icon={faClose} />
+                </span>
+              )}
+              {console.log("item Array: ", item)}
+              {item.video ? (
+                <ReactPlayer
+                  url={item.preview || item.video}
+                  width="100%"
+                  height="100%"
+                />
+              ) : (
+                <img
+                  className="w-100 h-100 object-fit-cover d-block rounded-1"
+                  src={item.image || item.preview || item.images360}
+                  alt=""
+                />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

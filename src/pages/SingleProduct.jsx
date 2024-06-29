@@ -4,6 +4,7 @@ import ProductPreview from "../components/Product/ProductPreview";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
 import classes from "./SingleProduct.module.css";
+import styles from "../components/Product/ProductPreview.module.css";
 import { backend } from "../App";
 import { useParams } from "react-router";
 import Spinner from "../UI/Spinner";
@@ -57,7 +58,7 @@ const SingleProduct = () => {
   const images360 = product ? product.images360.map(image360 => image360) : [];
 
   const videos = product ? product?.videos?.map(video => video) : [];
-  const media = [...images, ...videos];
+  const media = [...images, ...videos, ...images360];
   console.log(images360)
   console.log(product)
 
@@ -96,7 +97,14 @@ const SingleProduct = () => {
         ) : error ? (
           <p>No Images</p>
         ) : (
-          <ProductPreview product={product} media={media} loading={loading} error={error} className="flex-grow-1" />
+
+          <div className={`${styles.navigator} w-100 `}>
+            <div
+              style={{ top: "1rem" }}
+              className="position-sticky">
+              <ProductPreview product={product} media={media} loading={loading} error={error} className="flex-grow-1" />
+            </div>
+          </div>
         )}
         {loading ? (
           <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />

@@ -22,6 +22,7 @@
     "canvas": "^2.11.2",
     "chartjs-node-canvas": "^4.1.6",
     "opencv-react": "^0.0.6",
+    "opencv.js": "^1.2.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
     "react-dom": "^18.2.0",

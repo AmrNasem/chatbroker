@@ -9,3 +9,6 @@
 textarea.input {
   resize: none;
 }
+.deActive{
+  color: #5f5858 !important;
+}

@@ -16,6 +16,9 @@
 .text-main {
   color: var(--main-color);
 }
+.deActive{
+  color: #a7acb1 !important;
+}
 .bg-sec {
   background-color: var(--secondary-color) !important;
 }

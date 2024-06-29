@@ -13,6 +13,7 @@ import {
   newProductAfter as afterInputs,
 } from "../utils/inputs";
 import Alert from "../UI/Alert";
+import classes from "../components/Product/ProductPreview.module.css"
 
 const GetSelect = memo(
   ({ className, action, pre, formData, input, valid, onBlur, onChange }) => {
@@ -91,6 +92,12 @@ const NewProduct = () => {
 
   const [images, setImages] = useState({ value: [], invalid: "" });
 
+  const [images360, setImages360] = useState({ value: [], invalid: "" });
+  const [isImage360, setIsImage360] = useState(false);
+  let media = [...images.value, ...images360.value]
+
+
+
   const [formData, setFormData] = useState({
     for_renting: 1,
     for_swapping: 0,
@@ -101,6 +108,7 @@ const NewProduct = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [closing, setClosing] = useState(false);
+
 
   const fetchGovs = useCallback(async () => {
     try {
@@ -146,8 +154,13 @@ const NewProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const areImagesInvalid = validateMedia(images.value);
-    setImages((prev) => ({ ...prev, invalid: areImagesInvalid }));
+    const areImagesInvalid = validateMedia(isImage360 ? images360.value : images.value);
+
+    if (isImage360) {
+      setImages360((prev) => ({ ...prev, invalid: areImagesInvalid }));
+    } else {
+      setImages((prev) => ({ ...prev, invalid: areImagesInvalid }));
+    }
 
     const validate = (input) => {
       if (!input.model || !!formData[input.model])
@@ -165,15 +178,12 @@ const NewProduct = () => {
 
     console.log(formData, images);
 
-    images.value.forEach((img) => {
-      console.log(img.type.startsWith("image/") ? "it's an image " : img.type.startsWith("video/") ? "it's a video" : false);
-    });
-
     if (isFormValid) {
       const formdata = new FormData();
-      images.value.forEach((img) => {
-        img.type.startsWith("image/") ? formdata.append(`images[]`, img.file, img.file.type) : formdata.append(`videos[]`, img.file, img.file.type);
-      });
+
+      images.value.forEach(img => img.file.type.startsWith("image/") ? formdata.append("images[]", img.file, img.file.name) : formdata.append("videos[]", img.file, img.file.name))
+
+      images360.value.forEach(img => formdata.append("images360[]", img.file, img.file.name))
 
       formdata.append("available", 1); // Static
       formdata.append("location", "123"); // Static
@@ -247,7 +257,9 @@ const NewProduct = () => {
       setClosing(false);
     }, 300);
   };
-
+  const image360Toggle = () => {
+    setIsImage360(!isImage360)
+  }
   const handleModelSwitch = (e) => {
     const currentModels = modelsBtns.filter((btn) => formData[btn.id]);
     if (currentModels.length === 1 && currentModels[0].id === e.target.id)
@@ -284,19 +296,39 @@ const NewProduct = () => {
         valid={!inputsTouched[input.id] || input.validate(formData[input.id])}
         onBlur={handleBlur}
         onChange={handleChange}
+      // setIs360Image={setIs360Image}
       />
     );
   };
 
   return (
     <main>
+
       <h4 className="text-main container mt-4">إضافة منتج</h4>
       <div className="container d-flex gap-5 my-4 flex-wrap flex-lg-nowrap">
-        <ProductPreview
-          setImages={setImages}
-          media={images.value}
-          invalid={images.invalid}
-        />
+        <div className={`${classes.navigator} w-100 `}>
+          <div
+            style={{ top: "1rem" }}
+            className="position-sticky">
+
+            <ProductPreview
+              imgID="image"
+              setImages={setImages}
+              setImages360={setImages360}
+              isImage360={isImage360}
+              media={media}
+              invalid={images.invalid}
+            />
+            <button
+              type="button"
+              onClick={image360Toggle}
+              className={`flex-grow-1 border p-2 d-flex ${isImage360 ? "text-sec border-sec" : "deActive"} rounded-2 bg-transparent mt-3`}
+            >
+              رفع صورة 360 درجة: <span className="fw-bold">{isImage360 ? "فعال" : "غير فعال"}</span>
+            </button>
+          </div>
+        </div>
+
         <form className="flex-grow-1" onSubmit={handleSubmit}>
           {beforeInputs.map((input, i) => {
             if (input.flex && input.value.find((inp) => formData[inp.model]))
