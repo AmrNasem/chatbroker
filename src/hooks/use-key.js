@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 
-const useEscape = (callback) => {
+const useKey = (key, callback) => {
   useEffect(() => {
     const deactivate = (e) => {
-      if (e.key === "Escape") callback(e);
+      if (e.key === key) callback(e);
     };
     window.addEventListener("keydown", deactivate);
     return () => window.removeEventListener("keydown", deactivate);
-  }, [callback]);
+  }, [key, callback]);
 };
 
-export default useEscape;
+export default useKey;
