@@ -24,7 +24,7 @@ import {
   removeFromFavorites,
 } from "../../store/favoritesSlice";
 import { backend } from "../../App";
-import AddReview from "../Reviews/addReview";
+import AddReview from "../Reviews/AddReview";
 
 const getStar = (index, rate) =>
   rate < index + 1 && index < rate ? (
@@ -106,12 +106,23 @@ const ProductDetails = ({ className, product, error, loading }) => {
   useEffect(() => {
     if (favorites && product) {
       setIsFav(
-        favorites.find((item) => item.product_id === (product.rent ? product.rent : product.sell ? product.sell : product.swap).id) ? true : false
+        favorites.find(
+          (item) =>
+            item.product_id ===
+            (product.rent
+              ? product.rent
+              : product.sell
+              ? product.sell
+              : product.swap
+            ).id
+        )
+          ? true
+          : false
       );
     }
   }, [favorites, product]);
 
-  console.log(product)
+  console.log(product);
   const handleToggleFav = async (e) => {
     e.stopPropagation();
 
@@ -120,10 +131,27 @@ const ProductDetails = ({ className, product, error, loading }) => {
     try {
       setIsFav((prev) => !prev);
       const formData = new FormData();
-      formData.append("product_id", (product.rent ? product.rent : product.sell ? product.sell : product.swap).id);
+      formData.append(
+        "product_id",
+        (product.rent
+          ? product.rent
+          : product.sell
+          ? product.sell
+          : product.swap
+        ).id
+      );
 
       const res = await fetch(
-        `${backend}/favorites/${isFav ? (product.rent ? product.rent : product.sell ? product.sell : product.swap).id : "store"}`,
+        `${backend}/favorites/${
+          isFav
+            ? (product.rent
+                ? product.rent
+                : product.sell
+                ? product.sell
+                : product.swap
+              ).id
+            : "store"
+        }`,
         {
           method: isFav ? "DELETE" : "POST",
           headers: {
@@ -136,7 +164,16 @@ const ProductDetails = ({ className, product, error, loading }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Something went wrong!");
       dispatch(
-        isFav ? removeFromFavorites((product.rent ? product.rent : product.sell ? product.sell : product.swap).id) : addToFavorites(data.data)
+        isFav
+          ? removeFromFavorites(
+              (product.rent
+                ? product.rent
+                : product.sell
+                ? product.sell
+                : product.swap
+              ).id
+            )
+          : addToFavorites(data.data)
       );
     } catch (error) {
       console.error("Error toggling favorite status:", error.message);
@@ -198,7 +235,16 @@ const ProductDetails = ({ className, product, error, loading }) => {
             <h6 className="my-2" style={{ color: "var(--product-text-color)" }}>
               {product.title}
             </h6>
-            <h5 className="text-main mb-4">{(product.rent ? product.rent : product.sell ? product.sell : product.swap).descount}</h5>
+            <h5 className="text-main mb-4">
+              {
+                (product.rent
+                  ? product.rent
+                  : product.sell
+                  ? product.sell
+                  : product.swap
+                ).descount
+              }
+            </h5>
             <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
               <h6 style={{ color: "#424750" }} className="fw-semibold">
                 المكان
@@ -209,7 +255,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
                   className="d-block"
                   style={{ color: "var(--product-text-color" }}
                 >
-                  {product.city.city_name_ar}
+                  {gov} - {city}
                 </span>
               </div>
             </div>

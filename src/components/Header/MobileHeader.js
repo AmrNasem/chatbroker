@@ -1,17 +1,26 @@
 import classes from "./Header.module.css";
-import { } from "@fortawesome/free-regular-svg-icons";
+import {} from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { memo, useCallback, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Aside from "./Aside";
 
 const MobileHeader = () => {
   const [displayAside, setDisplayAside] = useState(false);
   const [closingAside, setClosingAside] = useState(false);
-  const [searchInput, setSearchInput] = useState('');
-
+  const [searchInput, setSearchInput] = useState("");
+  const location = useLocation();
+  const params = useMemo(
+    () => new URLSearchParams(location.search),
+    [location]
+  );
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const query = params.get("q");
+    if (location.pathname === "/search" && query) setSearchInput(query);
+  }, [location, params]);
 
   const closeAsideHandler = useCallback(() => {
     setClosingAside(true);
@@ -26,6 +35,8 @@ const MobileHeader = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    if (!searchInput.trim()) return;
+
     navigate(`/search/?q=${searchInput}`);
   };
 
@@ -43,9 +54,11 @@ const MobileHeader = () => {
       <form
         className={`d-flex flex-grow-1 border rounded-2 overflow-hidden ${classes.search}`}
         onSubmit={handleSearchSubmit}
-        onClick={() => navigate(`/search`)}
       >
-        <button type="submit" className="px-2 py-1 border-0 bg-transparent text-black-50">
+        <button
+          // type="submit"
+          className="px-2 py-1 border-0 bg-transparent text-black-50"
+        >
           <FontAwesomeIcon icon={faSearch} />
         </button>
         <input

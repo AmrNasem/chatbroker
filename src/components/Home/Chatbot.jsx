@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 
 const Chatbot = () => {
   const [isChatting, setIsChatting] = useState(false);
-  const { token, user } = useSelector((state) => state.auth);
+  const token = useSelector((state) => state.auth.token);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState({
     value: null,
@@ -96,7 +96,6 @@ const Chatbot = () => {
     e.preventDefault();
     const newRequest = request || {
       id: Math.random().toString(),
-      senderId: user.id,
       text: message,
       createdAt: new Date(),
     };
@@ -108,12 +107,12 @@ const Chatbot = () => {
         ...prev,
         value: request
           ? prev.value.map((msg) =>
-            msg.request.id === newRequest.id ? { ...msg, loading: true } : msg
-          )
+              msg.request.id === newRequest.id ? { ...msg, loading: true } : msg
+            )
           : [
-            ...(prev.value || []),
-            { loading: true, error: "", request: newRequest },
-          ],
+              ...(prev.value || []),
+              { loading: true, error: "", request: newRequest },
+            ],
       }));
       setMessage("");
       const res = await fetch(`https://chat-testing-1rsl.onrender.com/chat`, {
@@ -133,7 +132,15 @@ const Chatbot = () => {
         ...prev,
         value: prev.value.map((msg) =>
           msg.request.id === newRequest.id
-            ? { ...msg, response: { text: data.reponse }, loading: false }
+            ? {
+                ...msg,
+                response: {
+                  ...msg.response,
+                  createdAt: new Date(),
+                  text: data.reponse,
+                },
+                loading: false,
+              }
             : msg
         ),
       }));
@@ -148,8 +155,6 @@ const Chatbot = () => {
       }));
     }
   };
-
-
 
   useKey("Escape", toggleChatHandler);
   useKey("Enter", (e) => handleSubmit(e));
@@ -186,7 +191,7 @@ const Chatbot = () => {
             ) : messages.value?.length ? (
               messages.value.map((msg, i) => (
                 <div key={i}>
-                  <Message message={msg.request} />
+                  <Message isMyMessage message={msg.request} />
                   {msg.loading ? (
                     <Skeleton
                       className={`my-4 me-auto`}
@@ -238,8 +243,9 @@ const Chatbot = () => {
               value={message}
             ></textarea>
             <button
-              className={`bg-transparent border-0 p-2 ${!message.trim() ? "opacity-50" : ""
-                } ${classes.send}`}
+              className={`bg-transparent border-0 p-2 ${
+                !message.trim() ? "opacity-50" : ""
+              } ${classes.send}`}
             >
               <FontAwesomeIcon icon={faPaperPlane} />
             </button>

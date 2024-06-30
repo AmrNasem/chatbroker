@@ -11,9 +11,12 @@ import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
-const fNameConstraint = (value) => /^[a-zA-Z0-9_]{3,20}$/.test(value);
-const phoneConstraint = (value) => /^\d{6,}$/.test(value);
+const fNameConstraint = (value) =>
+  value.trim().length || /^[a-zA-Z0-9_]{3,20}$/.test(value);
+const phoneConstraint = (value) =>
+  value.trim().length || /^\d{6,}$/.test(value);
 const emailConstraint = (value) =>
+  value.trim().length ||
   /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
 
 const PersonalData = ({ loading, data, error }) => {

@@ -54,14 +54,16 @@ const SingleProduct = () => {
     getSingleProduct();
   }, [productId]);
 
-  console.log(product)
-  const images = product ? product.images.map(image => image) : [];
-  const images360 = product ? product.images360.map(image360 => image360) : [];
+  console.log(product);
+  const images = product ? product.images.map((image) => image) : [];
+  const images360 = product
+    ? product.images360.map((image360) => image360)
+    : [];
 
-  const videos = product ? product?.videos?.map(video => video) : [];
+  const videos = product ? product?.videos?.map((video) => video) : [];
   const media = [...images, ...videos, ...images360];
-  console.log(images360)
-  console.log(product)
+  console.log(images360);
+  console.log(product);
 
   const handleNewConversation = async () => {
     if (!token) return navigate("?auth=login");
@@ -143,12 +145,39 @@ const SingleProduct = () => {
         ) : error ? (
           <p>No Images</p>
         ) : (
-
           <div className={`${styles.navigator} w-100 `}>
-            <div
-              style={{ top: "1rem" }}
-              className="position-sticky">
-              <ProductPreview product={product} media={media} loading={loading} error={error} className="flex-grow-1" />
+            <div style={{ top: "1rem" }} className="position-sticky">
+              <ProductPreview
+                product={product}
+                media={media}
+                loading={loading}
+                error={error}
+                className="flex-grow-1"
+              />
+              {product.sell && !(product.user.id === user?.id) && (
+                <button
+                  disabled={purchase.loading}
+                  onClick={handlePayment}
+                  id="sell"
+                  className={`d-block w-100 ${
+                    purchase.loading ? "opacity-50" : ""
+                  } text-white bg-main my-3 p-3 rounded-1 border-0`}
+                >
+                  اشتري الآن
+                </button>
+              )}
+              {product.rent && !(product.user.id === user?.id) && (
+                <button
+                  disabled={purchase.loading}
+                  onClick={handlePayment}
+                  id="rent"
+                  className={`d-block w-100 ${
+                    purchase.loading ? "opacity-50" : ""
+                  } text-white bg-sec my-3 p-3 rounded-1 border-0`}
+                >
+                  استأجر الآن
+                </button>
+              )}
             </div>
           </div>
         )}
