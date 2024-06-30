@@ -12,6 +12,10 @@ const Search = () => {
   const query = queryParams.get("q");
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);

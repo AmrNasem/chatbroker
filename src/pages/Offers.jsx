@@ -13,6 +13,10 @@ const Offers = () => {
     dispatch(fetchOffers());
   }, [dispatch]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
   // Ensure offers is an array before mapping
   return (
     <main>

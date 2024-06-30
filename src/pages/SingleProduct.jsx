@@ -38,6 +38,10 @@ const SingleProduct = () => {
   }, []);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
+  useEffect(() => {
     const getSingleProduct = async () => {
       setLoading(true);
       setError(null);

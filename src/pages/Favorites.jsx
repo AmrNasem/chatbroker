@@ -15,6 +15,10 @@ const Favorites = () => {
   } = useSelector((state) => state.favorites);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
+  useEffect(() => {
     if (!favoriteProducts) dispatch(fetchFavorites(authToken));
   }, [dispatch, authToken, favoriteProducts]);
 

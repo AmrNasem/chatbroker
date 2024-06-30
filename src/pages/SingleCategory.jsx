@@ -19,6 +19,10 @@ const SingleCategory = () => {
   );
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
+  useEffect(() => {
     if (!currentCategory && categories)
       dispatch(setCategory(categories.find((cat) => cat.id === +categoryId)));
   }, [currentCategory, categories, categoryId, dispatch]);

@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import Slider from "../components/Home/Slider";
 import HomeCategories from "../components/Home/HomeCategories";
 import Offers from "../components/Home/Offers";
@@ -7,6 +7,10 @@ import Recommends from "../components/Home/Recommends";
 import Chatbot from "../components/Home/Chatbot";
 
 const Home = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
   return (
     <main className="position-relative">
       <Slider />

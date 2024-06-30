@@ -139,6 +139,10 @@ const NewProduct = () => {
   }, [fetchGovs]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
+  useEffect(() => {
     if (pre.data?.categories)
       setFormData((prev) => ({ ...prev, category_id: pre.data.categories[0] }));
   }, [pre.data?.categories]);

@@ -34,6 +34,10 @@ const Profile = () => {
   console.log(profile);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
+  useEffect(() => {
     const getProfile = async () => {
       setLoading(true);
       setError(null);

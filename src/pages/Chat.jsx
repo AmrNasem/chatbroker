@@ -30,6 +30,10 @@ const Chat = () => {
     []
   );
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
   const getAllChats = useCallback(async () => {
     try {
       setChats((prev) => ({ ...prev, error: null, loading: true }));
