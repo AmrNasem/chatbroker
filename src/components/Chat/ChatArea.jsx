@@ -117,7 +117,13 @@ const ChatArea = ({ style, className, onToggleAside }) => {
             </button>
           </p>
         ) : messages.length ? (
-          messages.map((message, i) => <Message key={i} message={message} />)
+          messages.map((message, i) => (
+            <Message
+              key={i}
+              message={message}
+              isMyMessage={user.id === message.senderId}
+            />
+          ))
         ) : (
           <h4 className="text-center position-relative top-50 start-50 opacity-75 translate-middle">
             أرسل أول رسالة

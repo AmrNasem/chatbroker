@@ -2,8 +2,7 @@ import classes from "./Chatbot.module.css";
 import RobotIcon from "../../Icons/RobotIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { backend } from "../../App";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import Skeleton from "../Skeleton/Skeleton";
 import Message from "../Chat/Message";
@@ -12,11 +11,11 @@ import Swal from "sweetalert2";
 
 const Chatbot = () => {
   const [isChatting, setIsChatting] = useState(false);
-  const { token, user } = useSelector((state) => state.auth);
+  const token = useSelector((state) => state.auth.token);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState({
     value: null,
-    loading: true,
+    loading: false,
     error: null,
   });
   const chatRef = useRef();
@@ -61,31 +60,31 @@ const Chatbot = () => {
   };
   console.log(messages);
 
-  const handleGetMessages = useCallback(async () => {
-    if (!isChatting) return;
-    try {
-      setMessages((prev) => ({ ...prev, loading: true, error: null }));
-      const res = await fetch(`${backend}/chatbot/messages`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "خطأ في تحميل الرسائل");
-      console.log(data);
-      setMessages((prev) => ({
-        ...prev,
-        loading: false,
-        value: data.messages,
-      }));
-    } catch (err) {
-      setMessages((prev) => ({ ...prev, loading: false, error: err.message }));
-    }
-  }, [token, isChatting]);
+  // const handleGetMessages = useCallback(async () => {
+  //   if (!isChatting) return;
+  //   try {
+  //     setMessages((prev) => ({ ...prev, loading: true, error: null }));
+  //     const res = await fetch(`${backend}/chatbot/messages`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     const data = await res.json();
+  //     if (!res.ok) throw new Error(data.message || "خطأ في تحميل الرسائل");
+  //     console.log(data);
+  //     setMessages((prev) => ({
+  //       ...prev,
+  //       loading: false,
+  //       value: data.messages,
+  //     }));
+  //   } catch (err) {
+  //     setMessages((prev) => ({ ...prev, loading: false, error: err.message }));
+  //   }
+  // }, [token, isChatting]);
 
-  useEffect(() => {
-    handleGetMessages();
-  }, [handleGetMessages]);
+  // useEffect(() => {
+  //   handleGetMessages();
+  // }, [handleGetMessages]);
 
   useEffect(() => {
     if (areaRef.current)
@@ -96,7 +95,6 @@ const Chatbot = () => {
     e.preventDefault();
     const newRequest = request || {
       id: Math.random().toString(),
-      senderId: user.id,
       text: message,
       createdAt: new Date(),
     };
@@ -133,7 +131,15 @@ const Chatbot = () => {
         ...prev,
         value: prev.value.map((msg) =>
           msg.request.id === newRequest.id
-            ? { ...msg, response: { text: data.response }, loading: false }
+            ? {
+              ...msg,
+              response: {
+                ...msg.response,
+                createdAt: new Date(),
+                text: data.response,
+              },
+              loading: false,
+            }
             : msg
         ),
       }));
@@ -148,8 +154,6 @@ const Chatbot = () => {
       }));
     }
   };
-
-
 
   useKey("Escape", toggleChatHandler);
   useKey("Enter", (e) => handleSubmit(e));
@@ -179,14 +183,14 @@ const Chatbot = () => {
                   style={{ maxWidth: "60%", height: "1rem" }}
                 />
               ))
-            ) : !messages.error ? (
+            ) : messages.error ? (
               <p className="text-center text-danger fw-semibold my-2">
                 {messages.error}
               </p>
             ) : messages.value?.length ? (
               messages.value.map((msg, i) => (
                 <div key={i}>
-                  <Message message={msg.request} />
+                  <Message isMyMessage message={msg.request} />
                   {msg.loading ? (
                     <Skeleton
                       className={`my-4 me-auto`}

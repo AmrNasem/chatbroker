@@ -2,11 +2,11 @@ import classes from "./HomeCategories.module.css";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { fetchCategories } from "../../store/categories-slice";
+import { fetchCategories, setCategory } from "../../store/categories-slice";
 import Skeleton from "../Skeleton/Skeleton";
 
 const settings = {
@@ -59,6 +59,7 @@ const HomeCategory = () => {
     (state) => state.categories
   );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   if (categories && categories.length < 10)
     settings.slidesToShow = categories.length;
@@ -79,9 +80,12 @@ const HomeCategory = () => {
         <Slider {...settings} className="overflow-hidden">
           {categories.map((item) => {
             return (
-              <Link
-                to={`/category/${item.id}`}
-                className="text-decoration-none"
+              <button
+                className="border-0 bg-transparent"
+                onClick={() => {
+                  dispatch(setCategory(item));
+                  navigate(`/category/${item.id}`);
+                }}
                 key={item.id}
               >
                 <div className="text-center">
@@ -96,7 +100,7 @@ const HomeCategory = () => {
                   </div>
                   <p className={classes.title}>{item.title}</p>
                 </div>
-              </Link>
+              </button>
             );
           })}
         </Slider>

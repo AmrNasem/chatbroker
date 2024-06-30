@@ -25,6 +25,7 @@ const SingleProduct = () => {
   const [error, setError] = useState(null);
   const [newChat, setNewChat] = useState({ loading: false, error: null });
   const [closing, setClosing] = useState(false);
+  const [purchase, setPurchase] = useState({ loading: false, error: null });
 
   console.log(product);
 
@@ -53,14 +54,16 @@ const SingleProduct = () => {
     getSingleProduct();
   }, [productId]);
 
-  console.log(product)
-  const images = product ? product.images.map(image => image) : [];
-  const images360 = product ? product.images360.map(image360 => image360) : [];
+  console.log(product);
+  const images = product ? product.images.map((image) => image) : [];
+  const images360 = product
+    ? product.images360.map((image360) => image360)
+    : [];
 
-  const videos = product ? product?.videos?.map(video => video) : [];
+  const videos = product ? product?.videos?.map((video) => video) : [];
   const media = [...images, ...videos, ...images360];
-  console.log(images360)
-  console.log(product)
+  console.log(images360);
+  console.log(product);
 
   const handleNewConversation = async () => {
     if (!token) return navigate("?auth=login");
@@ -79,6 +82,7 @@ const SingleProduct = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "حدثت مشكلة ما!");
+      console.log(data);
       const { conversation, ...rest } = data.payload;
       console.log({ ...conversation, ...rest });
       setNewChat((prev) => ({ ...prev, loading: false }));
@@ -89,29 +93,109 @@ const SingleProduct = () => {
     }
   };
 
+  const handlePayment = async (e) => {
+    if (!token) return navigate("?auth=login");
+
+    try {
+      setPurchase((prev) => ({ ...prev, error: null, loading: true }));
+      const res = await fetch(`${backend}/stripe/checkout`, {
+        method: "POST",
+        body: JSON.stringify({
+          email: user.email,
+          products: [
+            {
+              product_id: productId,
+              price: product[e.target.id].amount,
+              model: e.target.id,
+            },
+          ],
+        }),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      if (!res.ok) throw new Error(data.message || "حدثت مشكلة ما!");
+      setPurchase((prev) => ({ ...prev, loading: false }));
+      window.open(data.url);
+    } catch (error) {
+      setPurchase((prev) => ({
+        ...prev,
+        error: error.message,
+        loading: false,
+      }));
+      console.log(error.messagey);
+    }
+  };
+
   return (
     <main className="container my-4 d-flex gap-4 flex-wrap flex-xl-nowrap">
-      <div className={`d-flex gap-4 flex-wrap w-100 flex-lg-nowrap ${classes.details}`}>
+      <div
+        className={`d-flex gap-4 flex-wrap w-100 flex-lg-nowrap ${classes.details}`}
+      >
         {loading ? (
-          <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />
+          <Spinner
+            side={50}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
         ) : error ? (
           <p>No Images</p>
         ) : (
-
           <div className={`${styles.navigator} w-100 `}>
-            <div
-              style={{ top: "1rem" }}
-              className="position-sticky">
-              <ProductPreview product={product} media={media} loading={loading} error={error} className="flex-grow-1" />
+            <div style={{ top: "1rem" }} className="position-sticky">
+              <ProductPreview
+                product={product}
+                media={media}
+                loading={loading}
+                error={error}
+                className="flex-grow-1"
+              />
+              {product.sell && !(product.user.id === user?.id) && (
+                <button
+                  disabled={purchase.loading}
+                  onClick={handlePayment}
+                  id="sell"
+                  className={`d-block w-100 ${
+                    purchase.loading ? "opacity-50" : ""
+                  } text-white bg-main my-3 p-3 rounded-1 border-0`}
+                >
+                  اشتري الآن
+                </button>
+              )}
+              {product.rent && !(product.user.id === user?.id) && (
+                <button
+                  disabled={purchase.loading}
+                  onClick={handlePayment}
+                  id="rent"
+                  className={`d-block w-100 ${
+                    purchase.loading ? "opacity-50" : ""
+                  } text-white bg-sec my-3 p-3 rounded-1 border-0`}
+                >
+                  استأجر الآن
+                </button>
+              )}
             </div>
           </div>
         )}
         {loading ? (
-          <Spinner side={50} color="var(--secondary-color)" className="mx-auto" />
+          <Spinner
+            side={50}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
         ) : error ? (
           <p>No Details</p>
         ) : (
-          <ProductDetails product={product} loading={loading} error={error} className="flex-grow-1" />
+          <ProductDetails
+            product={product}
+            loading={loading}
+            error={error}
+            className="flex-grow-1"
+          />
         )}
       </div>
       {user?.id !== product?.user.id && (
@@ -151,7 +235,9 @@ const SingleProduct = () => {
                   >
                     <img
                       src={
-                        product?.user.image || require("../assets/person.jpeg")
+                        (product?.user.image &&
+                          !product?.user.image.endsWith("/images/")) ||
+                        require("../assets/person.jpeg")
                       }
                       className="w-100 h-100 object-fit-cover"
                       alt=""

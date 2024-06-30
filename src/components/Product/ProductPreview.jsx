@@ -1,7 +1,10 @@
 import React, { memo, useEffect, useState } from "react";
 import classes from "./ProductPreview.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClose,
+  faExclamationCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import ReactPlayer from "react-player/lazy";
 import { useParams } from "react-router-dom";
 import { validateMedia } from "../../utils/general";

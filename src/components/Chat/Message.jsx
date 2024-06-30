@@ -1,10 +1,6 @@
-import { useSelector } from "react-redux";
 import { getDate } from "../../utils/date";
 
-const Message = ({ message }) => {
-  const user = useSelector((state) => state.auth.user);
-  const isMyMessage = message.senderId === user.id;
-
+const Message = ({ message, isMyMessage }) => {
   return (
     <div
       style={{ fontSize: "0.9rem" }}

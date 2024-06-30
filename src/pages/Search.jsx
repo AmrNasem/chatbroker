@@ -2,43 +2,66 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import SearchCard from "../components/searchCard";
 import { backend } from "../App";
+import Spinner from "../UI/Spinner";
 const Search = () => {
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const query = queryParams.get("q");
 
   useEffect(() => {
     const fetchData = async () => {
-      const queryParams = new URLSearchParams(location.search);
-      const query = queryParams.get("q");
-
       try {
-        const response = await fetch(`${backend}/search/auto_complete?q=${query}`);
-        const data = await response.json();
-
-        if (data && Array.isArray(data.data)) {
-          setResults(data.data);
-        } else {
-          setResults([]);
-        }
+        setLoading(true);
+        setError("");
+        const res = await fetch(`${backend}/search/auto_complete?q=${query}`);
+        const data = await res.json();
+        console.log(data);
+        if (!res.ok) throw new Error(data.message || "خطأ في البحث!");
+        setResults(data);
       } catch (error) {
-        console.error("Error fetching search results:", error);
-        setResults([]);
+        console.error("Error fetching search results:", error.message);
+        setError(error.message);
       }
+      setLoading(false);
     };
 
     fetchData();
-  }, [location.search]);
-  console.log(results)
+  }, [query]);
+  console.log(results);
   return (
-    <div>
-      {results.length > 0 ? (
-        results.map((product) => (
-          <SearchCard key={product.id} product={product} />
-        ))
-      ) : (
-        <p>No results found</p>
-      )}
-    </div>
+    <main>
+      <div className="container my-5">
+        {loading ? (
+          <Spinner
+            side={50}
+            color="var(--secondary-color)"
+            className="mx-auto"
+          />
+        ) : error ? (
+          <p className="text-center text-danger fw-semibold my-2">{error}</p>
+        ) : results.data.length ? (
+          <div>
+            <h4>
+              {results.count > 2 && results.count}{" "}
+              {results.count <= 10 && results.count > 2
+                ? "نتائج"
+                : results.count === 2
+                ? "نتيجتان"
+                : "نتيجة"}{" "}
+              {results.count === 1 && "واحدة"} ({query})
+            </h4>
+            {results.data.map((product) => (
+              <SearchCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <h3 className="text-center fw-semibold my-2">لا يوجد نتائج!</h3>
+        )}
+      </div>
+    </main>
   );
 };
 

@@ -1,19 +1,18 @@
-.offersContainer{
+.offersContainer {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   margin: 80px;
   gap: 30px;
-  justify-content: center;
+  /* justify-content: center; */
 }
-.card{
+.card {
   display: flex;
   width: 240px;
 }
-.title{
+.title {
   margin-right: 150px;
   font-size: 25px;
-  color: #3B3B3B;
+  color: #3b3b3b;
   margin-bottom: -40px;
   margin-top: 40px;
 }

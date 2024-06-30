@@ -18,7 +18,7 @@ const itemsPerPage = 20;
 const Recommends = () => {
   const [page, setPage] = useState(1);
 
-  // const products = useSelector((state) => state.products.items);
+  const { products, loading } = useSelector((state) => state.products);
 
   const token = useSelector((state) => state.auth.token);
   const [recommendations, setRecommendations] = useState({
@@ -27,7 +27,7 @@ const Recommends = () => {
     error: "",
   });
 
-  console.log(recommendations, token);
+  console.log(recommendations, products);
 
   const getRecommendation = useCallback(async () => {
     try {
@@ -62,50 +62,58 @@ const Recommends = () => {
   if (
     !recommendations.value?.length &&
     !recommendations.loading &&
-    !recommendations.error
+    !products?.length &&
+    !loading
   )
     return;
+
+  const getContent = (items, suspense) => (
+    <>
+      <div
+        className="d-grid gap-4 justify-content-center"
+        style={{
+          gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+        }}
+      >
+        {items.slice(0, page * itemsPerPage).map((product, index) => (
+          <ProductItem minWidth="230px" key={index} product={product} />
+        ))}
+      </div>
+      {page < Math.ceil(items.length / itemsPerPage) &&
+        (suspense ? (
+          mySkeleton
+        ) : (
+          <button
+            onClick={() => setPage((prev) => prev + 1)}
+            className={`btn d-block border-0 mx-auto my-5 fw-semibold`}
+            style={{
+              color: "var(--main-color)",
+              backgroundColor: "#D9D9D9",
+            }}
+          >
+            مشاهدة المزيد
+          </button>
+        ))}
+    </>
+  );
 
   return (
     <Container className="my-5">
       <h4 className="mb-4">منتجات قد تعجبك</h4>
-      {recommendations.loading ? (
+      {recommendations.value?.length
+        ? getContent(recommendations.value, recommendations.loading)
+        : recommendations.loading
+        ? mySkeleton
+        : loading
+        ? mySkeleton
+        : getContent(products, loading)}
+      {/* {recommendations.loading ? (
         mySkeleton
       ) : recommendations.error ? (
         <h5 className="flex-grow-1 text-center text-danger my-3 fw-semibold my-2">
           {recommendations.error}
         </h5>
-      ) : (
-        <>
-          <div
-            className="d-grid gap-4 justify-content-center"
-            style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
-            }}
-          >
-            {recommendations.value
-              .slice(0, page * itemsPerPage)
-              .map((product, index) => (
-                <ProductItem minWidth="230px" key={index} product={product} />
-              ))}
-          </div>
-          {page < Math.ceil(recommendations.value.length / itemsPerPage) &&
-            (recommendations.loading ? (
-              mySkeleton
-            ) : (
-              <button
-                onClick={() => setPage((prev) => prev + 1)}
-                className={`btn d-block border-0 mx-auto my-5 fw-semibold`}
-                style={{
-                  color: "var(--main-color)",
-                  backgroundColor: "#D9D9D9",
-                }}
-              >
-                مشاهدة المزيد
-              </button>
-            ))}
-        </>
-      )}
+      )} */}
     </Container>
   );
 };
