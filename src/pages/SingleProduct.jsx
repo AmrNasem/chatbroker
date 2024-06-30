@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
 import classes from "./SingleProduct.module.css";
 import styles from "../components/Product/ProductPreview.module.css";
-import styles from "../components/Product/ProductPreview.module.css";
 import { backend } from "../App";
 import { useParams } from "react-router";
 import Spinner from "../UI/Spinner";

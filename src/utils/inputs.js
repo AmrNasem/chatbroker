@@ -200,7 +200,7 @@ export const register = [
     type: "password",
     id: "password",
     icon: faLock,
-    message: "كلمة السر غير صحيحة",
+    message: "كلمة السر غير مناسبة",
     placeholder: "كلمة السر",
     validate: (value = "") =>
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value),

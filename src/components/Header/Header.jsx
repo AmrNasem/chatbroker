@@ -37,8 +37,7 @@ const Header = () => {
 
   useEffect(() => {
     window.addEventListener("click", handleNotificationsClosure);
-    return () =>
-      window.removeEventListener("click", handleNotificationsClosure);
+    return () => window.removeEventListener("click", handleNotificationsClosure);
   }, []);
 
   const handleToggleNotifications = () => {
@@ -55,9 +54,19 @@ const Header = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('{{url}}/products');
-        const data = await response.json();
-        setProducts(data);
+        const response = await fetch('https://example.com/products'); // Replace with the actual URL
+        if (!response.ok) {
+          // Handle HTTP errors
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          const data = await response.json();
+          setProducts(data);
+        } else {
+          // Handle unexpected content type
+          throw new Error("Received non-JSON response");
+        }
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -81,13 +90,8 @@ const Header = () => {
 
   return (
     <header className="bg-white z-1 position-relative">
-      <div
-        className={`d-flex align-items-center gap-3 py-3 border-bottom ${classes["main-header"]}`}
-      >
-        <Link
-          to="/"
-          className="ms-3 fw-semibold text-nowrap fs-4 text-decoration-none"
-        >
+      <div className={`d-flex align-items-center gap-3 py-3 border-bottom ${classes["main-header"]}`}>
+        <Link to="/" className="ms-3 fw-semibold text-nowrap fs-4 text-decoration-none">
           <span className="text-sec">Chat </span>
           <span className="text-main">Broker</span>
         </Link>
@@ -98,8 +102,7 @@ const Header = () => {
           >
             <div className="position-relative">
               <span
-                className={`position-absolute top-0 end-0 rounded-circle ${notificationsVisible ? "bg-sec" : "bg-main"
-                  } ${classes.bullet}`}
+                className={`position-absolute top-0 end-0 rounded-circle ${notificationsVisible ? "bg-sec" : "bg-main"} ${classes.bullet}`}
               ></span>
 
               <FontAwesomeIcon icon={faBell} className="fs-5" />
@@ -108,16 +111,13 @@ const Header = () => {
           </button>
           {notificationsVisible && (
             <Notifications
-              className={`${classes.notifications} ${notificationsVanishing ? classes.vanishing : ""
-                } position-absolute end-0 shadow rounded-2`}
+              className={`${classes.notifications} ${notificationsVanishing ? classes.vanishing : ""} position-absolute end-0 shadow rounded-2`}
             />
           )}
         </div>
         <form
           onSubmit={handleSearchSubmit}
           className={`d-flex flex-grow-1 border rounded-2 overflow-hidden ${classes.search}`}
-        // onClick={() => navigate(`/search`)}
-
         >
           <button className="px-2 py-1 border-0 bg-transparent text-black-50">
             <FontAwesomeIcon icon={faSearch} />

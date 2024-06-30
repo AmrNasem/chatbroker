@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import Skeleton from "../Skeleton/Skeleton";
 import Message from "../Chat/Message";
 import useKey from "../../hooks/use-key";
+import Swal from "sweetalert2";
 
 const Chatbot = () => {
   const [isChatting, setIsChatting] = useState(false);
@@ -24,19 +25,40 @@ const Chatbot = () => {
 
   const toggleChatHandler = () => {
     if (isChatting) {
-      chatRef.current.classList.add(classes.hide);
-      chatButtonRef.current.classList.remove(classes.active);
-      let timeout;
-      timeout = setTimeout(() => {
-        setIsChatting(false);
-        clearTimeout(timeout);
-      }, 100);
+      Swal.fire({
+        title: "هل أنت متأكد؟",
+        text: "سوف يتم حذف جميع الرسائل السابقة!",
+        icon: "warning",
+        cancelButtonText: "إلغاء",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "نعم متأكد",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          chatRef.current.classList.add(classes.hide);
+          chatButtonRef.current.classList.remove(classes.active);
+          let timeout;
+          timeout = setTimeout(() => {
+            setIsChatting(false);
+            clearMessages();
+            clearTimeout(timeout);
+          }, 100);
+        }
+      });
     } else {
       chatButtonRef.current.classList.add(classes.active);
       setIsChatting(true);
     }
   };
 
+  const clearMessages = () => {
+    setMessages({
+      value: null,
+      loading: false,
+      error: null,
+    });
+  };
   console.log(messages);
 
   const handleGetMessages = useCallback(async () => {
@@ -79,37 +101,39 @@ const Chatbot = () => {
       createdAt: new Date(),
     };
 
-    if (!newRequest.message.trim()) return;
+    if (!newRequest.text.trim()) return;
 
     try {
       setMessages((prev) => ({
         ...prev,
         value: request
           ? prev.value.map((msg) =>
-              msg.request.id === newRequest.id ? { ...msg, loading: true } : msg
-            )
+            msg.request.id === newRequest.id ? { ...msg, loading: true } : msg
+          )
           : [
-              ...(prev.value || []),
-              { loading: true, error: "", request: newRequest },
-            ],
+            ...(prev.value || []),
+            { loading: true, error: "", request: newRequest },
+          ],
       }));
       setMessage("");
-      const res = await fetch(`${backend}/chatbot/messages/send`, {
+      const res = await fetch(`https://chat-testing-1rsl.onrender.com/chat`, {
         method: "POST",
-        body: JSON.stringify(newRequest.message),
+        body: JSON.stringify({ text: newRequest.text }),
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
       const data = await res.json();
+      console.log(data); // Log the response
+
       if (!res.ok) throw new Error(data.message || "خطأ في تحميل الرسائل");
-      console.log(data);
+
       setMessages((prev) => ({
         ...prev,
-        value: prev.map((msg) =>
-          msg.request.id === data.response.id
-            ? { ...msg, response: data.response, loading: false }
+        value: prev.value.map((msg) =>
+          msg.request.id === newRequest.id
+            ? { ...msg, response: { text: data.reponse }, loading: false }
             : msg
         ),
       }));
@@ -125,8 +149,10 @@ const Chatbot = () => {
     }
   };
 
+
+
   useKey("Escape", toggleChatHandler);
-  useKey("Enter", handleSubmit);
+  useKey("Enter", (e) => handleSubmit(e));
 
   return (
     <div className={`position-sticky mx-sm-5 mx-3 ${classes.chatbot}`}>
@@ -212,9 +238,8 @@ const Chatbot = () => {
               value={message}
             ></textarea>
             <button
-              className={`bg-transparent border-0 p-2 ${
-                !message.trim() ? "opacity-50" : ""
-              } ${classes.send}`}
+              className={`bg-transparent border-0 p-2 ${!message.trim() ? "opacity-50" : ""
+                } ${classes.send}`}
             >
               <FontAwesomeIcon icon={faPaperPlane} />
             </button>

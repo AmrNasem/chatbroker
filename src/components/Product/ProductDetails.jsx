@@ -24,7 +24,7 @@ import {
   removeFromFavorites,
 } from "../../store/favoritesSlice";
 import { backend } from "../../App";
-import AddReview from "../Reviews/AddReview";
+import AddReview from "../Reviews/addReview";
 
 const getStar = (index, rate) =>
   rate < index + 1 && index < rate ? (
