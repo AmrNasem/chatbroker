@@ -152,7 +152,7 @@ export const newProductAfter = [
         .trim()
         .split(" ")
         .filter((w) => w);
-      return !(words.length > 700 || words.length < 30);
+      return true || !(words.length > 700 || words.length < 30);
     },
   },
   {
@@ -166,7 +166,7 @@ export const newProductAfter = [
         .trim()
         .split(" ")
         .filter((w) => w);
-      return !(words.length > 700 || words.length < 30);
+      return true || !(words.length > 700 || words.length < 30);
     },
   },
 ];
@@ -177,8 +177,7 @@ export const register = [
     icon: faUser,
     message: "الاسم غير صحيح!",
     placeholder: "الاسم",
-    validate: (value = "") =>
-      value.trim().length || /^[a-zA-Z_]\w{2,20}$/.test(value),
+    validate: (value = "") => value.trim() || /^[a-zA-Z_]\w{2,20}$/.test(value),
   },
   {
     type: "tel",
@@ -186,7 +185,7 @@ export const register = [
     icon: faPhone,
     message: "رقم الهاتف غير صحيح!",
     placeholder: "رقم الهاتف",
-    validate: (value = "") => value.trim().length || /^\d{6,}$/.test(value),
+    validate: (value = "") => value.trim() || /^\d{6,}$/.test(value),
   },
   {
     type: "email",
@@ -195,7 +194,7 @@ export const register = [
     message: "البريد الإلكتروني غير صحيح",
     placeholder: "البريد الإلكتروني",
     validate: (value = "") =>
-      value.trim().length ||
+      value.trim() ||
       /^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)?@[a-zA-Z_]\w*\.[a-zA-Z]{2,}$/.test(value),
   },
   {
@@ -205,7 +204,7 @@ export const register = [
     message: "كلمة السر غير مناسبة",
     placeholder: "كلمة السر",
     validate: (value = "") =>
-      value.trim().length ||
+      value.trim() ||
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value),
   },
 ];
@@ -217,8 +216,8 @@ export const login = [
     icon: faEnvelope,
     message: "البريد الإلكتروني غير صحيح",
     placeholder: "البريد الإلكتروني",
-    validate: (value) =>
-      value.trim().length ||
+    validate: (value = "") =>
+      value.trim() ||
       /^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)?@[a-zA-Z_]\w*\.[a-zA-Z]{2,}$/.test(value),
   },
   {
@@ -227,8 +226,8 @@ export const login = [
     icon: faLock,
     message: "كلمة السر غير صحيحة",
     placeholder: "كلمة السر",
-    validate: (value) =>
-      value.trim().length ||
+    validate: (value = "") =>
+      value.trim() ||
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value),
   },
 ];
