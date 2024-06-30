@@ -218,9 +218,9 @@ const ProductDetails = ({ className, product, error, loading }) => {
               </div>
             </div>
             <div
-              className={`d-flex my-1 align-items-start flex-column gap-3 ms-5 ${classes.deal}`}
+              className={`d-flex my-1 align-items-start w-75 flex-column gap-3 ms-5 ${classes.deal}`}
             >
-              <div className="d-flex flex-row gap-5">
+              <div className="d-flex flex-wrap w-100 justify-content-between gap-2">
                 {product.rent && (
                   <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
                     <span style={{ color: "red" }}>
