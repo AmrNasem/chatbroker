@@ -106,16 +106,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
   useEffect(() => {
     if (favorites && product) {
       setIsFav(
-        favorites.find(
-          (item) =>
-            item.product_id ===
-            (product.rent
-              ? product.rent
-              : product.sell
-                ? product.sell
-                : product.swap
-            ).id
-        )
+        favorites.find((item) => item.product_id === product.product_id)
           ? true
           : false
       );
@@ -131,26 +122,10 @@ const ProductDetails = ({ className, product, error, loading }) => {
     try {
       setIsFav((prev) => !prev);
       const formData = new FormData();
-      formData.append(
-        "product_id",
-        (product.rent
-          ? product.rent
-          : product.sell
-            ? product.sell
-            : product.swap
-        ).id
-      );
+      formData.append("product_id", product.product_id);
 
       const res = await fetch(
-        `${backend}/favorites/${isFav
-          ? (product.rent
-            ? product.rent
-            : product.sell
-              ? product.sell
-              : product.swap
-          ).id
-          : "store"
-        }`,
+        `${backend}/favorites/${isFav ? product.product_id : "store"}`,
         {
           method: isFav ? "DELETE" : "POST",
           headers: {
@@ -164,14 +139,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
       if (!res.ok) throw new Error(data.message || "Something went wrong!");
       dispatch(
         isFav
-          ? removeFromFavorites(
-            (product.rent
-              ? product.rent
-              : product.sell
-                ? product.sell
-                : product.swap
-            ).id
-          )
+          ? removeFromFavorites(product.product_id)
           : addToFavorites(data.data)
       );
     } catch (error) {

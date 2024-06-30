@@ -178,6 +178,19 @@ const SingleProduct = () => {
                   استأجر الآن
                 </button>
               )}
+              {product.swap && !(product.user.id === user?.id) && (
+                <button
+                  disabled={purchase.loading}
+                  style={{ backgroundColor: "#FFF1E1" }}
+                  onClick={handlePayment}
+                  id="swap"
+                  className={`d-block w-100 ${
+                    purchase.loading ? "opacity-50" : ""
+                  } text-main my-3 p-3 rounded-1 border-0`}
+                >
+                  استبدل الآن
+                </button>
+              )}
             </div>
           </div>
         )}
