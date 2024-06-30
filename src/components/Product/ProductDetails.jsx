@@ -24,7 +24,7 @@ import {
   removeFromFavorites,
 } from "../../store/favoritesSlice";
 import { backend } from "../../App";
-import AddReview from "../Reviews/AddReview";
+import AddReview from "../Reviews/addReview";
 
 const getStar = (index, rate) =>
   rate < index + 1 && index < rate ? (
@@ -112,8 +112,8 @@ const ProductDetails = ({ className, product, error, loading }) => {
             (product.rent
               ? product.rent
               : product.sell
-              ? product.sell
-              : product.swap
+                ? product.sell
+                : product.swap
             ).id
         )
           ? true
@@ -136,21 +136,20 @@ const ProductDetails = ({ className, product, error, loading }) => {
         (product.rent
           ? product.rent
           : product.sell
-          ? product.sell
-          : product.swap
+            ? product.sell
+            : product.swap
         ).id
       );
 
       const res = await fetch(
-        `${backend}/favorites/${
-          isFav
-            ? (product.rent
-                ? product.rent
-                : product.sell
-                ? product.sell
-                : product.swap
-              ).id
-            : "store"
+        `${backend}/favorites/${isFav
+          ? (product.rent
+            ? product.rent
+            : product.sell
+              ? product.sell
+              : product.swap
+          ).id
+          : "store"
         }`,
         {
           method: isFav ? "DELETE" : "POST",
@@ -166,13 +165,13 @@ const ProductDetails = ({ className, product, error, loading }) => {
       dispatch(
         isFav
           ? removeFromFavorites(
-              (product.rent
-                ? product.rent
-                : product.sell
+            (product.rent
+              ? product.rent
+              : product.sell
                 ? product.sell
                 : product.swap
-              ).id
-            )
+            ).id
+          )
           : addToFavorites(data.data)
       );
     } catch (error) {
