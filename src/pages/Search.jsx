@@ -46,11 +46,11 @@ const Search = () => {
           <div>
             <h4>
               {results.count > 2 && results.count}{" "}
-              {results.count > 10
-                ? "نتيجة"
+              {results.count <= 10 && results.count > 2
+                ? "نتائج"
                 : results.count === 2
                 ? "نتيجتان"
-                : "نتائج"}{" "}
+                : "نتيجة"}{" "}
               {results.count === 1 && "واحدة"} ({query})
             </h4>
             {results.data.map((product) => (

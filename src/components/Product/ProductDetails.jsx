@@ -235,16 +235,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
             <h6 className="my-2" style={{ color: "var(--product-text-color)" }}>
               {product.title}
             </h6>
-            <h5 className="text-main mb-4">
-              {
-                (product.rent
-                  ? product.rent
-                  : product.sell
-                  ? product.sell
-                  : product.swap
-                ).descount
-              }
-            </h5>
+            <h5 className="text-main mb-4">{product.desc}</h5>
             <div className="d-flex gap-2 my-3 w-75 align-items-center justify-content-between">
               <h6 style={{ color: "#424750" }} className="fw-semibold">
                 المكان
@@ -280,7 +271,7 @@ const ProductDetails = ({ className, product, error, loading }) => {
                 )}
                 {product.rent && (
                   <span className={`text-nowrap ${classes.duration}`}>
-                    <span style={{ color: "red" }} cl>
+                    <span style={{ color: "red" }}>
                       <FontAwesomeIcon
                         icon={faClock}
                         style={{ marginLeft: "5px" }}

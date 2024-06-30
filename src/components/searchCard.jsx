@@ -42,10 +42,12 @@ const SearchCard = (props) => {
   const navigate = useNavigate();
   const { product } = props;
 
+  console.log(product);
+
   return (
     <div className="">
       <div
-        onClick={() => navigate(`/product/${product.product_id}`)}
+        onClick={() => navigate(`/product/${product.id}`)}
         className={`${styles.product} my-4 d-md-flex rounded-3`}
       >
         <div
@@ -77,33 +79,56 @@ const SearchCard = (props) => {
                 {product.city}{" "}
               </div>
             </div>
-
           </div>
           <div className="flex-grow-1 flex-wrap-reverse  d-flex align-items- justify-content-between flex-column">
             <div
               className={`d-flex my-1 align-items-start flex-column gap-3 ms-5 ${styles.deal}`}
             >
               <div className="d-flex flex-row gap-3">
-                {product.rent && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+                {product.rent && (
+                  <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
+                    <FontAwesomeIcon icon={faTag} />
+                    <span className="fw-semibold text-nowrap">
+                      <span
+                        style={{
+                          fontSize: "13px",
+                          color: "#",
+                          fontWeight: "lighter",
+                        }}
+                      >
+                        الإيجار:{" "}
+                      </span>
+                      {product.rent.amount} جنيه
+                    </span>
+                  </div>
+                )}
+                {product.rent && (
+                  <span className={`text-nowrap ${styles.duration}`}>
+                    <FontAwesomeIcon
+                      icon={faClock}
+                      style={{ marginLeft: "5px" }}
+                    />
+                    لمدة {product.rent.duration} {product.rent.enum_durations}
+                  </span>
+                )}
+              </div>
+              {product.sell && (
+                <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
                   <FontAwesomeIcon icon={faTag} />
                   <span className="fw-semibold text-nowrap">
-                    <span style={{ fontSize: "13px", color: "#", fontWeight: "lighter" }}>الإيجار: </span>
-                    {product.rent.amount} جنيه
+                    <span
+                      style={{
+                        fontSize: "13px",
+                        color: "#",
+                        fontWeight: "lighter",
+                      }}
+                    >
+                      البيع:{" "}
+                    </span>
+                    {product.sell.amount} جنيه
                   </span>
-                </div>}
-                {product.rent &&
-                  <span className={`text-nowrap ${styles.duration}`}>
-                    <FontAwesomeIcon icon={faClock} style={{ marginLeft: "5px" }} />
-                    لمدة {product.rent.duration} {product.rent.enum_durations}
-                  </span>}
-              </div>
-              {product.sell && <div className="d-flex  align-items-center gap-1 fw-bold fs-6">
-                <FontAwesomeIcon icon={faTag} />
-                <span className="fw-semibold text-nowrap">
-                  <span style={{ fontSize: "13px", color: "#", fontWeight: "lighter" }}>البيع: </span>
-                  {product.sell.amount} جنيه
-                </span>
-              </div>}
+                </div>
+              )}
             </div>
             <div className="flex-grow-1 d-flex align-items-end">
               {badges
@@ -112,7 +137,11 @@ const SearchCard = (props) => {
                   <Badge
                     key={badge.id}
                     {...badge}
-                    style={{ ...badge.style, paddingRight: i ? "18px" : "6px", maxWidth: "100px" }}
+                    style={{
+                      ...badge.style,
+                      paddingRight: i ? "18px" : "6px",
+                      maxWidth: "100px",
+                    }}
                   >
                     {badge.text}
                   </Badge>

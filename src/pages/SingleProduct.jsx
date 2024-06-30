@@ -235,7 +235,9 @@ const SingleProduct = () => {
                   >
                     <img
                       src={
-                        product?.user.image || require("../assets/person.jpeg")
+                        (product?.user.image &&
+                          !product?.user.image.endsWith("/images/")) ||
+                        require("../assets/person.jpeg")
                       }
                       className="w-100 h-100 object-fit-cover"
                       alt=""

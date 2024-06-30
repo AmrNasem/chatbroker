@@ -13,7 +13,7 @@ import {
   newProductAfter as afterInputs,
 } from "../utils/inputs";
 import Alert from "../UI/Alert";
-import classes from "../components/Product/ProductPreview.module.css"
+import classes from "../components/Product/ProductPreview.module.css";
 
 const GetSelect = memo(
   ({ className, action, pre, formData, input, valid, onBlur, onChange }) => {
@@ -30,8 +30,9 @@ const GetSelect = memo(
     return pre.error ? (
       <p
         style={{ fontSize: "0.9rem", flex: 1 }}
-        className={`text-center rounded-2 py-1 text-danger fw-semibold mt-3 ${valid ? "" : "border border-danger invalid"
-          } ${className}`}
+        className={`text-center rounded-2 py-1 text-danger fw-semibold mt-3 ${
+          valid ? "" : "border border-danger invalid"
+        } ${className}`}
       >
         {pre.error}،{" "}
         <button
@@ -94,9 +95,7 @@ const NewProduct = () => {
 
   const [images360, setImages360] = useState({ value: [], invalid: "" });
   const [isImage360, setIsImage360] = useState(false);
-  let media = [...images.value, ...images360.value]
-
-
+  let media = [...images.value, ...images360.value];
 
   const [formData, setFormData] = useState({
     for_renting: 1,
@@ -108,7 +107,6 @@ const NewProduct = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [closing, setClosing] = useState(false);
-
 
   const fetchGovs = useCallback(async () => {
     try {
@@ -150,11 +148,13 @@ const NewProduct = () => {
       setPre((prev) => ({ ...prev, data: { ...prev.data, categories } }));
     else dispatch(fetchCategories());
   }, [categories, dispatch]);
-  console.log(images)
+  console.log(images);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const areImagesInvalid = validateMedia(isImage360 ? images360.value : images.value);
+    const areImagesInvalid = validateMedia(
+      isImage360 ? images360.value : images.value
+    );
 
     if (isImage360) {
       setImages360((prev) => ({ ...prev, invalid: areImagesInvalid }));
@@ -181,9 +181,15 @@ const NewProduct = () => {
     if (isFormValid) {
       const formdata = new FormData();
 
-      images.value.forEach(img => img.file.type.startsWith("image/") ? formdata.append("images[]", img.file, img.file.name) : formdata.append("videos[]", img.file, img.file.name))
+      images.value.forEach((img) =>
+        img.file.type.startsWith("image/")
+          ? formdata.append("images[]", img.file, img.file.name)
+          : formdata.append("videos[]", img.file, img.file.name)
+      );
 
-      images360.value.forEach(img => formdata.append("images360[]", img.file, img.file.name))
+      images360.value.forEach((img) =>
+        formdata.append("images360[]", img.file, img.file.name)
+      );
 
       formdata.append("available", 1); // Static
       formdata.append("location", "123"); // Static
@@ -235,7 +241,7 @@ const NewProduct = () => {
       setInputsTouched(allTouched);
     }
   };
-  console.log(formData)
+  console.log(formData);
   const handleBlur = useCallback(
     (e) => setInputsTouched((prev) => ({ ...prev, [e.target.id]: true })),
     []
@@ -258,8 +264,8 @@ const NewProduct = () => {
     }, 300);
   };
   const image360Toggle = () => {
-    setIsImage360(!isImage360)
-  }
+    setIsImage360(!isImage360);
+  };
   const handleModelSwitch = (e) => {
     const currentModels = modelsBtns.filter((btn) => formData[btn.id]);
     if (currentModels.length === 1 && currentModels[0].id === e.target.id)
@@ -296,21 +302,17 @@ const NewProduct = () => {
         valid={!inputsTouched[input.id] || input.validate(formData[input.id])}
         onBlur={handleBlur}
         onChange={handleChange}
-      // setIs360Image={setIs360Image}
+        // setIs360Image={setIs360Image}
       />
     );
   };
 
   return (
     <main>
-
       <h4 className="text-main container mt-4">إضافة منتج</h4>
       <div className="container d-flex gap-5 my-4 flex-wrap flex-lg-nowrap">
         <div className={`${classes.navigator} w-100 `}>
-          <div
-            style={{ top: "1rem" }}
-            className="position-sticky">
-
+          <div style={{ top: "1rem" }} className="position-sticky">
             <ProductPreview
               imgID="image"
               setImages={setImages}
@@ -322,28 +324,37 @@ const NewProduct = () => {
             <button
               type="button"
               onClick={image360Toggle}
-              className={`flex-grow-1 border p-2 d-flex ${isImage360 ? "text-sec border-sec" : "deActive"} rounded-2 bg-transparent mt-3`}
+              className={`flex-grow-1 border p-2 d-flex ${
+                isImage360 ? "text-sec border-sec" : "deActive"
+              } rounded-2 bg-transparent mt-3`}
             >
-              رفع صورة 360 درجة: <span className="fw-bold">{isImage360 ? "فعال" : "غير فعال"}</span>
+              رفع صورة 360 درجة:{" "}
+              <span className="fw-bold">
+                {isImage360 ? "فعال" : "غير فعال"}
+              </span>
             </button>
           </div>
         </div>
 
         <form className="flex-grow-1" onSubmit={handleSubmit}>
           {beforeInputs.map((input, i) => {
-            if (input.flex && input.value.find((inp) => formData[inp.model]))
-              return (
-                <div
-                  key={i}
-                  className="d-flex flex-wrap my-2 gap-2 align-items-center"
-                >
-                  {input.value.map(
-                    (childInput) =>
-                      (!childInput.model || !!formData[childInput.model]) &&
-                      getContent(childInput)
-                  )}
-                </div>
-              );
+            if (input.flex) {
+              if (input.value.some((inp) => !inp.model || formData[inp.model]))
+                return (
+                  <div
+                    key={i}
+                    className="d-flex flex-wrap my-4 gap-2 align-items-center"
+                  >
+                    {input.value.map(
+                      (childInput) =>
+                        (!childInput.model || !!formData[childInput.model]) &&
+                        getContent(childInput)
+                    )}
+                  </div>
+                );
+
+              return null;
+            }
 
             return (
               (!input.model || !!formData[input.model]) &&
@@ -359,8 +370,9 @@ const NewProduct = () => {
                   id={btn.id}
                   type="button"
                   onClick={handleModelSwitch}
-                  className={`flex-grow-1 border p-2 ${formData[btn.id] ? "text-sec border-sec" : "text-main"
-                    } rounded-2 bg-transparent`}
+                  className={`flex-grow-1 border p-2 ${
+                    formData[btn.id] ? "text-sec border-sec" : "text-main"
+                  } rounded-2 bg-transparent`}
                 >
                   {btn.text}
                 </button>
@@ -369,7 +381,7 @@ const NewProduct = () => {
           </div>
           {afterInputs.map((input, i) => {
             if (input.flex) {
-              if (input.value.some((inp) => formData[inp.model]))
+              if (input.value.some((inp) => !inp.model || formData[inp.model]))
                 return (
                   <div
                     key={i}
