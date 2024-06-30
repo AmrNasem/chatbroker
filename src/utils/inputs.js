@@ -18,7 +18,7 @@ export const newProductBefore = [
     id: "title",
     label: "اسم المنتج",
     message: "برجاء أدخل اسم المنتج (لايقل عن 5 أحرف ولا يزيد عن 70 حرف).",
-    validate: (value = "") => {
+    validate: (value = " ") => {
       const text = value
         .trim()
         .split(" ")
@@ -144,29 +144,29 @@ export const newProductAfter = [
   },
   {
     id: "desc",
-    message: "برجاء أدخل اسم المنتج (لايقل عن 30 كلمة ولا يزيد عن 700 كلمة).",
+    message: "برجاء أدخل اسم المنتج (لايقل عن 3 كلمة ولا يزيد عن 700 كلمة).",
     label: "وصف المنتج",
     type: "textarea",
-    validate: (value = "") => {
+    validate: (value = " ") => {
       const words = value
         .trim()
         .split(" ")
         .filter((w) => w);
-      return !(words.length > 700 || words.length < 30);
+      return !(words.length > 700 || words.length < 3);
     },
   },
   {
     id: "conditions",
     model: "for_renting",
-    message: "برجاء أدخل شروط المنتج (لايقل عن 30 كلمة ولا يزيد عن 700 كلمة).",
+    message: "برجاء أدخل شروط المنتج (لايقل عن 3 كلمة ولا يزيد عن 700 كلمة).",
     label: "شروط المنتج",
     type: "textarea",
-    validate: (value = "") => {
+    validate: (value = " ") => {
       const words = value
         .trim()
         .split(" ")
         .filter((w) => w);
-      return !(words.length > 700 || words.length < 30);
+      return !(words.length > 700 || words.length < 3);
     },
   },
 ];
