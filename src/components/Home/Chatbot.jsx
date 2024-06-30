@@ -13,6 +13,7 @@ const Chatbot = () => {
   const [isChatting, setIsChatting] = useState(false);
   const token = useSelector((state) => state.auth.token);
   const [message, setMessage] = useState("");
+  const [isArabic, setIsArabic] = useState(false);
   const [messages, setMessages] = useState({
     value: null,
     loading: false,
@@ -21,6 +22,10 @@ const Chatbot = () => {
   const chatRef = useRef();
   const chatButtonRef = useRef();
   const areaRef = useRef();
+
+  const handleChange = () => {
+    setIsArabic(!isArabic);
+  };
 
   const toggleChatHandler = () => {
     if (isChatting) {
@@ -114,7 +119,7 @@ const Chatbot = () => {
           ],
       }));
       setMessage("");
-      const res = await fetch(`https://chat-testing-1rsl.onrender.com/chat`, {
+      const res = await fetch(!isArabic ? `https://chat-testing-1rsl.onrender.com/chat` : ` https://chat-testing-1rsl.onrender.com/chat-ar`, {
         method: "POST",
         body: JSON.stringify({ text: newRequest.text }),
         headers: {
@@ -218,8 +223,15 @@ const Chatbot = () => {
                   <div
                     className={`rounded-circle d-block ${classes.bullet}`}
                   ></div>
-                  <p className="mb-0">مرحبًا أنا هنا للمساعدة</p>
+                  <p className="mb-0">{isArabic ? "مرحبًا أنا هنا للمساعدة" : "Hello I'm here to help"}</p>
+
+
                 </div>
+                <button onClick={handleChange} className={`${classes.toggleButton} ${isArabic ? classes.on : classes.off} mt-2`}>
+                  {isArabic ? "اللغة العربية مفعلة" : "the English language is active"}
+                </button>
+                <h6 className="fw-lighter fs-smaller mt-1">{isArabic ? "Click the button for English" : "إضغط على الزر للغة العربية"}</h6>
+
               </div>
             )}
           </div>
@@ -228,6 +240,7 @@ const Chatbot = () => {
             className={`d-flex border rounded-5 px-2 overflow-hidden ${classes.form}`}
           >
             <textarea
+              dir={isArabic ? "rtl" : "ltr"}
               rows="1"
               onInput={(e) => {
                 console.log("hi");
@@ -237,7 +250,7 @@ const Chatbot = () => {
               autoFocus
               type="text"
               className="flex-grow-1 p-2 border-0 outline-none w-100 scrollbar-none"
-              placeholder="اسألني سؤالًا"
+              placeholder={isArabic ? "اسألني سؤالًا" : "Ask me a question"}
               onChange={(e) => setMessage(e.target.value)}
               value={message}
             ></textarea>
