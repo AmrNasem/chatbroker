@@ -4,6 +4,8 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CardSkeleton from "../Skeleton/CardSkeleton";
 import { backend } from "../../App";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRobot } from "@fortawesome/free-solid-svg-icons";
 
 const mySkeleton = (
   <div className="d-flex gap-4 my-4 flex-wrap">
@@ -98,15 +100,18 @@ const Recommends = () => {
   );
 
   return (
-    <Container className="my-5">
-      <h4 className="mb-4">منتجات قد تعجبك</h4>
+    <Container className="my-5 ">
+      <div className="d-flex align-items-baseline">
+        <h4 className="mb-4">منتجات قد تعجبك</h4>
+        <h6 className="me-4 p-2 rounded-pill" style={{ backgroundColor: "#fff1e1", color: "var(--main-color)" }}>Powered by <span className="fw-bolder">AI</span>  <FontAwesomeIcon icon={faRobot} /></h6>
+      </div>
       {recommendations.value?.length
         ? getContent(recommendations.value, recommendations.loading)
         : recommendations.loading
-        ? mySkeleton
-        : loading
-        ? mySkeleton
-        : getContent(products, loading)}
+          ? mySkeleton
+          : loading
+            ? mySkeleton
+            : getContent(products, loading)}
       {/* {recommendations.loading ? (
         mySkeleton
       ) : recommendations.error ? (
