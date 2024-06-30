@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { backend } from "../App";
 
-const initialState = { loading: true, offers: [], error: null };
+const initialState = { loading: true, offers: null, error: null };
 
 export const fetchOffers = createAsyncThunk(
   "offers/fetchOffers",

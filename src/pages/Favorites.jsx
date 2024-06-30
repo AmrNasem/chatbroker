@@ -42,8 +42,11 @@ const Favorites = () => {
               ))}
             </div>
             {visibleItems < favoriteProducts.length && (
-              <button onClick={handleShowMore} className={favorites.showMore}>
-                Show More
+              <button
+                onClick={handleShowMore}
+                className={`mx-auto d-block py-2 px-3 ${favorites.showMore}`}
+              >
+                عرض المزيد
               </button>
             )}
           </>

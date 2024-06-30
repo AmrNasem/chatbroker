@@ -1,7 +1,7 @@
 .offersContainer {
   display: flex;
   flex-wrap: wrap;
-  margin: 80px;
+  /* margin: 80px; */
   gap: 30px;
   /* justify-content: center; */
 }

@@ -9,7 +9,17 @@ import ReactPlayer from "react-player/lazy";
 import { useParams } from "react-router-dom";
 import { validateMedia } from "../../utils/general";
 
-const ProductPreview = ({ className, media, setImages, style, invalid, product, imgId, setImages360, isImage360 }) => {
+const ProductPreview = ({
+  className,
+  media,
+  setImages,
+  style,
+  invalid,
+  product,
+  imgId,
+  setImages360,
+  isImage360,
+}) => {
   const [active, setActive] = useState(null);
   const [dragging, setDragging] = useState(false);
   const { productId } = useParams();
@@ -30,15 +40,17 @@ const ProductPreview = ({ className, media, setImages, style, invalid, product, 
             file,
             preview: e.target.result,
           };
-          !isImage360 ? setImages((prev) => ({
-            ...prev,
-            value: [...prev.value, newMedia],
-            invalid: validateMedia([...prev.value, newMedia]),
-          })) : setImages360((prev) => ({
-            ...prev,
-            value: [...prev.value, newMedia],
-            invalid: validateMedia([...prev.value, newMedia]),
-          }));
+          !isImage360
+            ? setImages((prev) => ({
+                ...prev,
+                value: [...prev.value, newMedia],
+                invalid: validateMedia([...prev.value, newMedia]),
+              }))
+            : setImages360((prev) => ({
+                ...prev,
+                value: [...prev.value, newMedia],
+                invalid: validateMedia([...prev.value, newMedia]),
+              }));
         };
         reader.readAsDataURL(file);
       }
@@ -72,7 +84,9 @@ const ProductPreview = ({ className, media, setImages, style, invalid, product, 
 
   return (
     <div
-      className={`p-2 rounded-2 ${className} ${invalid ? "border invalid" : ""}`}
+      className={`p-2 rounded-2 ${className} ${
+        invalid ? "border invalid" : ""
+      }`}
       style={{ backgroundColor: "var(--card-color)", ...style }}
     >
       {invalid && (
@@ -92,7 +106,9 @@ const ProductPreview = ({ className, media, setImages, style, invalid, product, 
           onDragOver={handleDragOver}
           onDrop={handleDragDropImage}
           style={{ height: "400px", cursor: "pointer" }}
-          className={`${media?.length ? "" : "bg-white p-3"} rounded-2 d-flex flex-column position-relative gap-3 justify-content-between`}
+          className={`${
+            media?.length ? "" : "bg-white p-3"
+          } rounded-2 d-flex flex-column position-relative gap-3 justify-content-between`}
         >
           {active ? (
             <>
@@ -123,7 +139,7 @@ const ProductPreview = ({ className, media, setImages, style, invalid, product, 
                   src={require("../../assets/add_photo_alternate.png")}
                   alt=""
                 />
-                Drop Here
+                أفلت هنا
               </h4>
             </>
           ) : (
@@ -141,7 +157,7 @@ const ProductPreview = ({ className, media, setImages, style, invalid, product, 
                   src={require("../../assets/add_photo_alternate.png")}
                   alt=""
                 />
-                <h5 className="mb-0">Click or drag and drop here</h5>
+                <h5 className="mb-0">اضغط أو قم بالسحب والإفلات هنا</h5>
               </div>
             </>
           )}
@@ -155,10 +171,7 @@ const ProductPreview = ({ className, media, setImages, style, invalid, product, 
           />
         </label>
       ) : (
-        <div
-          style={{ height: "400px" }}
-          className="rounded-2 overflow-hidden"
-        >
+        <div style={{ height: "400px" }} className="rounded-2 overflow-hidden">
           {active && active.video ? (
             <ReactPlayer
               url={active.video}
@@ -167,10 +180,29 @@ const ProductPreview = ({ className, media, setImages, style, invalid, product, 
               controls
             />
           ) : (
-            <a href={product?.images360.length !== 0 && active?.images360 ? `https://chat-broker-api.azurewebsites.net/product/${productId}/360-image` : null}>
+            <a
+              target="_blank"
+              rel="noreferrer"
+              className="position-relative"
+              href={
+                product?.images360.length !== 0 && active?.images360
+                  ? `https://chat-broker-api.azurewebsites.net/product/${productId}/360-image`
+                  : null
+              }
+            >
+              {product?.images360.length !== 0 && active?.images360 && (
+                <img
+                  src={require("../../assets/360-degrees.png")}
+                  style={{ width: "100px" }}
+                  alt=""
+                  className={`position-absolute top-50 start-50 translate-middle d-block`}
+                />
+              )}
               <img
                 id={imgId}
-                className={`w-100 h-100 object-fit-cover d-block ${active?.images360 ? classes.overlay : null}`}
+                className={`w-100 h-100 object-fit-cover d-block ${
+                  active?.images360 ? classes.overlay : null
+                }`}
                 src={active?.image || active?.images360}
                 alt=""
               />
@@ -180,13 +212,19 @@ const ProductPreview = ({ className, media, setImages, style, invalid, product, 
       )}
       {!!media?.length && (
         <div
-          className={`d-flex gap-2 ${setImages ? "px-2" : ""} pt-2 overflow-auto scrollbar-none flex-grow-1`}
+          className={`d-flex gap-2 ${
+            setImages ? "px-2" : ""
+          } pt-2 overflow-auto scrollbar-none flex-grow-1`}
         >
           {media.map((item) => (
             <button
               key={item.id}
               onClick={() => setActive(item)}
-              className={`${active?.id === item.id ? classes.active : "border"} bg-transparent position-relative transition-main rounded-2 ${classes.image}`}
+              className={`${
+                active?.id === item.id ? classes.active : "border"
+              } bg-transparent position-relative transition-main rounded-2 ${
+                classes.image
+              }`}
             >
               {setImages && (
                 <span
@@ -195,12 +233,16 @@ const ProductPreview = ({ className, media, setImages, style, invalid, product, 
                     setImages((prev) => ({
                       ...prev,
                       value: prev.value.filter((img) => img.id !== item.id),
-                      invalid: validateMedia(prev.value.filter((img) => img.id !== item.id)),
+                      invalid: validateMedia(
+                        prev.value.filter((img) => img.id !== item.id)
+                      ),
                     }));
                     setImages360((prev) => ({
                       ...prev,
                       value: prev.value.filter((img) => img.id !== item.id),
-                      invalid: validateMedia(prev.value.filter((img) => img.id !== item.id)),
+                      invalid: validateMedia(
+                        prev.value.filter((img) => img.id !== item.id)
+                      ),
                     }));
                   }}
                   style={{
@@ -221,11 +263,21 @@ const ProductPreview = ({ className, media, setImages, style, invalid, product, 
                   height="100%"
                 />
               ) : (
-                <img
-                  className="w-100 h-100 object-fit-cover d-block rounded-1"
-                  src={item.image || item.preview || item.images360}
-                  alt=""
-                />
+                <>
+                  {item.images360 && (
+                    <img
+                      src={require("../../assets/360-degrees.png")}
+                      style={{ width: "30px" }}
+                      alt=""
+                      className={`position-absolute top-50 start-50 translate-middle d-block`}
+                    />
+                  )}
+                  <img
+                    className="w-100 h-100 object-fit-cover d-block rounded-1"
+                    src={item.image || item.preview || item.images360}
+                    alt=""
+                  />
+                </>
               )}
             </button>
           ))}

@@ -48,6 +48,7 @@ const ProductItem = ({
   minWidth = "250px",
   maxWidth,
   className,
+  style,
   width,
   product,
 }) => {
@@ -114,9 +115,9 @@ const ProductItem = ({
 
   return (
     <div
-      style={{ minWidth, maxWidth, width }}
+      style={{ ...style, minWidth, maxWidth, width }}
       onClick={() => navigate(`/product/${product.id}`)}
-      className={`${classes.product} d-flex flex-column rounded-3`}
+      className={`${classes.product} ${className} d-flex flex-column rounded-3`}
     >
       <div className={`position-relative overflow-hidden ${classes.head}`}>
         <div className="position-absolute p-2 z-1 w-100 d-flex justify-content-between align-items-center">
