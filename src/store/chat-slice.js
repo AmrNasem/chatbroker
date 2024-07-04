@@ -47,7 +47,7 @@ const messages = createSlice({
     },
     receiveMessage(state, action) {
       const msg = action.payload;
-      if (state.messages) {
+      if (state.messages && state.currentChat.members.includes(+msg.senderId)) {
         state.messages.push(msg);
         state.lastMessage = msg;
       } else state.unreadMessages.push(msg);
