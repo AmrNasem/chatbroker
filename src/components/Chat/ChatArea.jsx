@@ -119,9 +119,9 @@ const ChatArea = ({ style, className, onToggleAside }) => {
         ) : messages.length ? (
           messages.map((message, i) => (
             <Message
+              isMyMessage={message.senderId === user.id}
               key={i}
               message={message}
-              isMyMessage={user.id === message.senderId}
             />
           ))
         ) : (

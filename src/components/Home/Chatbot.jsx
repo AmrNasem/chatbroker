@@ -111,22 +111,27 @@ const Chatbot = () => {
         ...prev,
         value: request
           ? prev.value.map((msg) =>
-            msg.request.id === newRequest.id ? { ...msg, loading: true } : msg
-          )
+              msg.request.id === newRequest.id ? { ...msg, loading: true } : msg
+            )
           : [
-            ...(prev.value || []),
-            { loading: true, error: "", request: newRequest },
-          ],
+              ...(prev.value || []),
+              { loading: true, error: "", request: newRequest },
+            ],
       }));
       setMessage("");
-      const res = await fetch(!isArabic ? `https://chat-testing-1rsl.onrender.com/chat` : ` https://chat-testing-1rsl.onrender.com/chat-ar`, {
-        method: "POST",
-        body: JSON.stringify({ text: newRequest.text }),
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        !isArabic
+          ? `https://chat-testing-1rsl.onrender.com/chat`
+          : ` https://chat-testing-1rsl.onrender.com/chat-ar`,
+        {
+          method: "POST",
+          body: JSON.stringify({ text: newRequest.text }),
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = await res.json();
       console.log(data); // Log the response
 
@@ -137,14 +142,14 @@ const Chatbot = () => {
         value: prev.value.map((msg) =>
           msg.request.id === newRequest.id
             ? {
-              ...msg,
-              response: {
-                ...msg.response,
-                createdAt: new Date(),
-                text: data.response,
-              },
-              loading: false,
-            }
+                ...msg,
+                response: {
+                  ...msg.response,
+                  createdAt: new Date(),
+                  text: data.response,
+                },
+                loading: false,
+              }
             : msg
         ),
       }));
@@ -161,7 +166,7 @@ const Chatbot = () => {
   };
 
   useKey("Escape", toggleChatHandler);
-  useKey("Enter", (e) => handleSubmit(e));
+  useKey("Enter", (e) => isChatting && handleSubmit(e));
 
   return (
     <div className={`position-sticky mx-sm-5 mx-3 ${classes.chatbot}`}>
@@ -195,7 +200,7 @@ const Chatbot = () => {
             ) : messages.value?.length ? (
               messages.value.map((msg, i) => (
                 <div key={i}>
-                  <Message isMyMessage message={msg.request} />
+                  <Message message={msg.request} isMyMessage />
                   {msg.loading ? (
                     <Skeleton
                       className={`my-4 me-auto`}
@@ -223,15 +228,27 @@ const Chatbot = () => {
                   <div
                     className={`rounded-circle d-block ${classes.bullet}`}
                   ></div>
-                  <p className="mb-0">{isArabic ? "مرحبًا أنا هنا للمساعدة" : "Hello I'm here to help"}</p>
-
-
+                  <p className="mb-0">
+                    {isArabic
+                      ? "مرحبًا أنا هنا للمساعدة"
+                      : "Hello I'm here to help"}
+                  </p>
                 </div>
-                <button onClick={handleChange} className={`${classes.toggleButton} ${isArabic ? classes.on : classes.off} mt-2`}>
-                  {isArabic ? "اللغة العربية مفعلة" : "the English language is active"}
+                <button
+                  onClick={handleChange}
+                  className={`${classes.toggleButton} ${
+                    isArabic ? classes.on : classes.off
+                  } mt-2`}
+                >
+                  {isArabic
+                    ? "اللغة العربية مفعلة"
+                    : "the English language is active"}
                 </button>
-                <h6 className="fw-lighter fs-smaller mt-1">{isArabic ? "Click the button for English" : "إضغط على الزر للغة العربية"}</h6>
-
+                <h6 className="fw-lighter fs-smaller mt-1">
+                  {isArabic
+                    ? "Click the button for English"
+                    : "إضغط على الزر للغة العربية"}
+                </h6>
               </div>
             )}
           </div>
@@ -255,8 +272,9 @@ const Chatbot = () => {
               value={message}
             ></textarea>
             <button
-              className={`bg-transparent border-0 p-2 ${!message.trim() ? "opacity-50" : ""
-                } ${classes.send}`}
+              className={`bg-transparent border-0 p-2 ${
+                !message.trim() ? "opacity-50" : ""
+              } ${classes.send}`}
             >
               <FontAwesomeIcon icon={faPaperPlane} />
             </button>
